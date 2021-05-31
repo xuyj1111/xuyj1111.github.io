@@ -1,6 +1,8 @@
-<html>
-  <head>
-  <meta charset="utf-8" />
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>小黑的博客</title>
 <link rel="shortcut icon" href="https://xuyj1111.github.io/favicon.ico?v=1622443925934">
@@ -11,11 +13,15 @@
 
 
 
-  <meta name="description" content="" />
-  </head>
-  <body>
-    <div class="main">
-      <div class="main-content">
+</head>
+
+<body>
+    <style>
+        .searched-keyword {
+            background-color: yellow;
+        }
+    </style>
+    <div class="main animated">
         <div class="site-header">
   <a href="https://xuyj1111.github.io">
   <img class="avatar" src="https://xuyj1111.github.io/images/avatar.png?v=1622443925934" alt="">
@@ -65,19 +71,22 @@
   </form>
 </div>
 
-
-        <div class="tags-container">
-          
+        <div id="gridea-search-result" data-update="1622443925934">
+            <div class="searching">搜索中......</div>
+            <div class="no-result" style="display:none">未搜索到相关文章</div>
         </div>
-
-        <div class="site-footer">
+    </div>
+    <div class="site-footer">
   
   <a class="rss" href="https://xuyj1111.github.io/atom.xml" target="_blank">
     <i class="ri-rss-line"></i> RSS
   </a>
 </div>
 
-      </div>
-    </div>
-  </body>
+    <script src="https://xuyj1111.github.io/media/gridea-search/result-template.ejs" type="text/ejs"></script>
+    <script src="https://xuyj1111.github.io/media/gridea-search/fuse.basic.min.js"></script>
+    <script src="https://xuyj1111.github.io/media/gridea-search/ejs.min.js"></script>
+    <script src="https://xuyj1111.github.io/media/gridea-search/gridea-search.js"></script>
+</body>
+
 </html>
