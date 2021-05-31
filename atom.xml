@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://xuyj1111.github.io</id>
-    <title>小黑的博客</title>
-    <updated>2021-05-31T09:47:35.528Z</updated>
+    <title>小黑的猫砂盆</title>
+    <updated>2021-05-31T09:58:57.798Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://xuyj1111.github.io"/>
     <link rel="self" href="https://xuyj1111.github.io/atom.xml"/>
     <subtitle>初级Java，请多多指教😆😆</subtitle>
     <logo>https://xuyj1111.github.io/images/avatar.png</logo>
     <icon>https://xuyj1111.github.io/favicon.ico</icon>
-    <rights>All rights reserved 2021, 小黑的博客</rights>
+    <rights>All rights reserved 2021, 小黑的猫砂盆</rights>
 </feed>
