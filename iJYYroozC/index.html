@@ -3,7 +3,7 @@
     <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>创建表分区 | 小黑的猫砂盆</title>
-<link rel="shortcut icon" href="https://xuyj1111.github.io/favicon.ico?v=1631243074101">
+<link rel="shortcut icon" href="https://xuyj1111.github.io/favicon.ico?v=1631253552867">
 <link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
 <link rel="stylesheet" href="https://xuyj1111.github.io/styles/main.css">
 <link rel="alternate" type="application/atom+xml" title="创建表分区 | 小黑的猫砂盆 - Atom Feed" href="https://xuyj1111.github.io/atom.xml">
@@ -15,9 +15,11 @@
 使用命令show plugins;查看所有插件
 
 确定开启表分区功能
+
+确定开启表分区功能
 //在正常创建表语句下加PARTITION BY...
 CREATE TABLE `test_partition` (
-	`id` bigint(20) NO..." />
+	`id` bi..." />
     <meta name="keywords" content="MySQL" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
     <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
@@ -27,7 +29,7 @@ CREATE TABLE `test_partition` (
       <div class="main-content">
         <div class="site-header">
   <a href="https://xuyj1111.github.io">
-  <img class="avatar" src="https://xuyj1111.github.io/images/avatar.png?v=1631243074101" alt="">
+  <img class="avatar" src="https://xuyj1111.github.io/images/avatar.png?v=1631253552867" alt="">
   </a>
   <h1 class="site-title">
     小黑的猫砂盆
@@ -103,6 +105,8 @@ CREATE TABLE `test_partition` (
 <p>使用命令<code>show plugins;</code>查看所有插件<br>
 <img src="https://cdn.nlark.com/yuque/0/2021/png/12409566/1631069533458-ee0fdba9-61e0-4e17-a60c-e26bc3b1ea74.png#height=42&amp;id=u9edb3610&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=42&amp;originWidth=595&amp;originalType=binary&amp;ratio=1&amp;size=4244&amp;status=done&amp;style=none&amp;width=595" alt="image.png" loading="lazy"></p>
 <center>确定开启表分区功能</center>
+<figure data-type="image" tabindex="1"><img src="https://cdn.nlark.com/yuque/0/2021/png/12409566/1631069533458-ee0fdba9-61e0-4e17-a60c-e26bc3b1ea74.png?date=1631253343083" alt="image111.png" loading="lazy"></figure>
+<center>确定开启表分区功能</center>
 <pre><code class="language-sql">//在正常创建表语句下加PARTITION BY...
 CREATE TABLE `test_partition` (
 	`id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID',
@@ -116,7 +120,7 @@ PARTITION BY RANGE(id)
 	PARTITION p2 VALUES LESS THAN maxvalue
 );
 </code></pre>
-<figure data-type="image" tabindex="1"><img src="https://cdn.nlark.com/yuque/0/2021/png/12409566/1631178512053-68a1abd1-f058-431d-8728-de6881c84d3e.png#height=86&amp;id=ud51ba604&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=86&amp;originWidth=227&amp;originalType=binary&amp;ratio=1&amp;size=3097&amp;status=done&amp;style=none&amp;width=227" alt="image.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="2"><img src="https://cdn.nlark.com/yuque/0/2021/png/12409566/1631178512053-68a1abd1-f058-431d-8728-de6881c84d3e.png#height=86&amp;id=ud51ba604&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=86&amp;originWidth=227&amp;originalType=binary&amp;ratio=1&amp;size=3097&amp;status=done&amp;style=none&amp;width=227" alt="image.png" loading="lazy"></figure>
 <center>数据表的数据被拆分成几个ibd文件，frm文件是表格式文件</center>
 <h3 id="导入数据">导入数据</h3>
 <pre><code class="language-sql">INSERT INTO test_partition SELECT id,no FROM test WHERE id &lt;= 100;
@@ -277,7 +281,7 @@ VALUES IN ((..., ...), (..., ...))
 <p>使用分区字段做查询时，只查所在分区，否则查询所有分区<br>
 <img src="https://cdn.nlark.com/yuque/0/2021/png/12409566/1631178721959-ad527730-82f6-4147-ac6c-1e123c61e20c.png#height=148&amp;id=uae18aa56&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=148&amp;originWidth=1109&amp;originalType=binary&amp;ratio=1&amp;size=17720&amp;status=done&amp;style=none&amp;width=1109" alt="image.png" loading="lazy"></p>
 <center>分区字段查询</center>
-<figure data-type="image" tabindex="2"><img src="https://cdn.nlark.com/yuque/0/2021/png/12409566/1631178815743-4a126d8b-680e-4873-9cb0-cd9728386c3b.png#height=154&amp;id=ubd3e5dfa&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=154&amp;originWidth=1125&amp;originalType=binary&amp;ratio=1&amp;size=18194&amp;status=done&amp;style=none&amp;width=1125" alt="image.png" loading="lazy"></figure>
+<figure data-type="image" tabindex="3"><img src="https://cdn.nlark.com/yuque/0/2021/png/12409566/1631178815743-4a126d8b-680e-4873-9cb0-cd9728386c3b.png#height=154&amp;id=ubd3e5dfa&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=154&amp;originWidth=1125&amp;originalType=binary&amp;ratio=1&amp;size=18194&amp;status=done&amp;style=none&amp;width=1125" alt="image.png" loading="lazy"></figure>
 <center>普通字段查询</center>
 <h3 id="表分区的优点">表分区的优点</h3>
 <ol>
