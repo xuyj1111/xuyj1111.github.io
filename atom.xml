@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://xuyj1111.github.io</id>
     <title>小黑的猫砂盆</title>
-    <updated>2022-04-06T09:37:23.760Z</updated>
+    <updated>2022-04-06T09:40:51.819Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://xuyj1111.github.io"/>
     <link rel="self" href="https://xuyj1111.github.io/atom.xml"/>
@@ -16,41 +16,6 @@
         <link href="https://xuyj1111.github.io/O9XdzloyU/">
         </link>
         <updated>2022-04-06T09:34:12.000Z</updated>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[内存区域]]></title>
-        <id>https://xuyj1111.github.io/ink90w7Ex/</id>
-        <link href="https://xuyj1111.github.io/ink90w7Ex/">
-        </link>
-        <updated>2021-09-30T06:23:59.000Z</updated>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[JVM基础]]></title>
-        <id>https://xuyj1111.github.io/PQWLu1LeM/</id>
-        <link href="https://xuyj1111.github.io/PQWLu1LeM/">
-        </link>
-        <updated>2021-09-30T03:36:50.000Z</updated>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[类加载器]]></title>
-        <id>https://xuyj1111.github.io/7AkNF_rLN/</id>
-        <link href="https://xuyj1111.github.io/7AkNF_rLN/">
-        </link>
-        <updated>2021-09-30T03:31:28.000Z</updated>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Java代码执行流程]]></title>
-        <id>https://xuyj1111.github.io/6mpvn2Ii_/</id>
-        <link href="https://xuyj1111.github.io/6mpvn2Ii_/">
-        </link>
-        <updated>2021-09-30T03:17:16.000Z</updated>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[什么是ZooKeeper]]></title>
-        <id>https://xuyj1111.github.io/n4cGjKPut/</id>
-        <link href="https://xuyj1111.github.io/n4cGjKPut/">
-        </link>
-        <updated>2021-09-13T06:56:52.000Z</updated>
     </entry>
     <entry>
         <title type="html"><![CDATA[创建表分区]]></title>
