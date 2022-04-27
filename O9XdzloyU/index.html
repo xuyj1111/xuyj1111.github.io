@@ -3,7 +3,7 @@
     <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Redis的配置和使用 | 小黑的猫砂盆</title>
-<link rel="shortcut icon" href="https://xuyj1111.github.io/favicon.ico?v=1651030559350">
+<link rel="shortcut icon" href="https://xuyj1111.github.io/favicon.ico?v=1651041505811">
 <link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
 <link rel="stylesheet" href="https://xuyj1111.github.io/styles/main.css">
 <link rel="alternate" type="application/atom+xml" title="Redis的配置和使用 | 小黑的猫砂盆 - Atom Feed" href="https://xuyj1111.github.io/atom.xml">
@@ -11,10 +11,11 @@
 
 
 
-    <meta name="description" content="
-目标：配置 RedisTemplate
+    <meta name="description" content="引入 spring-data-redis 依赖
+implementation &quot;org.springframework.data:spring-data-redis&quot;
 
-引入 spring-data-redis 依赖，以下配置以此依赖为基础implementation &quot;org.springframework.data:spring-data-redis..." />
+官网说明文档
+与 Redis 连接，有多种连接器。..." />
     <meta name="keywords" content="Redis" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
     <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
@@ -24,7 +25,7 @@
       <div class="main-content">
         <div class="site-header">
   <a href="https://xuyj1111.github.io">
-  <img class="avatar" src="https://xuyj1111.github.io/images/avatar.png?v=1651030559350" alt="">
+  <img class="avatar" src="https://xuyj1111.github.io/images/avatar.png?v=1651041505811" alt="">
   </a>
   <h1 class="site-title">
     小黑的猫砂盆
@@ -96,20 +97,21 @@
             
             <div class="post-content-wrapper">
               <div class="post-content">
-                <blockquote>
-<p>目标：配置 RedisTemplate</p>
-</blockquote>
-<p>引入 <em>spring-data-redis</em> 依赖，以下配置以此依赖为基础<br /><code>implementation &quot;org.springframework.data:spring-data-redis&quot;</code><br />官网说明文档：<a href="https://docs.spring.io/spring-data/redis/docs/1.4.0.M1/reference/htmlsingle/">https://docs.spring.io/spring-data/redis/docs/1.4.0.M1/reference/htmlsingle/</a></p>
-<p>与 Redis 连接，有多种连接器。根据官网文档介绍，有以下几种：</p>
+                <p>引入 <em>spring-data-redis</em> 依赖<br>
+<code>implementation &quot;org.springframework.data:spring-data-redis&quot;</code></p>
+<blockquote>
+<p><a href="https://docs.spring.io/spring-data/redis/docs/1.4.0.M1/reference/htmlsingle/">官网说明文档</a><br>
+与 Redis 连接，有多种连接器。根据官网文档介绍，有以下几种：</p>
 <ul>
 <li>Jedis connector</li>
 <li>JRedis connector</li>
 <li>SRP connector</li>
 <li>Lettuce connector</li>
 </ul>
+</blockquote>
 <p>以下只介绍 Jedis，但推荐使用 Lettuce，因为 Jedis 线程不安全，Lettuce 线程安全.</p>
 <blockquote>
-<p>Jedis 和 Jedis Pool 的具体介绍请参考<a href="https://zhuanlan.zhihu.com/p/84481313">https://zhuanlan.zhihu.com/p/84481313</a></p>
+<p>Jedis 和 Jedis Pool 的具体介绍请参考<a href="https://zhuanlan.zhihu.com/p/84481313">Jedis和Jedis连接池的基本使用和配置</a></p>
 </blockquote>
 <h2 id="springboot-自动配置连接-jedis">SpringBoot 自动配置连接 Jedis</h2>
 <h3 id="引入依赖">引入依赖</h3>
@@ -129,12 +131,13 @@
         max-idle: 8
         min-idle: 0
 </code></pre>
-<p><em>ps：新版本的jedis中将maxActive改成了maxTotal , MaxWait改成了MaxWaitMillis</em></p>
+<p>p.s. 新版本的 jedis 中将 maxActive 改成了 maxTotal，MaxWait 改成了 MaxWaitMillis</p>
 <h3 id="自动装配">自动装配</h3>
 <p>SpringBoot 会自动配置 Redis，所以只需要的地方使用 RedisTemplate</p>
 <pre><code class="language-java">@Autowired
 private RedisTemplate&lt;String, String&gt; redisTemplate;
 </code></pre>
+<hr>
 <h2 id="自定义配置连接-jedis">自定义配置连接 Jedis</h2>
 <p>若需要将 redis 某功能封装成 framework，并可作为第三方包引入使用，则需要自行配置</p>
 <h3 id="排除自动装配">排除自动装配</h3>
