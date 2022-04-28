@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://xuyj1111.github.io</id>
     <title>小黑的猫砂盆</title>
-    <updated>2022-04-27T09:43:38.109Z</updated>
+    <updated>2022-04-28T07:06:28.542Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://xuyj1111.github.io"/>
     <link rel="self" href="https://xuyj1111.github.io/atom.xml"/>
@@ -10,6 +10,13 @@
     <logo>https://xuyj1111.github.io/images/avatar.png</logo>
     <icon>https://xuyj1111.github.io/favicon.ico</icon>
     <rights>All rights reserved 2022, 小黑的猫砂盆</rights>
+    <entry>
+        <title type="html"><![CDATA[【Java】final关键字]]></title>
+        <id>https://xuyj1111.github.io/zriZx5dsI/</id>
+        <link href="https://xuyj1111.github.io/zriZx5dsI/">
+        </link>
+        <updated>2022-04-28T06:33:32.000Z</updated>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Mockito的使用]]></title>
         <id>https://xuyj1111.github.io/iPGLGnAWB/</id>
