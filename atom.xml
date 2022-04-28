@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://xuyj1111.github.io</id>
     <title>小黑的猫砂盆</title>
-    <updated>2022-04-28T07:54:10.059Z</updated>
+    <updated>2022-04-28T08:19:15.285Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://xuyj1111.github.io"/>
     <link rel="self" href="https://xuyj1111.github.io/atom.xml"/>
@@ -10,6 +10,13 @@
     <logo>https://xuyj1111.github.io/images/avatar.png</logo>
     <icon>https://xuyj1111.github.io/favicon.ico</icon>
     <rights>All rights reserved 2022, 小黑的猫砂盆</rights>
+    <entry>
+        <title type="html"><![CDATA[【转载】雪花算法与时间回拨]]></title>
+        <id>https://xuyj1111.github.io/812AbNpSc/</id>
+        <link href="https://xuyj1111.github.io/812AbNpSc/">
+        </link>
+        <updated>2022-04-28T08:16:02.000Z</updated>
+    </entry>
     <entry>
         <title type="html"><![CDATA[【Java】TimeUnit的使用]]></title>
         <id>https://xuyj1111.github.io/wmN375vyy/</id>
