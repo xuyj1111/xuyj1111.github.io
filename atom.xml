@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://xuyj1111.github.io</id>
     <title>小黑的猫砂盆</title>
-    <updated>2022-05-09T07:13:44.089Z</updated>
+    <updated>2022-05-09T09:16:41.945Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://xuyj1111.github.io"/>
     <link rel="self" href="https://xuyj1111.github.io/atom.xml"/>
@@ -10,6 +10,13 @@
     <logo>https://xuyj1111.github.io/images/avatar.png</logo>
     <icon>https://xuyj1111.github.io/favicon.ico</icon>
     <rights>All rights reserved 2022, 小黑的猫砂盆</rights>
+    <entry>
+        <title type="html"><![CDATA[ID生成服务总结]]></title>
+        <id>https://xuyj1111.github.io/2O8qOCjJF/</id>
+        <link href="https://xuyj1111.github.io/2O8qOCjJF/">
+        </link>
+        <updated>2022-05-09T08:14:22.000Z</updated>
+    </entry>
     <entry>
         <title type="html"><![CDATA[画线弹射——毕业设计]]></title>
         <id>https://xuyj1111.github.io/x_Q8iVmTg/</id>
@@ -72,12 +79,5 @@
         <link href="https://xuyj1111.github.io/ueAZWvrkp/">
         </link>
         <updated>2022-04-27T01:49:32.000Z</updated>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[【Java】Redis的配置和使用]]></title>
-        <id>https://xuyj1111.github.io/O9XdzloyU/</id>
-        <link href="https://xuyj1111.github.io/O9XdzloyU/">
-        </link>
-        <updated>2022-04-06T09:34:12.000Z</updated>
     </entry>
 </feed>
