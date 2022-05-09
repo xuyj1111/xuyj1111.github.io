@@ -3,7 +3,7 @@
     <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>【Java】使用@Valid或@Validated参数校验 | 小黑的猫砂盆</title>
-<link rel="shortcut icon" href="https://xuyj1111.github.io/favicon.ico?v=1651914826498">
+<link rel="shortcut icon" href="https://xuyj1111.github.io/favicon.ico?v=1652080421845">
 <link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
 <link rel="stylesheet" href="https://xuyj1111.github.io/styles/main.css">
 <link rel="alternate" type="application/atom+xml" title="【Java】使用@Valid或@Validated参数校验 | 小黑的猫砂盆 - Atom Feed" href="https://xuyj1111.github.io/atom.xml">
@@ -11,10 +11,13 @@
 
 
 
-    <meta name="description" content="
-占位
+    <meta name="description" content="介绍
 
-" />
+@Valid 和 @Validated都是用来参数校验的
+
+@Valid：是使用 Hibernate 校验时使用
+p.s. java的JSR303声明了@Valid这类接口，而Hibernate-validator对其进行了实现
+@..." />
     <meta name="keywords" content="原创,杂记" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
     <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
@@ -27,7 +30,7 @@
       <div class="main-content">
         <div class="site-header">
   <a href="https://xuyj1111.github.io">
-  <img class="avatar" src="https://xuyj1111.github.io/images/avatar.png?v=1651914826498" alt="">
+  <img class="avatar" src="https://xuyj1111.github.io/images/avatar.png?v=1652080421845" alt="">
   </a>
   <h1 class="site-title">
     小黑的猫砂盆
@@ -88,7 +91,7 @@
                 2022-05-07
               </span>
               <span>
-                1 min read
+                2 min read
               </span>
               
                 <a href="https://xuyj1111.github.io/WSbjWpIkN/" class="post-tag">
@@ -103,13 +106,94 @@
             
             <div class="post-content-wrapper">
               <div class="post-content">
-                <blockquote>
-<p>占位</p>
+                <h2 id="介绍">介绍</h2>
+<blockquote>
+<p>@Valid 和 @Validated都是用来参数校验的</p>
 </blockquote>
+<p><strong>@Valid</strong>：是使用 Hibernate 校验时使用<br>
+p.s. java的JSR303声明了@Valid这类接口，而Hibernate-validator对其进行了实现</p>
+<p><strong>@Validated</strong>：是用 Spring 校验时使用</p>
+<h2 id="两者的区别">两者的区别</h2>
+<p>@Valid：可以用在方法、构造函数、方法参数和成员属性上，支持嵌套校验，不支持分组功能</p>
+<p>@Validated：可以用在类型、方法和方法参数上。但是不能用在成员属性上，不支持嵌套校验，支持分组功能</p>
+<h2 id="校验注解">校验注解</h2>
+<figure data-type="image" tabindex="1"><img src="https://xuyj1111.github.io/post-images/1652063484415.png" alt="" loading="lazy"></figure>
+<h2 id="嵌套校验">嵌套校验</h2>
+<blockquote>
+<p>使用 @Valid</p>
+</blockquote>
+<pre><code>@PostMapping(&quot;/valid&quot;)
+public void testValid(@RequestBody @Valid TestDTO dto) {
+    System.out.println(&quot;dto: &quot; + dto);
+}
+</code></pre>
+<pre><code>@Data
+public class TestDTO {
+
+    @Min(10)
+    private Integer number;
+
+    /**
+     * @Description: @Valid 的嵌套校验
+     */
+    @Valid
+    private InnerDTO innerDTO;
+
+    @Data
+    public class InnerDTO {
+        @NotNull
+        private Long id;
+
+        @NotBlank
+        private String name;
+    }
+}
+</code></pre>
+<h2 id="分组校验">分组校验</h2>
+<blockquote>
+<p>使用 @Validated，此处的示例在<code>GroupInterface</code>中使用 @GroupSequence 注解，以此达到按照该注解中的组顺序依次校验，对未指定组的属性不校验</p>
+</blockquote>
+<ul>
+<li>若写成<code>@Validated({FirstGroupInterface.class})</code>，则表示只对<code>FirstGroupInterface</code>组的属性校验</li>
+<li>若写成<code>@Validated({FirstGroupInterface.class, SecordGroupInterface.class})</code>，则表示对多个组的属性校验，但是无序</li>
+</ul>
+<pre><code>@PostMapping(&quot;/validated&quot;)
+public void testValidated(@RequestBody @Validated({GroupInterface.class}) TestDTO dto) {
+    System.out.println(&quot;dto: &quot; + dto);
+}
+</code></pre>
+<pre><code>@Data
+public class TestDTO {
+    /**
+     * @Description: @Validated 的分组校验
+     */
+    @NotEmpty(groups={FirstGroupInterface.class})
+    private String id;
+    @NotEmpty(groups={SecordGroupInterface.class})
+    private String name;
+}
+</code></pre>
+<p>先校验<code>FirstGroupInterface</code>组，再校验<code>SecordGroupInterface</code>组</p>
+<pre><code>@GroupSequence({FirstGroupInterface.class, SecordGroupInterface.class})
+public interface GroupInterface {
+}
+</code></pre>
+<p><code>FirstGroupInterface</code>和<code>SecordGroupInterface</code>都是空接口</p>
 
               </div>
               <div class="toc-container">
-                
+                <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E4%BB%8B%E7%BB%8D">介绍</a></li>
+<li><a href="#%E4%B8%A4%E8%80%85%E7%9A%84%E5%8C%BA%E5%88%AB">两者的区别</a></li>
+<li><a href="#%E6%A0%A1%E9%AA%8C%E6%B3%A8%E8%A7%A3">校验注解</a></li>
+<li><a href="#%E5%B5%8C%E5%A5%97%E6%A0%A1%E9%AA%8C">嵌套校验</a></li>
+<li><a href="#%E5%88%86%E7%BB%84%E6%A0%A1%E9%AA%8C">分组校验</a></li>
+</ul>
+</li>
+</ul>
+
               </div>
             </div>
           </article>
