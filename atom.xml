@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <id>https://xuyj1111.github.io</id>
+    <title>洗衣机的博客</title>
+    <updated>2024-01-13T15:19:18.622Z</updated>
+    <generator>https://github.com/jpmonette/feed</generator>
+    <link rel="alternate" href="https://xuyj1111.github.io"/>
+    <link rel="self" href="https://xuyj1111.github.io/atom.xml"/>
+    <subtitle>【一名Java开发】slave👉https://www.cnblogs.com/xuyj1111/</subtitle>
+    <logo>https://xuyj1111.github.io/images/avatar.png</logo>
+    <icon>https://xuyj1111.github.io/favicon.ico</icon>
+    <rights>All rights reserved 2024, 洗衣机的博客</rights>
+    <entry>
+        <title type="html"><![CDATA[【Java】SpringBatch 纯纯的笔记]]></title>
+        <id>https://xuyj1111.github.io/s4LoWAgBB/</id>
+        <link href="https://xuyj1111.github.io/s4LoWAgBB/">
+        </link>
+        <updated>2023-03-02T02:00:33.000Z</updated>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[【Java】三种 ThreadLocal 的简单使用]]></title>
+        <id>https://xuyj1111.github.io/Kbdumv2S0/</id>
+        <link href="https://xuyj1111.github.io/Kbdumv2S0/">
+        </link>
+        <updated>2023-02-19T15:33:11.000Z</updated>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[【转载】玩转Spring中强大的spel表达式！]]></title>
+        <id>https://xuyj1111.github.io/HSVGIODQf/</id>
+        <link href="https://xuyj1111.github.io/HSVGIODQf/">
+        </link>
+        <updated>2023-02-16T08:45:50.000Z</updated>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[【转载】jackson 的几个注解]]></title>
+        <id>https://xuyj1111.github.io/Kj_kWSjDE/</id>
+        <link href="https://xuyj1111.github.io/Kj_kWSjDE/">
+        </link>
+        <updated>2023-02-15T02:26:58.000Z</updated>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[【Java】HttpMessageConverters 类]]></title>
+        <id>https://xuyj1111.github.io/nZRRBCWiX/</id>
+        <link href="https://xuyj1111.github.io/nZRRBCWiX/">
+        </link>
+        <updated>2023-02-14T06:32:10.000Z</updated>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[【转载】Mysql的4种事务特性、4种隔离级别、7种传播行为]]></title>
+        <id>https://xuyj1111.github.io/bJ4DMMqiI/</id>
+        <link href="https://xuyj1111.github.io/bJ4DMMqiI/">
+        </link>
+        <updated>2023-02-12T07:26:47.000Z</updated>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[【Java】@Transactional注解]]></title>
+        <id>https://xuyj1111.github.io/q62qJQE0u/</id>
+        <link href="https://xuyj1111.github.io/q62qJQE0u/">
+        </link>
+        <updated>2023-02-12T06:56:34.000Z</updated>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[【MySQL】各种锁的介绍]]></title>
+        <id>https://xuyj1111.github.io/jkZZ_73nV/</id>
+        <link href="https://xuyj1111.github.io/jkZZ_73nV/">
+        </link>
+        <updated>2023-02-10T07:12:17.000Z</updated>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[【Java】jdk 中的可重入锁]]></title>
+        <id>https://xuyj1111.github.io/DoVZDpDB6/</id>
+        <link href="https://xuyj1111.github.io/DoVZDpDB6/">
+        </link>
+        <updated>2023-02-09T06:25:27.000Z</updated>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[【MySQL】JSON 数据类型]]></title>
+        <id>https://xuyj1111.github.io/vA57Xu34i/</id>
+        <link href="https://xuyj1111.github.io/vA57Xu34i/">
+        </link>
+        <updated>2023-02-08T06:39:28.000Z</updated>
+    </entry>
+</feed>

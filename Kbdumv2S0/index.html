@@ -1,0 +1,363 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>【Java】三种 ThreadLocal 的简单使用 | 洗衣机的博客</title>
+<link rel="shortcut icon" href="https://xuyj1111.github.io/favicon.ico?v=1705159156297">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://xuyj1111.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="【Java】三种 ThreadLocal 的简单使用 | 洗衣机的博客 - Atom Feed" href="https://xuyj1111.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+
+    <meta name="description" content="三种 ThreadLocal 分别是：
+
+jdk 提供的ThreadLocal
+jdk 提供的InheritableThreadLocal
+阿里巴巴提供的TransmittableThreadLocal
+
+文章中 demo 的环境代码👇
+..." />
+    <meta name="keywords" content="Java,原创,使用手册" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
+ <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://xuyj1111.github.io">
+  <img class="avatar" src="https://xuyj1111.github.io/images/avatar.png?v=1705159156297" alt="">
+  </a>
+  <h1 class="site-title">
+    洗衣机的博客
+  </h1>
+  <p class="site-description">
+    【一名Java开发】slave👉https://www.cnblogs.com/xuyj1111/
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="https://xuyj1111.github.io" class="menu">
+          主页
+        </a>
+      
+    
+      
+        <a href="https://xuyj1111.github.io/archives" class="menu">
+          文章
+        </a>
+      
+    
+      
+        <a href="https://xuyj1111.github.io/tags" class="menu">
+          标签
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/xuyj1111" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+  <form id="gridea-search-form" action="https://xuyj1111.github.io/search/">
+    <input name="q" />
+  </form>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              【Java】三种 ThreadLocal 的简单使用
+            </h2>
+            <div class="post-info">
+              <span>
+                2023-02-19
+              </span>
+              <span>
+                3 min read
+              </span>
+              
+                <a href="https://xuyj1111.github.io/SOje8Joqr/" class="post-tag">
+                  # Java
+                </a>
+              
+                <a href="https://xuyj1111.github.io/WSbjWpIkN/" class="post-tag">
+                  # 原创
+                </a>
+              
+                <a href="https://xuyj1111.github.io/0shj16Tx0/" class="post-tag">
+                  # 使用手册
+                </a>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content">
+                <p>三种 ThreadLocal 分别是：</p>
+<ol>
+<li>jdk 提供的<code>ThreadLocal</code></li>
+<li>jdk 提供的<code>InheritableThreadLocal</code></li>
+<li>阿里巴巴提供的<code>TransmittableThreadLocal</code></li>
+</ol>
+<p>文章中 demo 的环境代码👇</p>
+<pre><code>private ThreadLocal&lt;Object&gt; t = new ThreadLocal&lt;&gt;();
+private ThreadLocal&lt;Object&gt; it = new InheritableThreadLocal&lt;&gt;();
+private ThreadLocal tt = new TransmittableThreadLocal();
+
+private void printForThreadLocal() {
+    System.out.println(Thread.currentThread().getName() + &quot;:&quot; + t.get());
+}
+
+private void printForInheritableThreadLocal() {
+    System.out.println(Thread.currentThread().getName() + &quot;:&quot; + it.get());
+}
+
+private void printForTransmittableThreadLocal() {
+    System.out.println(Thread.currentThread().getName() + &quot;:&quot; + tt.get());
+}
+
+/**
+    * @Description: 创建线程池
+    */
+private Executor createThreadPool() {
+    ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+    executor.setCorePoolSize(1);
+    executor.setMaxPoolSize(10);
+    executor.setKeepAliveSeconds(60);
+    executor.setQueueCapacity(60);
+    executor.setThreadNamePrefix(&quot;myThreadPool: &quot;);
+    executor.setTaskDecorator(new MyTaskDecorator());
+    executor.initialize();
+    return executor;
+}
+</code></pre>
+<h2 id="threadlocal">ThreadLocal</h2>
+<p>线程变量，仅供当前线程使用，不存在多线程分享变量问题<br>
+缺点：父子线程不可传递</p>
+<p>三个方法：</p>
+<ol>
+<li><code>void set(Object value)</code>填充变量</li>
+<li><code>T get()</code>获取变量</li>
+<li><code>void remove()</code>删除变量【当线程结束后，线程变量也会被回收，显示的调用<code>remove</code>并不是必须的操作，但可以加快内存回收的速度】</li>
+</ol>
+<p>最简单的 ThreadLocal 用法👇<br>
+证明线程之间不共享 ThreadLocal 中的值</p>
+<pre><code>@Test
+public void test01ThreadLocal() {
+    t.set(1);
+
+    new Thread(() -&gt; printForThreadLocal()).start();
+
+    printForThreadLocal();
+}
+</code></pre>
+<h2 id="inheritablethreadlocal">InheritableThreadLocal</h2>
+<p>是 ThreadLocal 的子类，实现了父子线程共享变量问题<br>
+缺点：在使用线程池时，父子线程共享变量仍有问题</p>
+<p>实现父子线程共享变量👇</p>
+<pre><code>@Test
+public void test01InheritableThreadLocal() {
+    it.set(1);
+
+    new Thread(() -&gt; printForInheritableThreadLocal()).start();
+
+    printForInheritableThreadLocal();
+}
+</code></pre>
+<p>基本数据类型不可证明父子线程指向同一对象👇</p>
+<pre><code>@SneakyThrows
+@Test
+public void test02InheritableThreadLocal() {
+    it.set(1);
+    printForInheritableThreadLocal();
+
+    new Thread(() -&gt; {
+        printForInheritableThreadLocal();
+        it.set(2);
+        printForInheritableThreadLocal();
+    }).start();
+
+    Thread.sleep(500);
+    printForInheritableThreadLocal();
+}
+</code></pre>
+<p>InheritableThreadLocal中子父线程中指向同一对象👇</p>
+<pre><code>@SneakyThrows
+@Test
+public void test03InheritableThreadLocal() {
+    TestDTO testDTO = new TestDTO();
+    testDTO.setName(&quot;张三&quot;);
+    testDTO.setAge(20);
+    it.set(testDTO);
+    printForInheritableThreadLocal();
+
+    new Thread(() -&gt; {
+        printForInheritableThreadLocal();
+        TestDTO pp = (TestDTO) it.get();
+        pp.setName(&quot;李四&quot;);
+        it.set(pp);
+        printForInheritableThreadLocal();
+    }).start();
+
+    Thread.sleep(500);
+    printForInheritableThreadLocal();
+}
+</code></pre>
+<p>线程池在init新的线程时，会将主线程的InheritableThreadLocal传递给子线程👇</p>
+<pre><code>@SneakyThrows
+@Test
+public void test04InheritableThreadLocal() {
+    it.set(1);
+    printForInheritableThreadLocal();
+
+    Executor threadPool = createThreadPool();
+    threadPool.execute(() -&gt; printForInheritableThreadLocal());
+
+    printForInheritableThreadLocal();
+}
+</code></pre>
+<p>但如果在init子线程时，主线程InheritableThreadLocal中值为null，子线程也是null； 之后主线程被赋了新值，已经被init的子线程再次被调用时，主线程不会赋值给子线程（当前线程池大小为1，则可实现二次调用创建的子线程）👇</p>
+<pre><code>@SneakyThrows
+@Test
+public void test05InheritableThreadLocal() {
+    Executor threadPool = createThreadPool();
+    threadPool.execute(() -&gt; printForInheritableThreadLocal());
+
+    it.set(1);
+
+    threadPool.execute(() -&gt; printForInheritableThreadLocal());
+
+    printForInheritableThreadLocal();
+}
+</code></pre>
+<h2 id="transmittablethreadlocal">TransmittableThreadLocal</h2>
+<p>解决了InheritableThreadLocal在线程池时父子线程传递的问题👇</p>
+<pre><code>@Test
+public void test01TransmittableThreadLocal() {
+    Executor threadPool = TtlExecutors.getTtlExecutor(createThreadPool());
+
+    threadPool.execute(() -&gt; printForTransmittableThreadLocal());
+
+    tt.set(1);
+
+    threadPool.execute(() -&gt; printForTransmittableThreadLocal());
+
+    printForTransmittableThreadLocal();
+}
+</code></pre>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#threadlocal">ThreadLocal</a></li>
+<li><a href="#inheritablethreadlocal">InheritableThreadLocal</a></li>
+<li><a href="#transmittablethreadlocal">TransmittableThreadLocal</a></li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://xuyj1111.github.io/HSVGIODQf/">
+              <h3 class="post-title">
+                【转载】玩转Spring中强大的spel表达式！
+              </h3>
+            </a>
+          </div>
+        
+
+        
+
+        <div class="site-footer">
+  
+  <a class="rss" href="https://xuyj1111.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+
+
+
+    <div id="vcomments"></div>
+    <script>
+        new Valine({
+            el: '#vcomments',
+            appId: 'ot2L3hKJVxTAXnr1VQt7wm70-gzGzoHsz',
+            appKey: 'BjaYGo2m6zV3mCvxGLGsDP5V'
+        })
+    </script>
+
+
+
+  </body>
+
+</html>

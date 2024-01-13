@@ -1,0 +1,266 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>【MySQL】开启mysql的binlog功能 | 洗衣机的博客</title>
+<link rel="shortcut icon" href="https://xuyj1111.github.io/favicon.ico?v=1705159156297">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://xuyj1111.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="【MySQL】开启mysql的binlog功能 | 洗衣机的博客 - Atom Feed" href="https://xuyj1111.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+
+    <meta name="description" content="
+mac环境
+
+
+
+输入命令locate my.cnf，查找mysql的配置文件，并在[mysqld]下写入binlog配置
+
+
+
+在系统偏好设置中关闭mysql服务
+
+
+
+问题发生：按理说修改了配置文件，重启mysql服务端，即可配置生效..." />
+    <meta name="keywords" content="原创,MySQL" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
+ <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://xuyj1111.github.io">
+  <img class="avatar" src="https://xuyj1111.github.io/images/avatar.png?v=1705159156297" alt="">
+  </a>
+  <h1 class="site-title">
+    洗衣机的博客
+  </h1>
+  <p class="site-description">
+    【一名Java开发】slave👉https://www.cnblogs.com/xuyj1111/
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="https://xuyj1111.github.io" class="menu">
+          主页
+        </a>
+      
+    
+      
+        <a href="https://xuyj1111.github.io/archives" class="menu">
+          文章
+        </a>
+      
+    
+      
+        <a href="https://xuyj1111.github.io/tags" class="menu">
+          标签
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/xuyj1111" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+  <form id="gridea-search-form" action="https://xuyj1111.github.io/search/">
+    <input name="q" />
+  </form>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              【MySQL】开启mysql的binlog功能
+            </h2>
+            <div class="post-info">
+              <span>
+                2022-08-16
+              </span>
+              <span>
+                3 min read
+              </span>
+              
+                <a href="https://xuyj1111.github.io/WSbjWpIkN/" class="post-tag">
+                  # 原创
+                </a>
+              
+                <a href="https://xuyj1111.github.io/eng41sp6q/" class="post-tag">
+                  # MySQL
+                </a>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content">
+                <blockquote>
+<p>mac环境</p>
+</blockquote>
+<ol>
+<li>
+<p>输入命令<code>locate my.cnf</code>，查找mysql的配置文件，并在<code>[mysqld]</code>下写入binlog配置<br>
+<img src="https://xuyj1111.github.io/post-images/1660613586679.png" alt="" loading="lazy"></p>
+</li>
+<li>
+<p>在<u>系统偏好设置</u>中关闭mysql服务<br>
+<img src="https://xuyj1111.github.io/post-images/1660613608128.png" alt="" loading="lazy"></p>
+</li>
+</ol>
+<p>问题发生：按理说修改了配置文件，重启mysql服务端，即可配置生效。但是mysql启动失败<br>
+排查问题：</p>
+<ol>
+<li>
+<p>回退到能启动mysql状态，在客户端执行sql<code>show variables like 'log_error'</code>，查找错误日志文件路径（该文件记录了mysql启动和关闭的情况），得到错误日志<code>mysqld: File '/usr/local/mysql/binlog/mysql-bin.index' not found (Errcode: 13 - Permission denied)</code></p>
+</li>
+<li>
+<p>根据错误日志判断为权限问题，原因为<u>系统偏好设置</u>中的启动默认为&quot;_mysql&quot;用户，而mysql的大部分文件的权限仅700。在开启binlog服务后，涉及到&quot;_mysql&quot;用户权限不够的文件<br>
+<img src="https://xuyj1111.github.io/post-images/1660613620836.png" alt="" loading="lazy"></p>
+</li>
+<li>
+<p>关闭mysql服务，按上文在my.cnf文件中开启binlog功能，然后在mysql的bin目录下执行命令<code>sudo mysqld --user=root </code>  （提前建立好<code>log_bin</code>和<code>log_bin_index</code>对应的文件夹和文件，权限设置为755，用户用户组为root:_mysql）</p>
+</li>
+</ol>
+<p><strong>到此为手动开启mysql服务</strong><br>
+但是<u>系统偏好设置</u>中开启或关闭mysql无法使用，并且失去开机自启动功能</p>
+<p>修改<u>系统偏好设置</u>mysql对应的执行文件：</p>
+<ol>
+<li>
+<p><code>/Library/LaunchDaemons/com.oracle.oss.mysql.mysqld.plist</code>（<code>/Library/LaunchDaemons</code>该文件夹中为系统启动时运行文件）</p>
+</li>
+<li>
+<p>.plist文件用vim打开乱码，可通过右键-&gt;快速查看 来查看内容<br>
+<img src="https://xuyj1111.github.io/post-images/1660613651056.png" alt="" loading="lazy"></p>
+</li>
+<li>
+<p>修改这两处为&quot;root&quot;<br>
+<img src="https://xuyj1111.github.io/post-images/1660613657196.png" alt="" loading="lazy"></p>
+</li>
+</ol>
+<p>修改方式：<br>
+​	一、python（<code>pip install biplist</code>提前安装biplist）</p>
+<pre><code class="language-python">from biplist import *
+file='com.oracle.oss.mysql.mysqld.plist'
+plist=readPlist(file)
+plist['ProgramArguments']=['/usr/local/mysql/bin/mysqld', '--user=root', '--basedir=/usr/local/mysql', '--datadir=/usr/local/mysql/data', '--plugin-dir=/usr/local/mysql/lib/plugin', '--log-error=/usr/local/mysql/data/mysqld.local.err', '--pid-file=/usr/local/mysql/data/mysqld.local.pid', '--keyring-file-data=/usr/local/mysql/keyring/keyring', '--early-plugin-load=keyring_file=keyring_file.so']
+plist['UserName']='root'
+writePlist(plist, file)
+# 下面文章中使用 writePlist(plist, plist_path,binary=False) 来解决中文乱码问题
+# https://www.jianshu.com/p/24e5d53b21aa
+</code></pre>
+<p>​	二、defaults命令：mac自带命令，可读取、修改plist文件</p>
+<p>注意⚠️：文件从原路径拷贝到其他路径修改，文件的用户和用户组会自动修改，覆盖原路径的文件后需要执行<code>sudo chown -R root:wheel com.oracle.oss.mysql.mysqld.plist </code></p>
+<ol start="4">
+<li><code>sudo plutil -lint com.oracle.oss.mysql.mysqld.plist   </code> 检查语法</li>
+<li><code>sudo launchctl load -w com.oracle.oss.mysql.mysqld.plist </code>加载（必须）</li>
+</ol>
+<p><strong>到此修改完成</strong>，通过sql<code>show variables like 'log_bin'</code>查看是否开启</p>
+<p>p.s. 在成功开启binlog功能后，每次启动mysql就会生成一个binlog文件。若<code>log-bin=/usr/local/mysql/binlog</code>，则会生成<code>/usr/local/mysql/binlog.000001</code>文件（后缀数字会递增）。当修改<code>log-bin</code>路径时，需要考虑到binlog文件的迁移，不然启动mysql会报错</p>
+
+              </div>
+              <div class="toc-container">
+                
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://xuyj1111.github.io/LObGAhooa/">
+              <h3 class="post-title">
+                Z 字形变换
+              </h3>
+            </a>
+          </div>
+        
+
+        
+
+        <div class="site-footer">
+  
+  <a class="rss" href="https://xuyj1111.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+
+
+
+    <div id="vcomments"></div>
+    <script>
+        new Valine({
+            el: '#vcomments',
+            appId: 'ot2L3hKJVxTAXnr1VQt7wm70-gzGzoHsz',
+            appKey: 'BjaYGo2m6zV3mCvxGLGsDP5V'
+        })
+    </script>
+
+
+
+  </body>
+
+</html>

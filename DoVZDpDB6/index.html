@@ -1,0 +1,342 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>【Java】jdk 中的可重入锁 | 洗衣机的博客</title>
+<link rel="shortcut icon" href="https://xuyj1111.github.io/favicon.ico?v=1705159156297">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://xuyj1111.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="【Java】jdk 中的可重入锁 | 洗衣机的博客 - Atom Feed" href="https://xuyj1111.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+
+    <meta name="description" content="
+jdk 中的可重入锁有synchronized和ReentrantLock
+
+可重入锁，也称为递归锁。一个持有锁的线程，在释放锁之前，如果再次访问了该同步锁的其他方法，这个线程不需要再次竞争锁，只需要记录重入次数。重入锁的设计目的是为了解..." />
+    <meta name="keywords" content="Java,原创" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
+ <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://xuyj1111.github.io">
+  <img class="avatar" src="https://xuyj1111.github.io/images/avatar.png?v=1705159156297" alt="">
+  </a>
+  <h1 class="site-title">
+    洗衣机的博客
+  </h1>
+  <p class="site-description">
+    【一名Java开发】slave👉https://www.cnblogs.com/xuyj1111/
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="https://xuyj1111.github.io" class="menu">
+          主页
+        </a>
+      
+    
+      
+        <a href="https://xuyj1111.github.io/archives" class="menu">
+          文章
+        </a>
+      
+    
+      
+        <a href="https://xuyj1111.github.io/tags" class="menu">
+          标签
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/xuyj1111" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+  <form id="gridea-search-form" action="https://xuyj1111.github.io/search/">
+    <input name="q" />
+  </form>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              【Java】jdk 中的可重入锁
+            </h2>
+            <div class="post-info">
+              <span>
+                2023-02-09
+              </span>
+              <span>
+                4 min read
+              </span>
+              
+                <a href="https://xuyj1111.github.io/SOje8Joqr/" class="post-tag">
+                  # Java
+                </a>
+              
+                <a href="https://xuyj1111.github.io/WSbjWpIkN/" class="post-tag">
+                  # 原创
+                </a>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content">
+                <blockquote>
+<p>jdk 中的可重入锁有<code>synchronized</code>和<code>ReentrantLock</code></p>
+</blockquote>
+<p>可重入锁，也称为递归锁。一个持有锁的线程，在释放锁之前，如果再次访问了该同步锁的其他方法，这个线程不需要再次竞争锁，只需要记录重入次数。重入锁的设计目的是为了解决死锁的问题<br>
+p.s. 以 synchronized 举例，若一个 synchronized 方法1 调用 synchronized 方法2，两方法的锁都是同一个，则某线程执行方法1时，会一并执行方法2，并不会因为方法1拿了锁，方法2没有而不执行</p>
+<h2 id="synchronized">synchronized</h2>
+<p>synchronized 有四种用法：</p>
+<ul>
+<li>修饰实例方法</li>
+<li>修饰静态方法</li>
+<li>修饰实例方法的代码块</li>
+<li>修饰静态方法的代码块</li>
+</ul>
+<p>synchronized 代码块的参数：this表示当前类对象（静态方法中不能用）；xxx.class表示类本身；还可以传入其他参数</p>
+<pre><code class="language-java">// 修饰实例方法：锁的是类对象
+public synchronized void printHello() {
+    System.out.println(&quot;hello&quot;);
+}
+
+// 修饰静态方法：锁的是类本身
+public static synchronized void printHi() {
+    System.out.println(&quot;hi&quot;);
+}
+
+// 修饰实例方法的代码块
+public void printHello() {
+    synchronized (this) {
+        System.out.println(&quot;hello&quot;);
+    }
+}
+
+// 修饰静态方法的代码块
+public static void printHi() {
+    synchronized (MultithreadDemo.class) {
+        System.out.println(&quot;hello&quot;);
+    }
+}
+</code></pre>
+<h2 id="reentrantlock">ReentrantLock</h2>
+<p>ReentrantLock 类实现了 Lock接口，除此以外还有其他实现类👇<br>
+<img src="https://xuyj1111.github.io/post-images/1675925889497.webp" alt="" loading="lazy"></p>
+<h3 id="常用方法">常用方法</h3>
+<ul>
+<li><code>lock()</code>：等待锁，无视中断</li>
+<li><code>lockInterruptibly()</code>：等待锁，考虑中断。中断会抛出 InterruptedException</li>
+<li><code>tryLock(long timeout, TimeUnit unit)</code>：指定时间等待锁，考虑中断。指定时间内获得锁返回 true，否则 false，中断会抛出 InterruptedException</li>
+<li><code>tryLock()</code>：直接获取锁。成功 true，否则 false，相当于<code>tryLock(0, TimeUnit unit)</code></li>
+<li><code>unlock()</code>：解锁。必须有持有锁的线程执行，否则抛出 IllegalMonitorStateException
+<ol>
+<li>为了避免死锁，<code>unlock()</code>最好放在 finally 中</li>
+<li>ReentrantLock 是可重入锁，因此一个线程可能多次加锁，但是<code>unlock()</code>执行一次解锁一次，因此<strong>加几次锁</strong>，就要<strong>解锁几次</strong></li>
+</ol>
+</li>
+</ul>
+<p>lock() 和 unlock() 的简单使用👇</p>
+<pre><code class="language-java">private Lock lock = new ReentrantLock();
+public void run () {
+    lock.lock();
+    try {
+        for (int i = 0; i &lt; 5; i++)
+            System.out.println(Thread.currentThread().getName() + &quot;:&quot; + i);
+    } finally {
+        lock.unlock();
+    }
+}
+</code></pre>
+<p>lock()、lockInterruptibly()、tryLock(long timeout, TimeUnit unit) 在线程中断情况下的表现👇</p>
+<pre><code class="language-java">ReentrantLock lock = new ReentrantLock();
+Thread t1 = new Thread(new Runnable() {
+    @Override
+    public void run() {
+        try {
+            lock.lock();
+            System.out.println(&quot;t1拿到锁&quot;);
+            Thread.sleep(1000L);
+            System.out.println(&quot;t1执行结束&quot;);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } finally {
+            lock.unlock();
+        }
+    }
+});
+Thread t2 = new Thread(new Runnable() {
+    @Override
+    public void run() {
+        boolean flag = true;
+        try {
+            System.out.println(&quot;t2等待拿锁&quot;);
+//                    ****************** start **********************
+//                    lock.lock();
+//                    lock.lockInterruptibly();
+            flag = lock.tryLock(200, TimeUnit.MILLISECONDS);
+//                    ****************** end **********************
+            if (flag) {
+                System.out.println(&quot;t2拿到锁&quot;);
+                System.out.println(&quot;t2执行结束&quot;);
+            } else {
+                System.out.println(&quot;指定时间内没有拿到锁，over&quot;);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (flag) {
+                lock.unlock();
+            }
+        }
+    }
+});
+t1.start();
+// 保证 t1 拿到锁
+Thread.sleep(10L);
+t2.start();
+// 保证 t2 在等待锁
+Thread.sleep(10L);
+// 若隐藏线程中断语句，t2 正常等待锁 或 指定时间内等待
+t2.interrupt();
+// 在测试类中需要保持运行一会
+Thread.sleep(2000L);
+</code></pre>
+<h3 id="其他方法">其他方法</h3>
+<ul>
+<li>int getHoldCount()：当前锁的加锁次数，如果无线程持有锁就返回0</li>
+<li>int getQueueLength()：当前竞争此锁队列长度</li>
+<li>int getWaitQueueLength(Condition condition)：当前锁等待队列长度。需要与Condition联合使用</li>
+<li>boolean isFair()：是否是公平锁</li>
+<li>boolean isLocked()：当前锁是否处于锁定状态</li>
+<li>boolean isHeldByCurrentThread()：当前锁是否被当前线程持有</li>
+<li>boolean hasWaiters(Condition condition)：当前condition是否有线程在等待，需要与Condition联合使用</li>
+<li>boolean hasQueuedThread(Thread thread)：目标线程是否在这个锁的竞争队列中</li>
+<li>boolean hasQueuedThreads()：是否有线程在当前锁的竞争队列中</li>
+</ul>
+<h2 id="两者区别">两者区别</h2>
+<figure data-type="image" tabindex="1"><img src="https://xuyj1111.github.io/post-images/1675925666450.png" alt="" loading="lazy"></figure>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#synchronized">synchronized</a></li>
+<li><a href="#reentrantlock">ReentrantLock</a>
+<ul>
+<li><a href="#%E5%B8%B8%E7%94%A8%E6%96%B9%E6%B3%95">常用方法</a></li>
+<li><a href="#%E5%85%B6%E4%BB%96%E6%96%B9%E6%B3%95">其他方法</a></li>
+</ul>
+</li>
+<li><a href="#%E4%B8%A4%E8%80%85%E5%8C%BA%E5%88%AB">两者区别</a></li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://xuyj1111.github.io/vA57Xu34i/">
+              <h3 class="post-title">
+                【MySQL】JSON 数据类型
+              </h3>
+            </a>
+          </div>
+        
+
+        
+
+        <div class="site-footer">
+  
+  <a class="rss" href="https://xuyj1111.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+
+
+
+    <div id="vcomments"></div>
+    <script>
+        new Valine({
+            el: '#vcomments',
+            appId: 'ot2L3hKJVxTAXnr1VQt7wm70-gzGzoHsz',
+            appKey: 'BjaYGo2m6zV3mCvxGLGsDP5V'
+        })
+    </script>
+
+
+
+  </body>
+
+</html>

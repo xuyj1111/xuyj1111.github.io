@@ -1,0 +1,499 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>【Java】SpringBatch 纯纯的笔记 | 洗衣机的博客</title>
+<link rel="shortcut icon" href="https://xuyj1111.github.io/favicon.ico?v=1705159156297">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://xuyj1111.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="【Java】SpringBatch 纯纯的笔记 | 洗衣机的博客 - Atom Feed" href="https://xuyj1111.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+
+    <meta name="description" content="
+一个 Job 由多个 Step 组成
+Step 有两种实现方式：Tasklet和Read-Process-Write
+两种实现方式可以单独使用，也可以一起使用
+Spring Batch 提供了 skip 和 retry 机制
+
+
+使用 T..." />
+    <meta name="keywords" content="原创,使用手册" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
+ <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://xuyj1111.github.io">
+  <img class="avatar" src="https://xuyj1111.github.io/images/avatar.png?v=1705159156297" alt="">
+  </a>
+  <h1 class="site-title">
+    洗衣机的博客
+  </h1>
+  <p class="site-description">
+    【一名Java开发】slave👉https://www.cnblogs.com/xuyj1111/
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="https://xuyj1111.github.io" class="menu">
+          主页
+        </a>
+      
+    
+      
+        <a href="https://xuyj1111.github.io/archives" class="menu">
+          文章
+        </a>
+      
+    
+      
+        <a href="https://xuyj1111.github.io/tags" class="menu">
+          标签
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/xuyj1111" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+  <form id="gridea-search-form" action="https://xuyj1111.github.io/search/">
+    <input name="q" />
+  </form>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              【Java】SpringBatch 纯纯的笔记
+            </h2>
+            <div class="post-info">
+              <span>
+                2023-03-02
+              </span>
+              <span>
+                8 min read
+              </span>
+              
+                <a href="https://xuyj1111.github.io/WSbjWpIkN/" class="post-tag">
+                  # 原创
+                </a>
+              
+                <a href="https://xuyj1111.github.io/0shj16Tx0/" class="post-tag">
+                  # 使用手册
+                </a>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content">
+                <ul>
+<li>一个 Job 由多个 Step 组成</li>
+<li>Step 有两种实现方式：<code>Tasklet</code>和<code>Read-Process-Write</code></li>
+<li>两种实现方式可以单独使用，也可以一起使用</li>
+<li>Spring Batch 提供了 skip 和 retry 机制</li>
+</ul>
+<figure data-type="image" tabindex="1"><img src="https://xuyj1111.github.io/post-images/1677722470742.png" alt="" loading="lazy"></figure>
+<h2 id="使用-tasklet">使用 Tasklet</h2>
+<p>Tasklet 只会执行一次，实现<code>org.springframework.batch.core.step.tasklet.Tasklet</code>接口，在<code>execute</code>方法中编写逻辑<br>
+当 Tasklet 实现类返回<code>RepeatStatus.FINISHED</code>，Job 会执行下一个 Step</p>
+<pre><code class="language-java">@Configuration
+@EnableBatchProcessing
+public class MyJobConfiguration {
+
+    @Autowired
+    private JobBuilderFactory jobBuilderFactory;
+
+    @Autowired
+    private StepBuilderFactory stepBuilderFactory;
+
+    @Bean
+    public Step step1() {
+        return stepBuilderFactory.get(&quot;step1&quot;)
+                .tasklet((stepContribution, chunkContext) -&gt; {
+                    // Step1的逻辑
+                    return RepeatStatus.FINISHED;
+                }).build();
+    }
+
+    @Bean
+    public Step step2() {
+        return stepBuilderFactory.get(&quot;step2&quot;)
+                .tasklet((stepContribution, chunkContext) -&gt; {
+                    // Step2的逻辑
+                    return RepeatStatus.FINISHED;
+                }).build();
+    }
+
+    @Bean
+    public Step step3() {
+        return stepBuilderFactory.get(&quot;step3&quot;)
+                .tasklet((stepContribution, chunkContext) -&gt; {
+                    // Step3的逻辑
+                    return RepeatStatus.FINISHED;
+                }).build();
+    }
+
+    @Bean
+    public Job myJob() {
+        return jobBuilderFactory.get(&quot;myJob&quot;)
+                .start(step1())
+                .next(step2())
+                .next(step3())
+                .build();
+    }
+}
+</code></pre>
+<h2 id="使用-read-process-write">使用 Read-Process-Write</h2>
+<p>Read-Process-Write 会执行多次，<code>chunk(int chunkSize)</code>中的值表示一次 Read-Process-Write 的处理量<br>
+此次使用<code>FlatFileItemReader</code>读数据，<code>JpaItemWriter</code>写数据</p>
+<pre><code class="language-java">public class MessageProcessor implements ItemProcessor&lt;Message, Message&gt; {
+    @Override
+    public Message process(Message item) {
+        System.out.println(&quot;item: &quot; + item.toString());
+        return item;
+    }
+}
+public class MessageItemReadListener implements ItemReadListener&lt;Message&gt; {
+	//
+}
+public class MessageWriteListener implements ItemWriteListener&lt;Message&gt; {
+	//
+}
+public class MessageLineMapper implements LineMapper&lt;Message&gt; {
+    //
+}
+public class Message {
+    //
+}
+</code></pre>
+<pre><code class="language-java">public class MessageMigrationJobConfiguration {
+
+    private static final Integer CHUNK_SIZE = 4;
+    private static final String MESSAGE_FILE = &quot;src/main/resources/file/message.txt&quot;;
+    private static final Integer SKIP_LIMIT = 1;
+
+    @Autowired
+    private JobBuilderFactory jobBuilderFactory;
+
+    @Autowired
+    private StepBuilderFactory stepBuilderFactory;
+
+    @Autowired
+    private EntityManagerFactory entityManager;
+
+    /**
+     * @Description: 构建job
+     */
+    @Bean
+    public Job messageMigrationJob(@Qualifier(&quot;messageMigrationStep&quot;) Step messageMigrationStep) {
+        return jobBuilderFactory.get(&quot;messageMigrationJob&quot;)
+                .flow(messageMigrationStep)
+                .end()
+                .build();
+    }
+
+    /**
+     * @Description: 构建step
+     */
+    @Bean
+    public Step messageMigrationStep(@Qualifier(&quot;jsonMessageReader&quot;) FlatFileItemReader&lt;Message&gt; jsonMessageReader,
+                                     @Qualifier(&quot;messageProcessor&quot;) MessageProcessor messageProcessor,
+                                     @Qualifier(&quot;messageItemWriter&quot;) JpaItemWriter&lt;Message&gt; messageItemWriter) {
+        return stepBuilderFactory.get(&quot;messageMigrationStep&quot;)
+                .&lt;Message, Message&gt;chunk(CHUNK_SIZE)
+                .reader(jsonMessageReader).faultTolerant().skip(JsonParseException.class).skipLimit(SKIP_LIMIT)
+                .listener(new MessageItemReadListener())
+                .processor(messageProcessor)
+                .writer(messageItemWriter).faultTolerant().skip(Exception.class).skipLimit(SKIP_LIMIT)
+                .listener(new MessageWriteListener())
+                .build();
+    }
+
+    /**
+     * @Description: 构建reader
+     * FlatFileItemReader：从文件里面一行一行的读取数据
+     * .setResource：设置文件路径
+     * .setLineMapper：把一行文本映射为Message类，自定义类
+     */
+    @Bean
+    public FlatFileItemReader&lt;Message&gt; jsonMessageReader() {
+        FlatFileItemReader&lt;Message&gt; reader = new FlatFileItemReader&lt;&gt;();
+        reader.setResource(new FileSystemResource(new File(MESSAGE_FILE)));
+        reader.setLineMapper(new MessageLineMapper());
+        return reader;
+    }
+
+    @Bean
+    public MessageProcessor messageProcessor() {
+        return new MessageProcessor();
+    }
+
+    /**
+     * @Description: 构建writer
+     */
+    @Bean
+    public JpaItemWriter&lt;Message&gt; messageItemWriter() {
+        JpaItemWriter&lt;Message&gt; writer = new JpaItemWriter&lt;&gt;();
+        writer.setEntityManagerFactory(entityManager);
+        return writer;
+    }
+}
+</code></pre>
+<h2 id="注解">注解</h2>
+<ul>
+<li><code>@EnableBatchProcessing</code>打开Batch。如果多 job 的情况，需要把 EnableBatchProcessing 注解的 modular 设置为 true ，让每个 Job 使用自己的 ApplicationConext</li>
+<li><code>@JobScope</code>作用域注解。应用于 step 或 reader、processor、writer 等组件的 @Bean 方法中，用于指定组件的生命周期范围为 Job。使用 @JobScope 注解的组件，将在 Job 执行期间实例化一次，然后在 Job 执行完成后销毁。这使得组件可以拥有 Job 的上下文，包括 JobParameters、ExecutionContext 等，从而可以在 Job 执行期间获取 Job 的相关信息。</li>
+</ul>
+<h2 id="常用类">常用类</h2>
+<ul>
+<li><code>JobLauncher</code>启动 job 类</li>
+<li><code>JobRegistry</code>存储多个 job 实例，JobRegistry 可以通过 job 实例的唯一名称获取 job</li>
+<li><code>JobBuilderFactory</code>构建 JobBuilder 对象的工厂类
+<ul>
+<li>通常用<code>JobBuilder get(String name)</code>构建 JobBuilder</li>
+</ul>
+</li>
+<li><code>StepBuilderFactory</code>构建 StepBuilder 对象的工厂类
+<ul>
+<li>通常用<code>StepBuilder get(String name)</code>构建 StepBuilder</li>
+</ul>
+</li>
+</ul>
+<h3 id="jobparameters">JobParameters</h3>
+<p>存储一组有序的键值对，这些键值用于 Job 或 Step 的运行时参数</p>
+<pre><code class="language-java">@Autowired
+private JobLauncher jobLauncher;
+
+public void executeJob(Job job) {
+    JobParameters params = new JobParametersBuilder()
+        .addLong(key, value, true)
+        .addString(key, value, true)
+        .toJobParameters();
+    
+    jobLauncher.run(job, params)
+}
+</code></pre>
+<ul>
+<li>在构建 job 时（或step/tasklet/chunk/reader...）需要参数信息，使用<code>@Value(&quot;#{jobParameters['...']}&quot;)</code>注解的方式注入</li>
+<li>需要使用 @JobScope 注解</li>
+</ul>
+<pre><code class="language-java">@Bean
+@JobScope
+ItemProcessor&lt;Xxx, Xxx&gt; processor(@Value(&quot;#{jobParameters['Xxx']}&quot;) String Xxx,
+                                  @Value(&quot;#{jobParameters['Xxx']}&quot;) String Xxx) {
+    return null;
+}
+</code></pre>
+<h3 id="jobbuilder">JobBuilder</h3>
+<blockquote>
+<p>用来创建 Job 实例</p>
+</blockquote>
+<p>常用方法👇</p>
+<ol>
+<li><code>name(String name)</code>为Job实例指定名称</li>
+<li><code>incrementer(JobParametersIncrementer incrementer)</code>指定 JobParametersIncrementer 实例，用于生成 Job 参数</li>
+<li><code>start(Step step)</code>返回 SimpleJobBuilder，指定 Job 实例的第一个 Step 实例</li>
+<li><code>flow(Step step)</code>返回 JobFlowBuilder，指定 Job 实例的第一个 Step 实例</li>
+<li><code>listener(JobExecutionListener listener)</code>指定 JobExecutionListener 实例，用于监听 Job 的执行</li>
+<li><code>listener(StepExecutionListener listener)</code>指定 StepExecutionListener 实例，用于监听 Job 的每个 Step 的执行</li>
+<li><code>validator(JobParametersValidator validator)</code>指定 JobParametersValidator 实例，用于验证 Job 参数的合法性</li>
+<li><code>build()</code>构建 Job 实例</li>
+</ol>
+<h3 id="job">Job</h3>
+<p>Job 有以下几种：</p>
+<ol>
+<li><code>SimpleJob</code>包含一个 Step，执行完 Step 后即结束</li>
+<li><code>FlowJob</code>包含多个 Step 组成的逻辑流，根据 Step 执行结果状态，通过决策器实现分支</li>
+<li><code>SplitJob</code>包含多个 Step，这些 Step 可以并行执行</li>
+<li><code>ChildJob</code>在一个 Job 中可以包含其他 Job，形成树形结构，父Job 可以决定 子Job 的执行顺序和执行条件</li>
+<li><code>CompositeJob</code>通过讲多个 Job 组合在一起，实现一个 Job 包含多个 子Job 的效果，子Job 可以并行或串行执行，相互独立</li>
+</ol>
+<p><strong><em>p.s.</em></strong> 这些 Job 之间并不是互斥的，可以混合使用。可以使用<code>JobStepBuilder</code>将一个 Job 封装成 Step，然后在另一个 Job 中引用这个 Step</p>
+<h3 id="stepbuilder">StepBuilder</h3>
+<blockquote>
+<p>用来创建 Step 实例</p>
+</blockquote>
+<p>常用方法👇</p>
+<ol>
+<li><code>tasklet(Tasklet tasklet)</code>指定 Step 中使用的 Tasklet，每个 Step 至少要有一个 Tasklet</li>
+<li><code>chunk(int chunkSize)</code>指定每次读取多少数据进行处理，以及处理完后一次性写出的数据量</li>
+<li><code>reader(ItemReader&lt;? extends T&gt; itemReader)</code>指定 Step 中使用的 ItemReader</li>
+<li><code>processor(ItemProcessor&lt;? super T, ? extends S&gt; itemProcessor)</code>指定 Step 中使用的 ItemProcessor</li>
+<li><code>writer(ItemWriter&lt;? super S&gt; itemWriter)</code>指定 Step 中使用的 ItemWriter</li>
+<li><code>allowStartIfComplete(boolean allowStart)</code>是否允许 Step 在上一次执行完成后立即再次执行</li>
+<li><code>flow(Flow flow)</code>返回 FlowStepBuilder，指定 Step 的 Flow 实例</li>
+</ol>
+<h3 id="step">Step</h3>
+<p>Step 有以下几种：</p>
+<ol>
+<li><code>SimpleStep</code>指定读、处理、写操作【单线程】</li>
+<li><code>ChunkOrientedTasklet</code>可以包揽读、处理、写操作【单线程】</li>
+<li><code>TaskletStep</code>指定并执行一个 Tasklet【单线程】</li>
+<li><code>FlowStep</code>中有一个 Flow 实例，Flow 实例中可以有多个 Step，可进行条件控制，如跳过某些步骤、重试某些步骤等【单线程】</li>
+</ol>
+<p>多线程的 Step 有<code>SimpleAsyncTaskExecutorStep</code>、<code>TaskExecutorStep</code>、<code>PartitionStep</code></p>
+<h3 id="listener">Listener</h3>
+<p>Listener 接口需要实现使用，都有<code>beforeXxx</code>和<code>afterXxx</code>方法。在对应位置使用，如 Step 的监听器，在创建 Step 时使用；Job 的监听器，在创建 Job 时使用<br>
+常用接口👇</p>
+<ol>
+<li><code>StepExecutionListener</code>step <strong>执行</strong>监听器</li>
+<li><code>ItemReadListener</code>step <strong>读</strong>监听器</li>
+<li><code>ItemWriteListener</code>step <strong>写</strong>监听器</li>
+<li><code>JobExecutionListener</code>job <strong>执行</strong>监听器</li>
+</ol>
+<h3 id="itemreader">ItemReader</h3>
+<p>step 的读操作，SpringBatch 提供多个实现类👇</p>
+<ol>
+<li><code>JdbcCursorItemReader</code>用于从 JDBC 游标检索结果集</li>
+<li><code>JdbcPagingItemReader</code>用于从 JDBC 分页检索结果集</li>
+<li><code>HibernateCursorItemReader</code>用于从 Hibernate 游标检索结果集</li>
+<li><code>HibernatePagingItemReader</code>用于从 Hibernate 分页检索结果集</li>
+<li><code>JpaPagingItemReader</code>用于从 JPA 分页检索结果集</li>
+<li><code>FlatFileItemReader</code>用于从文件中读取数据</li>
+<li><code>StaxEventItemReader</code>读取 XML 文件</li>
+<li><code>JsonItemReader</code>读取 Json 格式数据</li>
+</ol>
+<p>自定义 ItemReader：实现 ItemReader 接口，并重写 read 方法，该方法需要返回一个对象，如果没有读到数据则返回 null</p>
+<h3 id="itemwriter">ItemWriter</h3>
+<p>step 的写操作，SpringBatch 提供多个实现类👇</p>
+<ol>
+<li><code>JdbcBatchItemWriter</code>将数据批量写入关系型数据库</li>
+<li><code>JpaItemWriter</code>将数据批量写入 JPA 实体类</li>
+<li><code>HibernateItemWriter</code>将数据批量写入 Hibernate 实体类</li>
+<li><code>FlatFileItemWriter</code>将数据写入文本文件</li>
+<li><code>MultiResourceItemWriter</code>将数据写入多个文件</li>
+<li><code>MongoItemWriter</code>将数据批量写入 MongoDB</li>
+<li><code>HdfsTextItemWriter</code>将数据写入 HDFS 文件</li>
+</ol>
+<p>自定义 ItemWriter：通过实现 ItemWriter 接口，并重写 write 方法</p>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E4%BD%BF%E7%94%A8-tasklet">使用 Tasklet</a></li>
+<li><a href="#%E4%BD%BF%E7%94%A8-read-process-write">使用 Read-Process-Write</a></li>
+<li><a href="#%E6%B3%A8%E8%A7%A3">注解</a></li>
+<li><a href="#%E5%B8%B8%E7%94%A8%E7%B1%BB">常用类</a>
+<ul>
+<li><a href="#jobparameters">JobParameters</a></li>
+<li><a href="#jobbuilder">JobBuilder</a></li>
+<li><a href="#job">Job</a></li>
+<li><a href="#stepbuilder">StepBuilder</a></li>
+<li><a href="#step">Step</a></li>
+<li><a href="#listener">Listener</a></li>
+<li><a href="#itemreader">ItemReader</a></li>
+<li><a href="#itemwriter">ItemWriter</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://xuyj1111.github.io/Kbdumv2S0/">
+              <h3 class="post-title">
+                【Java】三种 ThreadLocal 的简单使用
+              </h3>
+            </a>
+          </div>
+        
+
+        
+
+        <div class="site-footer">
+  
+  <a class="rss" href="https://xuyj1111.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+
+
+
+    <div id="vcomments"></div>
+    <script>
+        new Valine({
+            el: '#vcomments',
+            appId: 'ot2L3hKJVxTAXnr1VQt7wm70-gzGzoHsz',
+            appKey: 'BjaYGo2m6zV3mCvxGLGsDP5V'
+        })
+    </script>
+
+
+
+  </body>
+
+</html>

@@ -1,0 +1,244 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Z 字形变换 | 洗衣机的博客</title>
+<link rel="shortcut icon" href="https://xuyj1111.github.io/favicon.ico?v=1705159156297">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://xuyj1111.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="Z 字形变换 | 洗衣机的博客 - Atom Feed" href="https://xuyj1111.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+
+    <meta name="description" content="
+https://leetcode.cn/problems/zigzag-conversion/
+
+题目描述
+将一个给定字符串 s 根据给定的行数 numRows ，以从上往下、从左到右进行 Z 字形排列。
+比如输入字符串为 &quot;P..." />
+    <meta name="keywords" content="算法,原创" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
+ <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://xuyj1111.github.io">
+  <img class="avatar" src="https://xuyj1111.github.io/images/avatar.png?v=1705159156297" alt="">
+  </a>
+  <h1 class="site-title">
+    洗衣机的博客
+  </h1>
+  <p class="site-description">
+    【一名Java开发】slave👉https://www.cnblogs.com/xuyj1111/
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="https://xuyj1111.github.io" class="menu">
+          主页
+        </a>
+      
+    
+      
+        <a href="https://xuyj1111.github.io/archives" class="menu">
+          文章
+        </a>
+      
+    
+      
+        <a href="https://xuyj1111.github.io/tags" class="menu">
+          标签
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/xuyj1111" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+  <form id="gridea-search-form" action="https://xuyj1111.github.io/search/">
+    <input name="q" />
+  </form>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              Z 字形变换
+            </h2>
+            <div class="post-info">
+              <span>
+                2022-08-14
+              </span>
+              <span>
+                2 min read
+              </span>
+              
+                <a href="https://xuyj1111.github.io/t4VskHTZo/" class="post-tag">
+                  # 算法
+                </a>
+              
+                <a href="https://xuyj1111.github.io/WSbjWpIkN/" class="post-tag">
+                  # 原创
+                </a>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content">
+                <blockquote>
+<p>https://leetcode.cn/problems/zigzag-conversion/</p>
+</blockquote>
+<h2 id="题目描述">题目描述</h2>
+<p>将一个给定字符串 s 根据给定的行数 numRows ，以从上往下、从左到右进行 Z 字形排列。<br>
+比如输入字符串为 &quot;PAYPALISHIRING&quot; 行数为 3 时，排列如下：</p>
+<pre><code>P   A   H   N
+A P L S I I G
+Y   I   R
+</code></pre>
+<p>之后，你的输出需要从左往右逐行读取，产生出一个新的字符串，比如：&quot;PAHNAPLSIIGYIR&quot;。<br>
+请你实现这个将字符串进行指定行数变换的函数：</p>
+<pre><code>string convert(string s, int numRows);
+</code></pre>
+<h2 id="思路">思路</h2>
+<ol>
+<li>一开始使用二维数组，但是发现提前开辟数组空间比较麻烦，很容易<code>NullPointerException</code>或者<code>IndexOutOfBoundsException</code>，所以决定用集合</li>
+<li>根据题目中的 Z 字形，则需要变量自增或自减来定位行数，定义变量<code>flag</code>决定自增或自减。开始想到用布尔型 true | false，后根据他人解题思路，使用整型 1 | -1 更为合适</li>
+<li>定义变量<code>yy</code>定位行数</li>
+</ol>
+<pre><code>public String convert(String s, int numRows) {
+    if (numRows &lt; 2) return s;
+    List&lt;List&lt;String&gt;&gt; lists = new ArrayList&lt;&gt;();
+    for (int i = 0; i &lt; numRows; i++) {
+        lists.add(new ArrayList&lt;&gt;());
+    }
+    int flag = -1;
+    int yy = 0;
+    for (char c : s.toCharArray()) {
+        lists.get(yy).add(String.valueOf(c));
+        if (yy == 0 || yy == numRows - 1) {
+            flag = -flag;
+        }
+        yy += flag;
+    }
+    StringBuilder result = new StringBuilder();
+    lists.forEach(list -&gt; result.append(String.join(&quot;&quot;, list)));
+    return result.toString();
+}
+</code></pre>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E9%A2%98%E7%9B%AE%E6%8F%8F%E8%BF%B0">题目描述</a></li>
+<li><a href="#%E6%80%9D%E8%B7%AF">思路</a></li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://xuyj1111.github.io/SuwnAF7n7/">
+              <h3 class="post-title">
+                log4j.properties的配置详情
+              </h3>
+            </a>
+          </div>
+        
+
+        
+
+        <div class="site-footer">
+  
+  <a class="rss" href="https://xuyj1111.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+
+
+
+    <div id="vcomments"></div>
+    <script>
+        new Valine({
+            el: '#vcomments',
+            appId: 'ot2L3hKJVxTAXnr1VQt7wm70-gzGzoHsz',
+            appKey: 'BjaYGo2m6zV3mCvxGLGsDP5V'
+        })
+    </script>
+
+
+
+  </body>
+
+</html>

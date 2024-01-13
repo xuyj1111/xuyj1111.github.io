@@ -1,0 +1,246 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>使用二进制编程心得 | 洗衣机的博客</title>
+<link rel="shortcut icon" href="https://xuyj1111.github.io/favicon.ico?v=1705159156297">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://xuyj1111.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="使用二进制编程心得 | 洗衣机的博客 - Atom Feed" href="https://xuyj1111.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+
+    <meta name="description" content="
+原码、反码、补码、左移、右移、&amp;、|
+
+【&lt;&lt;】通过位运算实现取余效果
+为变量定一个二进制长度，例如定二进制长度而 4 位，则变量最大值：
+~(-1L &lt;&lt; 4) = 15
+但是在代码中并没有一个数值类型能..." />
+    <meta name="keywords" content="持续更新,原创,杂记" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
+ <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://xuyj1111.github.io">
+  <img class="avatar" src="https://xuyj1111.github.io/images/avatar.png?v=1705159156297" alt="">
+  </a>
+  <h1 class="site-title">
+    洗衣机的博客
+  </h1>
+  <p class="site-description">
+    【一名Java开发】slave👉https://www.cnblogs.com/xuyj1111/
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="https://xuyj1111.github.io" class="menu">
+          主页
+        </a>
+      
+    
+      
+        <a href="https://xuyj1111.github.io/archives" class="menu">
+          文章
+        </a>
+      
+    
+      
+        <a href="https://xuyj1111.github.io/tags" class="menu">
+          标签
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/xuyj1111" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+  <form id="gridea-search-form" action="https://xuyj1111.github.io/search/">
+    <input name="q" />
+  </form>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              使用二进制编程心得
+            </h2>
+            <div class="post-info">
+              <span>
+                2022-04-28
+              </span>
+              <span>
+                1 min read
+              </span>
+              
+                <a href="https://xuyj1111.github.io/tMXGs2hmt/" class="post-tag">
+                  # 持续更新
+                </a>
+              
+                <a href="https://xuyj1111.github.io/WSbjWpIkN/" class="post-tag">
+                  # 原创
+                </a>
+              
+                <a href="https://xuyj1111.github.io/CseDYEWrD/" class="post-tag">
+                  # 杂记
+                </a>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content">
+                <blockquote>
+<p>原码、反码、补码、左移、右移、&amp;、|</p>
+</blockquote>
+<h2 id="通过位运算实现取余效果">【&lt;&lt;】通过位运算实现取余效果</h2>
+<p>为变量定一个二进制长度，例如定二进制长度而 4 位，则变量最大值：<br>
+<code>~(-1L &lt;&lt; 4)</code> = 15<br>
+但是在代码中并没有一个数值类型能指定一个可变位数，仅有 int(32位)、long(64位)等，如果想要指定位数（及指定最大值），则需要实现超过最大值后自动从 0 开始，例如：</p>
+<pre><code>long number = 15;
+number = (number + 1) &amp; getMaxNum();    //number = 0
+</code></pre>
+<p><code>getMaxNum()</code> = <code>~(-1L &lt;&lt; 4)</code><br>
+p.s. 相对于取余(%)，位运算速度更快</p>
+<h2 id="拼接成一个long">【&lt;&lt;】拼接成一个Long</h2>
+<table>
+<thead>
+<tr>
+<th>符号位</th>
+<th>空白位</th>
+<th>appId</th>
+<th>deltaSeconds</th>
+<th>workId</th>
+<th>sequence</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1bit</td>
+<td>11bits</td>
+<td>5bits</td>
+<td>30bits</td>
+<td>4bits</td>
+<td>13bits</td>
+</tr>
+</tbody>
+</table>
+<p><code>appId &lt;&lt; (13 + 4 + 30) | deltaSeconds &lt;&lt; (13 + 4) | workerId &lt;&lt; 13 | sequence;</code></p>
+<p>持续更新。。。</p>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E9%80%9A%E8%BF%87%E4%BD%8D%E8%BF%90%E7%AE%97%E5%AE%9E%E7%8E%B0%E5%8F%96%E4%BD%99%E6%95%88%E6%9E%9C">【&lt;&lt;】通过位运算实现取余效果</a></li>
+<li><a href="#%E6%8B%BC%E6%8E%A5%E6%88%90%E4%B8%80%E4%B8%AAlong">【&lt;&lt;】拼接成一个Long</a></li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://xuyj1111.github.io/812AbNpSc/">
+              <h3 class="post-title">
+                【转载】雪花算法与时间回拨
+              </h3>
+            </a>
+          </div>
+        
+
+        
+
+        <div class="site-footer">
+  
+  <a class="rss" href="https://xuyj1111.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+
+
+
+    <div id="vcomments"></div>
+    <script>
+        new Valine({
+            el: '#vcomments',
+            appId: 'ot2L3hKJVxTAXnr1VQt7wm70-gzGzoHsz',
+            appKey: 'BjaYGo2m6zV3mCvxGLGsDP5V'
+        })
+    </script>
+
+
+
+  </body>
+
+</html>

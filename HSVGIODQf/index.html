@@ -1,0 +1,1095 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>【转载】玩转Spring中强大的spel表达式！ | 洗衣机的博客</title>
+<link rel="shortcut icon" href="https://xuyj1111.github.io/favicon.ico?v=1705159156297">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://xuyj1111.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="【转载】玩转Spring中强大的spel表达式！ | 洗衣机的博客 - Atom Feed" href="https://xuyj1111.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+
+    <meta name="description" content="
+玩转Spring中强大的spel表达式！，by 无情的BUG杀手
+
+Spel 概述
+Spring 表达式语言全称为 “Spring Expression Language”，缩写为 “SpEL”，类似于 Struts2x 中使用的 OGN..." />
+    <meta name="keywords" content="Java,转载" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
+ <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://xuyj1111.github.io">
+  <img class="avatar" src="https://xuyj1111.github.io/images/avatar.png?v=1705159156297" alt="">
+  </a>
+  <h1 class="site-title">
+    洗衣机的博客
+  </h1>
+  <p class="site-description">
+    【一名Java开发】slave👉https://www.cnblogs.com/xuyj1111/
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="https://xuyj1111.github.io" class="menu">
+          主页
+        </a>
+      
+    
+      
+        <a href="https://xuyj1111.github.io/archives" class="menu">
+          文章
+        </a>
+      
+    
+      
+        <a href="https://xuyj1111.github.io/tags" class="menu">
+          标签
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/xuyj1111" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+  <form id="gridea-search-form" action="https://xuyj1111.github.io/search/">
+    <input name="q" />
+  </form>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              【转载】玩转Spring中强大的spel表达式！
+            </h2>
+            <div class="post-info">
+              <span>
+                2023-02-16
+              </span>
+              <span>
+                32 min read
+              </span>
+              
+                <a href="https://xuyj1111.github.io/SOje8Joqr/" class="post-tag">
+                  # Java
+                </a>
+              
+                <a href="https://xuyj1111.github.io/JDrWa3FBq/" class="post-tag">
+                  # 转载
+                </a>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content">
+                <blockquote>
+<p><a href="https://zhuanlan.zhihu.com/p/174786047">玩转Spring中强大的spel表达式！</a>，by 无情的BUG杀手</p>
+</blockquote>
+<h2 id="spel-概述"><strong>Spel 概述</strong></h2>
+<p>Spring 表达式语言全称为 “Spring Expression Language”，缩写为 “SpEL”，类似于 Struts2x 中使用的 OGNL 表达式语言，能在运行时构建复杂表达式、存取对象图属性、对象方法调用等等，并且能与 Spring 功能完美整合，如能用来配置 Bean 定义。</p>
+<p><strong>表达式语言给静态 Java 语言增加了动态功能。</strong></p>
+<p>SpEL 是单独模块，只依赖于 core 模块，不依赖于其他模块，可以单独使用。</p>
+<h2 id="spel-能干什么"><strong>Spel 能干什么?</strong></h2>
+<p>表达式语言一般是用最简单的形式完成最主要的工作，减少我们的工作量。</p>
+<p>SpEL 支持如下表达式：</p>
+<p><strong>一、基本表达式：</strong> 字面量表达式、关系，逻辑与算数运算表达式、字符串连接及截取表达式、三目运算及 Elivis 表达式、正则表达式、括号优先级表达式；</p>
+<p><strong>二、类相关表达式：</strong> 类类型表达式、类实例化、instanceof 表达式、变量定义及引用、赋值表达式、自定义函数、对象属性存取及安全导航表达式、对象方法调用、Bean 引用；</p>
+<p><strong>三、集合相关表达式：</strong> 内联 List、内联数组、集合，字典访问、列表，字典，数组修改、集合投影、集合选择；不支持多维内联数组初始化；不支持内联字典定义；</p>
+<p><strong>四、其他表达式</strong>：模板表达式。</p>
+<p><strong>注：SpEL 表达式中的关键字是不区分大小写的。</strong></p>
+<h2 id="spel-基础"><strong>SpEL 基础</strong></h2>
+<h3 id="helloworld"><strong>HelloWorld</strong></h3>
+<p>首先准备支持 SpEL 的 Jar 包：“org.springframework.expression-3.0.5.RELEASE.jar” 将其添加到类路径中。</p>
+<p>SpEL 在求表达式值时一般分为四步，其中第三步可选：首先构造一个解析器，其次解析器解析字符串表达式，在此构造上下文，最后根据上下文得到表达式运算后的值。</p>
+<p>让我们看下代码片段吧：</p>
+<pre><code class="language-java">package com.javacode2018.spel;
+
+import org.junit.Test;
+import org.springframework.expression.EvaluationContext;
+import org.springframework.expression.Expression;
+import org.springframework.expression.ExpressionParser;
+import org.springframework.expression.spel.standard.SpelExpressionParser;
+import org.springframework.expression.spel.support.StandardEvaluationContext;
+
+public class SpelTest {
+    @Test
+    public void test1() {
+        ExpressionParser parser = new SpelExpressionParser();
+        Expression expression = parser.parseExpression(&quot;('Hello' + ' World').concat(#end)&quot;);
+        EvaluationContext context = new StandardEvaluationContext();
+        context.setVariable(&quot;end&quot;, &quot;!&quot;);
+        System.out.println(expression.getValue(context));
+    }
+}
+
+</code></pre>
+<p>输出</p>
+<pre><code>Hello World!
+
+</code></pre>
+<p>接下来让我们分析下代码：</p>
+<p>1）创建解析器：<strong>SpEL 使用 ExpressionParser 接口表示解析器，提供 SpelExpressionParser 默认实现；</strong></p>
+<p>2）解析表达式：使用 ExpressionParser 的 parseExpression 来解析相应的表达式为 Expression 对象。</p>
+<p>3）构造上下文：准备比如变量定义等等表达式需要的上下文数据。</p>
+<p>4）求值：通过 Expression 接口的 getValue 方法根据上下文获得表达式值。</p>
+<p>是不是很简单，接下来让我们看下其具体实现及原理吧。</p>
+<h3 id="spel-原理及接口"><strong>SpEL 原理及接口</strong></h3>
+<p>SpEL 提供简单的接口从而简化用户使用，在介绍原理前让我们学习下几个概念：</p>
+<p><strong>一、表达式：</strong> 表达式是表达式语言的核心，所以表达式语言都是围绕表达式进行的，从我们角度来看是 “干什么”；</p>
+<p><strong>二、解析器：</strong> 用于将字符串表达式解析为表达式对象，从我们角度来看是 “谁来干”；</p>
+<p><strong>三、上下文：</strong> 表达式对象执行的环境，该环境可能定义变量、定义自定义函数、提供类型转换等等，从我们角度看是 “在哪干”；</p>
+<p><strong>四、根对象及活动上下文对象：</strong> 根对象是默认的活动上下文对象，活动上下文对象表示了当前表达式操作的对象，从我们角度看是 “对谁干”。</p>
+<p>理解了这些概念后，让我们看下 SpEL 如何工作的呢，如图所示：</p>
+<figure data-type="image" tabindex="1"><img src="https://pic4.zhimg.com/v2-9ccd1f26794f5ab75681e5d6d7b000e7_r.jpg" alt="" loading="lazy"></figure>
+<h3 id="工作原理"><strong>工作原理</strong></h3>
+<pre><code>1.首先定义表达式：“1+2”；
+2.定义解析器ExpressionParser实现，SpEL提供默认实现SpelExpressionParser；
+  2.1.SpelExpressionParser解析器内部使用Tokenizer类进行词法分析，即把字符串流分析为记号流，记号在SpEL使用Token类来表示；
+  2.2.有了记号流后，解析器便可根据记号流生成内部抽象语法树；在SpEL中语法树节点由SpelNode接口实现代表：如OpPlus表示加操作节点、IntLiteral表示int型字面量节点；使用SpelNodel实现组成了抽象语法树；
+  2.3.对外提供Expression接口来简化表示抽象语法树，从而隐藏内部实现细节，并提供getValue简单方法用于获取表达式值；SpEL提供默认实现为SpelExpression；
+3.定义表达式上下文对象（可选），SpEL使用EvaluationContext接口表示上下文对象，用于设置根对象、自定义变量、自定义函数、类型转换器等，SpEL提供默认实现StandardEvaluationContext；
+4.使用表达式对象根据上下文对象（可选）求值（调用表达式对象的getValue方法）获得结果。
+
+</code></pre>
+<p>接下来让我们看下 SpEL 的主要接口吧：</p>
+<h3 id="expressionparser-接口"><strong>ExpressionParser 接口</strong></h3>
+<p>表示解析器，默认实现是 org.springframework.expression.spel.standard 包中的 SpelExpressionParser 类，使用 parseExpression 方法将字符串表达式转换为 Expression 对象，对于 ParserContext 接口用于定义字符串表达式是不是模板，及模板开始与结束字符：</p>
+<pre><code class="language-java">public interface ExpressionParser {
+ Expression parseExpression(String expressionString) throws ParseException;
+ Expression parseExpression(String expressionString, ParserContext context) throws ParseException;
+}
+
+</code></pre>
+<p>来看下示例：</p>
+<pre><code class="language-java">@Test
+public void testParserContext() {
+    ExpressionParser parser = new SpelExpressionParser();
+    ParserContext parserContext = new ParserContext() {
+        @Override
+        public boolean isTemplate() {
+            return true;
+        }
+
+        @Override
+        public String getExpressionPrefix() {
+            return &quot;#{&quot;;
+        }
+
+        @Override
+        public String getExpressionSuffix() {
+            return &quot;}&quot;;
+        }
+    };
+    String template = &quot;#{'Hello '}#{'World!'}&quot;;
+    Expression expression = parser.parseExpression(template, parserContext);
+    System.out.println(expression.getValue());
+}
+
+</code></pre>
+<p>在此我们演示的是使用 ParserContext 的情况，此处定义了 ParserContext 实现：定义表达式是模块，表达式前缀为 “#{”，后缀为“}”；使用 parseExpression 解析时传入的模板必须以“#{” 开头，以 “}” 结尾，如 &quot;#{'Hello '}#{'World!'}&quot;。</p>
+<p>默认传入的字符串表达式不是模板形式，如之前演示的 Hello World。</p>
+<h3 id="evaluationcontext-接口"><strong>EvaluationContext 接口</strong></h3>
+<p>表示上下文环境，默认实现是 org.springframework.expression.spel.support 包中的 StandardEvaluationContext 类，使用 setRootObject 方法来设置根对象，使用 setVariable 方法来注册自定义变量，使用 registerFunction 来注册自定义函数等等。</p>
+<h3 id="expression-接口"><strong>Expression 接口</strong></h3>
+<p>表示表达式对象，默认实现是 org.springframework.expression.spel.standard 包中的 SpelExpression，提供 getValue 方法用于获取表达式值，提供 setValue 方法用于设置对象值。</p>
+<p>了解了 SpEL 原理及接口，接下来的事情就是 SpEL 语法了。</p>
+<h2 id="spel-语法"><strong>SpEL 语法</strong></h2>
+<h3 id="基本表达式"><strong>基本表达式</strong></h3>
+<h3 id="字面量表达式"><strong>字面量表达式</strong></h3>
+<p>SpEL 支持的字面量包括：字符串、数字类型（int、long、float、double）、布尔类型、null 类型。</p>
+<p>类型示例字符串 String str1 = parser.parseExpression(&quot;'Hello World!'&quot;).getValue(String.class); 数字类型 int int1 = parser.parseExpression(&quot;1&quot;).getValue(Integer.class);</p>
+<p>long long1 = parser.parseExpression(&quot;-1L&quot;).getValue(long.class);</p>
+<p>float float1 = parser.parseExpression(&quot;1.1&quot;).getValue(Float.class);</p>
+<p>double double1 = parser.parseExpression(&quot;1.1E+2&quot;).getValue(double.class);</p>
+<p>int hex1 = parser.parseExpression(&quot;0xa&quot;).getValue(Integer.class);</p>
+<p>long hex2 = parser.parseExpression(&quot;0xaL&quot;).getValue(long.class); 布尔类型 boolean true1 = parser.parseExpression(&quot;true&quot;).getValue(boolean.class);</p>
+<p>boolean false1 = parser.parseExpression(&quot;false&quot;).getValue(boolean.class);null 类型 Object null1 = parser.parseExpression(&quot;null&quot;).getValue(Object.class);</p>
+<pre><code class="language-java">@Test
+public void test2() {
+    ExpressionParser parser = new SpelExpressionParser();
+
+    String str1 = parser.parseExpression(&quot;'Hello World!'&quot;).getValue(String.class);
+    int int1 = parser.parseExpression(&quot;1&quot;).getValue(Integer.class);
+    long long1 = parser.parseExpression(&quot;-1L&quot;).getValue(long.class);
+    float float1 = parser.parseExpression(&quot;1.1&quot;).getValue(Float.class);
+    double double1 = parser.parseExpression(&quot;1.1E+2&quot;).getValue(double.class);
+    int hex1 = parser.parseExpression(&quot;0xa&quot;).getValue(Integer.class);
+    long hex2 = parser.parseExpression(&quot;0xaL&quot;).getValue(long.class);
+    boolean true1 = parser.parseExpression(&quot;true&quot;).getValue(boolean.class);
+    boolean false1 = parser.parseExpression(&quot;false&quot;).getValue(boolean.class);
+    Object null1 = parser.parseExpression(&quot;null&quot;).getValue(Object.class);
+
+    System.out.println(&quot;str1=&quot; + str1);
+    System.out.println(&quot;int1=&quot; + int1);
+    System.out.println(&quot;long1=&quot; + long1);
+    System.out.println(&quot;float1=&quot; + float1);
+    System.out.println(&quot;double1=&quot; + double1);
+    System.out.println(&quot;hex1=&quot; + hex1);
+    System.out.println(&quot;hex2=&quot; + hex2);
+    System.out.println(&quot;true1=&quot; + true1);
+    System.out.println(&quot;false1=&quot; + false1);
+    System.out.println(&quot;null1=&quot; + null1);
+}
+
+</code></pre>
+<p>输出</p>
+<pre><code>str1=Hello World!
+int1=1
+long1=-1
+float1=1.1
+double1=110.0
+hex1=10
+hex2=10
+true1=true
+false1=false
+null1=null
+
+</code></pre>
+<h3 id="算数运算表达式"><strong>算数运算表达式</strong></h3>
+<p>SpEL 支持加 (+)、减 (-)、乘 (*)、除 (/)、求余（%）、幂（^）运算。</p>
+<p>类型示例加减乘除 int result1 = parser.parseExpression(&quot;1+2-3*4/2&quot;).getValue(Integer.class);//-3 求余 int result2 = parser.parseExpression(&quot;4%3&quot;).getValue(Integer.class);//1 幂运算 int result3 = parser.parseExpression(&quot;2^3&quot;).getValue(Integer.class);//8</p>
+<p>SpEL 还提供求余（MOD）和除（DIV）而外两个运算符，与 “%” 和“/”等价，不区分大小写。</p>
+<h3 id="关系表达式"><strong>关系表达式</strong></h3>
+<p>等于（==）、不等于 (!=)、大于 (&gt;)、大于等于 (&gt;=)、小于 (&lt;)、小于等于 (&lt;=)，区间（between）运算。</p>
+<p>如<code>parser.parseExpression(&quot;1&gt;2&quot;).getValue(boolean.class);</code>将返回 false；</p>
+<p>而<code>parser.parseExpression(&quot;1 between {1, 2}&quot;).getValue(boolean.class);</code>将返回 true。</p>
+<p><code>between运算符右边操作数必须是列表类型，且只能包含2个元素。第一个元素为开始，第二个元素为结束，区间运算是包含边界值的，即 xxx&gt;=list.get(0) &amp;&amp; xxx&lt;=list.get(1)</code>。</p>
+<p>SpEL 同样提供了等价的 “EQ” 、“NE”、 “GT”、“GE”、 “LT” 、“LE” 来表示等于、不等于、大于、大于等于、小于、小于等于，不区分大小写。</p>
+<pre><code class="language-java">@Test
+public void test3() {
+    ExpressionParser parser = new SpelExpressionParser();
+    boolean v1 = parser.parseExpression(&quot;1&gt;2&quot;).getValue(boolean.class);
+    boolean between1 = parser.parseExpression(&quot;1 between {1,2}&quot;).getValue(boolean.class);
+    System.out.println(&quot;v1=&quot; + v1);
+    System.out.println(&quot;between1=&quot; + between1);
+}
+
+</code></pre>
+<p>输出</p>
+<pre><code>v1=false
+between1=true
+
+
+</code></pre>
+<h3 id="逻辑表达式"><strong>逻辑表达式</strong></h3>
+<p>且（and 或者 &amp;&amp;）、或 (or 或者 ||)、非 (! 或 NOT)。</p>
+<pre><code class="language-java">@Test
+public void test4() {
+    ExpressionParser parser = new SpelExpressionParser();
+
+    boolean result1 = parser.parseExpression(&quot;2&gt;1 and (!true or !false)&quot;).getValue(boolean.class);
+    boolean result2 = parser.parseExpression(&quot;2&gt;1 &amp;&amp; (!true || !false)&quot;).getValue(boolean.class);
+
+    boolean result3 = parser.parseExpression(&quot;2&gt;1 and (NOT true or NOT false)&quot;).getValue(boolean.class);
+    boolean result4 = parser.parseExpression(&quot;2&gt;1 &amp;&amp; (NOT true || NOT false)&quot;).getValue(boolean.class);
+
+    System.out.println(&quot;result1=&quot; + result1);
+    System.out.println(&quot;result2=&quot; + result2);
+    System.out.println(&quot;result3=&quot; + result3);
+    System.out.println(&quot;result4=&quot; + result4);
+}
+
+</code></pre>
+<p>输出</p>
+<pre><code>result1=true
+result2=true
+result3=true
+result4=false
+
+</code></pre>
+<h3 id="字符串连接及截取表达式"><strong>字符串连接及截取表达式</strong></h3>
+<p>使用 “+” 进行字符串连接，使用 “'String'[0] [index]” 来截取一个字符，目前只支持截取一个，如 “'Hello' + 'World!'” 得到 “Hello World!”；而“'Hello World!'[0]” 将返回“H”。</p>
+<h3 id="三目运算"><strong>三目运算</strong></h3>
+<p>三目运算符 <strong>“表达式 1? 表达式 2: 表达式 3”</strong> 用于构造三目运算表达式，如 “2&gt;1?true:false” 将返回 true；</p>
+<h3 id="elivis-运算符"><strong>Elivis 运算符</strong></h3>
+<p>Elivis 运算符 <strong>“表达式 1?: 表达式 2”</strong> 从 Groovy 语言引入用于简化三目运算符的，当表达式 1 为非 null 时则返回表达式 1，当表达式 1 为 null 时则返回表达式 2，简化了三目运算符方式 “表达式 1? 表达式 1: 表达式 2”，如“null?:false” 将返回 false，而 “true?:false” 将返回 true；</p>
+<h3 id="正则表达式"><strong>正则表达式</strong></h3>
+<p>使用 “str matches regex，如“'123' matches '\d{3}'” 将返回 true；</p>
+<h3 id="括号优先级表达式"><strong>括号优先级表达式</strong></h3>
+<p>使用 “(表达式)” 构造，括号里的具有高优先级。</p>
+<h3 id="类相关表达式"><strong>类相关表达式</strong></h3>
+<h3 id="类类型表达式"><strong>类类型表达式</strong></h3>
+<p>使用 “T(Type)” 来表示 java.lang.Class 实例，“Type”必须是类全限定名，“java.lang”包除外，即该包下的类可以不指定包名；使用类类型表达式还可以进行访问类静态方法及类静态字段。</p>
+<p>具体使用方法如下：</p>
+<pre><code class="language-java">@Test
+public void testClassTypeExpression() {
+    ExpressionParser parser = new SpelExpressionParser();
+    //java.lang包类访问
+    Class&lt;String&gt; result1 = parser.parseExpression(&quot;T(String)&quot;).getValue(Class.class);
+    System.out.println(result1);
+
+    //其他包类访问
+    String expression2 = &quot;T(com.javacode2018.spel.SpelTest)&quot;;
+    Class&lt;SpelTest&gt; value = parser.parseExpression(expression2).getValue(Class.class);
+    System.out.println(value == SpelTest.class);
+
+    //类静态字段访问
+    int result3 = parser.parseExpression(&quot;T(Integer).MAX_VALUE&quot;).getValue(int.class);
+    System.out.println(result3 == Integer.MAX_VALUE);
+
+    //类静态方法调用
+    int result4 = parser.parseExpression(&quot;T(Integer).parseInt('1')&quot;).getValue(int.class);
+    System.out.println(result4);
+}
+
+</code></pre>
+<p>输出</p>
+<pre><code>class java.lang.String
+true
+true
+1
+
+</code></pre>
+<p>对于 java.lang 包里的可以直接使用 “T(String)” 访问；其他包必须是类全限定名；可以进行静态字段访问如“T(Integer).MAX_VALUE”；也可以进行静态方法访问如“T(Integer).parseInt('1')”。</p>
+<h3 id="类实例化"><strong>类实例化</strong></h3>
+<p>类实例化同样使用 java 关键字 “new”，类名必须是全限定名，但 java.lang 包内的类型除外，如 String、Integer。</p>
+<pre><code class="language-java">@Test
+public void testConstructorExpression() {
+    ExpressionParser parser = new SpelExpressionParser();
+    String result1 = parser.parseExpression(&quot;new String('路人甲java')&quot;).getValue(String.class);
+    System.out.println(result1);
+
+    Date result2 = parser.parseExpression(&quot;new java.util.Date()&quot;).getValue(Date.class);
+    System.out.println(result2);
+}
+
+</code></pre>
+<p>实例化完全跟 Java 内方式一样，运行输出</p>
+<pre><code>路人甲java
+Tue Aug 03 20:22:43 CST 2020
+
+</code></pre>
+<h3 id="instanceof-表达式"><strong>instanceof 表达式</strong></h3>
+<p>SpEL 支持 instanceof 运算符，跟 Java 内使用同义；如 “'haha' instanceof T(String)” 将返回 true。</p>
+<pre><code class="language-java">@Test
+public void testInstanceOfExpression() {
+    ExpressionParser parser = new SpelExpressionParser();
+    Boolean value = parser.parseExpression(&quot;'路人甲' instanceof T(String)&quot;).getValue(Boolean.class);
+    System.out.println(value);
+}
+
+</code></pre>
+<p>输出</p>
+<pre><code>true
+
+</code></pre>
+<h3 id="变量定义及引用"><strong>变量定义及引用</strong></h3>
+<p>变量定义通过 EvaluationContext 接口的 setVariable(variableName, value) 方法定义；在表达式中使用<code>&quot;#variableName&quot;</code>引用；除了引用自定义变量，SpE 还允许引用根对象及当前上下文对象，使用<code>&quot;#root&quot;</code>引用根对象，使用<code>&quot;#this&quot;</code>引用当前上下文对象；</p>
+<pre><code class="language-java">@Test
+public void testVariableExpression() {
+    ExpressionParser parser = new SpelExpressionParser();
+    EvaluationContext context = new StandardEvaluationContext();
+    context.setVariable(&quot;name&quot;, &quot;路人甲java&quot;);
+    context.setVariable(&quot;lesson&quot;, &quot;Spring系列&quot;);
+
+    //获取name变量，lesson变量
+    String name = parser.parseExpression(&quot;#name&quot;).getValue(context, String.class);
+    System.out.println(name);
+    String lesson = parser.parseExpression(&quot;#lesson&quot;).getValue(context, String.class);
+    System.out.println(lesson);
+
+    //StandardEvaluationContext构造器传入root对象，可以通过#root来访问root对象
+    context = new StandardEvaluationContext(&quot;我是root对象&quot;);
+    String rootObj = parser.parseExpression(&quot;#root&quot;).getValue(context, String.class);
+    System.out.println(rootObj);
+
+    //#this用来访问当前上线文中的对象
+    String thisObj = parser.parseExpression(&quot;#this&quot;).getValue(context, String.class);
+    System.out.println(thisObj);
+}
+
+</code></pre>
+<p>输出</p>
+<pre><code>路人甲java
+Spring系列
+我是root对象
+我是root对象
+
+</code></pre>
+<p>使用 “#variable” 来引用在 EvaluationContext 定义的变量；除了可以引用自定义变量，还可以使用 “#root” 引用根对象，“#this”引用当前上下文对象，此处 “#this” 即根对象。</p>
+<h3 id="自定义函数"><strong>自定义函数</strong></h3>
+<p>目前只支持类静态方法注册为自定义函数；SpEL 使用 StandardEvaluationContext 的 registerFunction 方法进行注册自定义函数，其实完全可以使用 setVariable 代替，两者其实本质是一样的；</p>
+<pre><code class="language-java">@Test
+public void testFunctionExpression() throws SecurityException, NoSuchMethodException {
+    //定义2个函数,registerFunction和setVariable都可以，不过从语义上面来看用registerFunction更恰当
+    StandardEvaluationContext context = new StandardEvaluationContext();
+    Method parseInt = Integer.class.getDeclaredMethod(&quot;parseInt&quot;, String.class);
+    context.registerFunction(&quot;parseInt1&quot;, parseInt);
+    context.setVariable(&quot;parseInt2&quot;, parseInt);
+
+    ExpressionParser parser = new SpelExpressionParser();
+    System.out.println(parser.parseExpression(&quot;#parseInt1('3')&quot;).getValue(context, int.class));
+    System.out.println(parser.parseExpression(&quot;#parseInt2('3')&quot;).getValue(context, int.class));
+    
+    String expression1 = &quot;#parseInt1('3') == #parseInt2('3')&quot;;
+    boolean result1 = parser.parseExpression(expression1).getValue(context, boolean.class);
+    System.out.println(result1);
+}
+
+</code></pre>
+<p>此处可以看出 “registerFunction” 和“setVariable”都可以注册自定义函数，但是两个方法的含义不一样，推荐使用 “registerFunction” 方法注册自定义函数。</p>
+<p>运行输出</p>
+<pre><code>3
+3
+true
+
+</code></pre>
+<h3 id="表达式赋值"><strong>表达式赋值</strong></h3>
+<p>使用<code>Expression#setValue</code>方法可以给表达式赋值</p>
+<pre><code class="language-java">@Test
+public void testAssignExpression1() {
+    Object user = new Object() {
+        private String name;
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public String toString() {
+            return &quot;$classname{&quot; +
+                    &quot; + name + '\'' +
+                    '}';
+        }
+    };
+    {
+        //user为root对象
+        ExpressionParser parser = new SpelExpressionParser();
+        EvaluationContext context = new StandardEvaluationContext(user);
+        parser.parseExpression(&quot;#root.name&quot;).setValue(context, &quot;路人甲java&quot;);
+        System.out.println(parser.parseExpression(&quot;#root&quot;).getValue(context, user.getClass()));
+    }
+    {
+        //user为变量
+        ExpressionParser parser = new SpelExpressionParser();
+        EvaluationContext context = new StandardEvaluationContext();
+        context.setVariable(&quot;user&quot;, user);
+        parser.parseExpression(&quot;#user.name&quot;).setValue(context, &quot;路人甲java&quot;);
+        System.out.println(parser.parseExpression(&quot;#user&quot;).getValue(context, user.getClass()));
+    }
+}
+
+</code></pre>
+<p>运行输出</p>
+<pre><code>$classname{name='路人甲java'}
+$classname{name='路人甲java'}
+
+</code></pre>
+<h3 id="对象属性存取及安全导航表达式"><strong>对象属性存取及安全导航表达式</strong></h3>
+<p>对象属性获取非常简单，即使用如 “a.property.property” 这种点缀式获取，SpEL 对于属性名首字母是不区分大小写的；SpEL 还引入了 Groovy 语言中的安全导航运算符“<strong>(对象 | 属性)?. 属性</strong>”，用来避免 “?.” 前边的表达式为 null 时抛出空指针异常，而是返回 null；修改对象属性值则可以通过赋值表达式或 Expression 接口的 setValue 方法修改。</p>
+<pre><code class="language-java">public static class Car {
+    private String name;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return &quot;Car{&quot; +
+                &quot; + name + '\'' +
+                '}';
+    }
+}
+
+public static class User {
+    private Car car;
+
+    public Car getCar() {
+        return car;
+    }
+
+    public void setCar(Car car) {
+        this.car = car;
+    }
+
+    @Override
+    public String toString() {
+        return &quot;User{&quot; +
+                &quot;car=&quot; + car +
+                '}';
+    }
+}
+
+@Test
+public void test5() {
+    User user = new User();
+    EvaluationContext context = new StandardEvaluationContext();
+    context.setVariable(&quot;user&quot;, user);
+
+    ExpressionParser parser = new SpelExpressionParser();
+    //使用.符号，访问user.car.name会报错，原因：user.car为空
+    try {
+        System.out.println(parser.parseExpression(&quot;#user.car.name&quot;).getValue(context, String.class));
+    } catch (EvaluationException | ParseException e) {
+        System.out.println(&quot;出错了：&quot; + e.getMessage());
+    }
+    //使用安全访问符号?.，可以规避null错误
+    System.out.println(parser.parseExpression(&quot;#user?.car?.name&quot;).getValue(context, String.class));
+
+    Car car = new Car();
+    car.setName(&quot;保时捷&quot;);
+    user.setCar(car);
+
+    System.out.println(parser.parseExpression(&quot;#user?.car?.toString()&quot;).getValue(context, String.class));
+}
+
+</code></pre>
+<p>运行输出</p>
+<pre><code>出错了：EL1007E: Property or field 'name' cannot be found on null
+null
+Car{name='保时捷'}
+
+</code></pre>
+<h3 id="对象方法调用"><strong>对象方法调用</strong></h3>
+<p>对象方法调用更简单，跟 Java 语法一样；如 “'haha'.substring(2,4)” 将返回“ha”；而对于根对象可以直接调用方法；</p>
+<h3 id="bean-引用"><strong>Bean 引用</strong></h3>
+<p>SpEL 支持使用 “@” 符号来引用 Bean，在引用 Bean 时需要使用 BeanResolver 接口实现来查找 Bean，Spring 提供 BeanFactoryResolver 实现。</p>
+<pre><code class="language-java">@Test
+public void test6() {
+    DefaultListableBeanFactory factory = new DefaultListableBeanFactory();
+    User user = new User();
+    Car car = new Car();
+    car.setName(&quot;保时捷&quot;);
+    user.setCar(car);
+    factory.registerSingleton(&quot;user&quot;, user);
+
+    StandardEvaluationContext context = new StandardEvaluationContext();
+    context.setBeanResolver(new BeanFactoryResolver(factory));
+
+    ExpressionParser parser = new SpelExpressionParser();
+    User userBean = parser.parseExpression(&quot;@user&quot;).getValue(context, User.class);
+    System.out.println(userBean);
+    System.out.println(userBean == factory.getBean(&quot;user&quot;));
+}
+
+</code></pre>
+<p>运行输出</p>
+<pre><code>User{car=Car{name='保时捷'}}
+true
+
+</code></pre>
+<h3 id="集合相关表达式"><strong>集合相关表达式</strong></h3>
+<h3 id="内联-list"><strong>内联 List</strong></h3>
+<p>从 Spring3.0.4 开始支持内联 List，使用 {表达式，……} 定义内联 List，如 “{1,2,3}” 将返回一个整型的 ArrayList，而 “{}” 将返回空的 List，对于字面量表达式列表，SpEL 会使用 java.util.Collections.unmodifiableList 方法将列表设置为不可修改。</p>
+<pre><code class="language-java">@Test
+public void test7() {
+    ExpressionParser parser = new SpelExpressionParser();
+    //将返回不可修改的空List
+    List&lt;Integer&gt; result2 = parser.parseExpression(&quot;{}&quot;).getValue(List.class);
+    //对于字面量列表也将返回不可修改的List
+    List&lt;Integer&gt; result1 = parser.parseExpression(&quot;{1,2,3}&quot;).getValue(List.class);
+    Assert.assertEquals(new Integer(1), result1.get(0));
+    try {
+        result1.set(0, 2);
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    //对于列表中只要有一个不是字面量表达式，将只返回原始List，
+    //不会进行不可修改处理
+    String expression3 = &quot;{{1+2,2+4},{3,4+4}}&quot;;
+    List&lt;List&lt;Integer&gt;&gt; result3 = parser.parseExpression(expression3).getValue(List.class);
+    result3.get(0).set(0, 1);
+    System.out.println(result3);
+    //声明二维数组并初始化
+    int[] result4 = parser.parseExpression(&quot;new int[2]{1,2}&quot;).getValue(int[].class);
+    System.out.println(result4[1]);
+    //定义一维数组并初始化
+    int[] result5 = parser.parseExpression(&quot;new int[1]&quot;).getValue(int[].class);
+    System.out.println(result5[0]);
+}
+
+</code></pre>
+<p>输出</p>
+<pre><code>java.lang.UnsupportedOperationException
+ at java.util.Collections$UnmodifiableList.set(Collections.java:1311)
+ at com.javacode2018.spel.SpelTest.test7(SpelTest.java:315)
+[[1, 6], [3, 8]]
+2
+0
+
+</code></pre>
+<h3 id="内联数组"><strong>内联数组</strong></h3>
+<p>和 Java 数组定义类似，只是在定义时进行多维数组初始化。</p>
+<pre><code class="language-java">int[][][] result4 = parser.parseExpression(&quot;new int[1][2][3]{{1}{2}{3}}&quot;).getValue(int[][][].class);
+
+</code></pre>
+<h3 id="集合字典元素访问"><strong>集合，字典元素访问</strong></h3>
+<p>SpEL 目前支持所有集合类型和字典类型的元素访问，使用 “集合[索引]” 访问集合元素，使用 “map[key]” 访问字典元素；</p>
+<pre><code class="language-java">//SpEL内联List访问  
+int result1 = parser.parseExpression(&quot;{1,2,3}[0]&quot;).getValue(int.class);  
+
+//SpEL目前支持所有集合类型的访问  
+Collection&lt;Integer&gt; collection = new HashSet&lt;Integer&gt;();  
+collection.add(1);  
+collection.add(2);  
+
+EvaluationContext context2 = new StandardEvaluationContext();  
+context2.setVariable(&quot;collection&quot;, collection);  
+int result2 = parser.parseExpression(&quot;#collection[1]&quot;).getValue(context2, int.class);  
+
+
+//SpEL对Map字典元素访问的支持  
+Map&lt;String, Integer&gt; map = new HashMap&lt;String, Integer&gt;();  
+map.put(&quot;a&quot;, 1);  
+
+EvaluationContext context3 = new StandardEvaluationContext();  
+context3.setVariable(&quot;map&quot;, map);  
+int result3 = parser.parseExpression(&quot;#map['a']&quot;).getValue(context3, int.class);  
+
+</code></pre>
+<h3 id="列表字典数组元素修改"><strong>列表，字典，数组元素修改</strong></h3>
+<p>可以使用赋值表达式或 Expression 接口的 setValue 方法修改；</p>
+<pre><code class="language-java">@Test
+public void test8() {
+    ExpressionParser parser = new SpelExpressionParser();
+
+    //修改list元素值
+    List&lt;Integer&gt; list = new ArrayList&lt;Integer&gt;();
+    list.add(1);
+    list.add(2);
+
+    EvaluationContext context1 = new StandardEvaluationContext();
+    context1.setVariable(&quot;collection&quot;, list);
+    parser.parseExpression(&quot;#collection[1]&quot;).setValue(context1, 4);
+    int result1 = parser.parseExpression(&quot;#collection[1]&quot;).getValue(context1, int.class);
+    System.out.println(result1);
+
+    //修改map元素值
+    Map&lt;String, Integer&gt; map = new HashMap&lt;String, Integer&gt;();
+    map.put(&quot;a&quot;, 1);
+    EvaluationContext context2 = new StandardEvaluationContext();
+    context2.setVariable(&quot;map&quot;, map);
+    parser.parseExpression(&quot;#map['a']&quot;).setValue(context2, 4);
+    Integer result2 = parser.parseExpression(&quot;#map['a']&quot;).getValue(context2, int.class);
+    System.out.println(result2);
+}
+
+</code></pre>
+<p>输出</p>
+<pre><code>4
+4
+
+</code></pre>
+<h3 id="集合投影"><strong>集合投影</strong></h3>
+<p>在 SQL 中投影指从表中选择出列，而在 SpEL 指根据集合中的元素中通过选择来构造另一个集合，该集合和原集合具有相同数量的元素；SpEL 使用 “（list|map）.![投影表达式]” 来进行投影运算：</p>
+<pre><code class="language-java">@Test
+public void test9() {
+    ExpressionParser parser = new SpelExpressionParser();
+
+    //1.测试集合或数组
+    List&lt;Integer&gt; list = new ArrayList&lt;Integer&gt;();
+    list.add(4);
+    list.add(5);
+    EvaluationContext context1 = new StandardEvaluationContext();
+    context1.setVariable(&quot;list&quot;, list);
+    Collection&lt;Integer&gt; result1 = parser.parseExpression(&quot;#list.![#this+1]&quot;).getValue(context1, Collection.class);
+    result1.forEach(System.out::println);
+
+    System.out.println(&quot;------------&quot;);
+    //2.测试字典
+    Map&lt;String, Integer&gt; map = new HashMap&lt;String, Integer&gt;();
+    map.put(&quot;a&quot;, 1);
+    map.put(&quot;b&quot;, 2);
+    EvaluationContext context2 = new StandardEvaluationContext();
+    context2.setVariable(&quot;map&quot;, map);
+    List&lt;Integer&gt; result2 = parser.parseExpression(&quot;#map.![value+1]&quot;).getValue(context2, List.class);
+    result2.forEach(System.out::println);
+}
+
+</code></pre>
+<p>对于集合或数组使用如上表达式进行投影运算，其中投影表达式中 “#this” 代表每个集合或数组元素，可以使用比如 “#this.property” 来获取集合元素的属性，其中 “#this” 可以省略。</p>
+<p>Map 投影最终只能得到 List 结果，如上所示，对于投影表达式中的 “#this” 将是 Map.Entry，所以可以使用 “value” 来获取值，使用 “key” 来获取键。</p>
+<h3 id="集合选择"><strong>集合选择</strong></h3>
+<p>在 SQL 中指使用 select 进行选择行数据，而在 SpEL 指根据原集合通过条件表达式选择出满足条件的元素并构造为新的集合，SpEL 使用 “(list|map).?[选择表达式]”，其中选择表达式结果必须是 boolean 类型，如果 true 则选择的元素将添加到新集合中，false 将不添加到新集合中。</p>
+<pre><code class="language-java">@Test
+public void test10() {
+    ExpressionParser parser = new SpelExpressionParser();
+
+    //1.测试集合或数组
+    List&lt;Integer&gt; list = new ArrayList&lt;Integer&gt;();
+    list.add(1);
+    list.add(4);
+    list.add(5);
+    list.add(7);
+    EvaluationContext context1 = new StandardEvaluationContext();
+    context1.setVariable(&quot;list&quot;, list);
+    Collection&lt;Integer&gt; result1 = parser.parseExpression(&quot;#list.?[#this&gt;4]&quot;).getValue(context1, Collection.class);
+    result1.forEach(System.out::println);
+
+    System.out.println(&quot;------------&quot;);
+    
+}
+
+</code></pre>
+<p>输出</p>
+<pre><code>5
+7
+
+</code></pre>
+<p>对于集合或数组选择，如 “#collection.?[#this&gt;4]” 将选择出集合元素值大于 4 的所有元素。选择表达式必须返回布尔类型，使用 “#this” 表示当前元素。</p>
+<pre><code class="language-java">//2.测试字典
+Map&lt;String, Integer&gt; map = new HashMap&lt;String, Integer&gt;();
+map.put(&quot;a&quot;, 1);
+map.put(&quot;b&quot;, 2);
+map.put(&quot;c&quot;, 3);
+EvaluationContext context2 = new StandardEvaluationContext();
+context2.setVariable(&quot;map&quot;, map);
+Map&lt;String, Integer&gt; result2 = parser.parseExpression(&quot;#map.?[key!='a']&quot;).getValue(context2, Map.class);
+result2.forEach((key, value) -&gt; {
+    System.out.println(key + &quot;:&quot; + value);
+});
+System.out.println(&quot;------------&quot;);
+List&lt;Integer&gt; result3 = parser.parseExpression(&quot;#map.?[key!='a'].![value+1]&quot;).getValue(context2, List.class);
+result3.forEach(System.out::println);
+
+</code></pre>
+<p>输出</p>
+<pre><code>b:2
+c:3
+------------
+3
+4
+
+</code></pre>
+<p>对于字典选择，如 “#map.?[#this.key != 'a']” 将选择键值不等于”a”的，其中选择表达式中 “#this” 是 Map.Entry 类型，而最终结果还是 Map，这点和投影不同；集合选择和投影可以一起使用，如 “#map.?[key != 'a'].![value+1]” 将首先选择键值不等于”a”的，然后在选出的 Map 中再进行 “value+1” 的投影。</p>
+<h3 id="表达式模板"><strong>表达式模板</strong></h3>
+<p>模板表达式就是由字面量与一个或多个表达式块组成。每个表达式块由 “前缀 + 表达式 + 后缀” 形式组成，如 “${1+2}” 即表达式块。在前边我们已经介绍了使用 ParserContext 接口实现来定义表达式是否是模板及前缀和后缀定义。在此就不多介绍了，如 “Error ${#v0} ${#v1}” 表达式表示由字面量 “Error ”、模板表达式“#v0”、模板表达式“#v1” 组成，其中 v0 和 v1 表示自定义变量，需要在上下文定义。</p>
+<p>解析表达式的时候需要指定模板，模板通过<code>ParserContext</code>接口来定义</p>
+<pre><code class="language-java">public interface ParserContext {
+ //是否是模板
+ boolean isTemplate();
+ //模板表达式前缀
+ String getExpressionPrefix();
+ //模板表达式后缀
+ String getExpressionSuffix();
+}
+
+</code></pre>
+<p>有个子类，我们直接可以拿来用：<code>TemplateParserContext</code>。</p>
+<pre><code class="language-java">@Test
+public void test11() {
+    //创建解析器
+    SpelExpressionParser parser = new SpelExpressionParser();
+    //创建解析器上下文
+    ParserContext context = new TemplateParserContext(&quot;%{&quot;, &quot;}&quot;);
+    Expression expression = parser.parseExpression(&quot;你好:%{#name},我们正在学习:%{#lesson}&quot;, context);
+
+    //创建表达式计算上下文
+    EvaluationContext evaluationContext = new StandardEvaluationContext();
+    evaluationContext.setVariable(&quot;name&quot;, &quot;路人甲java&quot;);
+    evaluationContext.setVariable(&quot;lesson&quot;, &quot;spring高手系列!&quot;);
+    //获取值
+    String value = expression.getValue(evaluationContext, String.class);
+    System.out.println(value);
+}
+
+</code></pre>
+<p>运行输出</p>
+<pre><code>你好:路人甲java,我们正在学习:spring高手系列!
+
+</code></pre>
+<h2 id="在-bean-定义中使用-spel-表达式"><strong>在 Bean 定义中使用 spel 表达式</strong></h2>
+<h3 id="xml-风格的配置"><strong>xml 风格的配置</strong></h3>
+<p>SpEL 支持在 Bean 定义时注入，默认使用 “#{SpEL 表达式}” 表示，其中 “#root” 根对象默认可以认为是 ApplicationContext，只有 ApplicationContext 实现默认支持 SpEL，获取根对象属性其实是获取容器中的 Bean。</p>
+<p>如：</p>
+<pre><code class="language-xml">&lt;bean&gt;  
+    &lt;constructor-arg value=&quot;#{' World!'}&quot;/&gt;  
+&lt;/bean&gt;  
+
+&lt;bean&gt;  
+    &lt;constructor-arg value=&quot;#{'Hello'}#{world}&quot;/&gt;  
+&lt;/bean&gt;    
+
+&lt;bean&gt;  
+    &lt;constructor-arg value=&quot;#{'Hello' + world}&quot;/&gt;
+&lt;/bean&gt;  
+
+&lt;bean&gt;  
+    &lt;constructor-arg value=&quot;#{'Hello' + @world}&quot;/&gt;  
+&lt;/bean&gt;
+
+</code></pre>
+<p>模板默认以前缀 “#{” 开头，以后缀 “}” 结尾，且不允许嵌套，如 “#{'Hello'#{world}}” 错误，如 “#{'Hello' + world}” 中“world”默认解析为 Bean。当然可以使用 “@bean” 引用了。</p>
+<p>是不是很简单，除了 XML 配置方式，Spring 还提供一种注解方式 @Value，接着往下看吧。</p>
+<h3 id="注解风格的配置"><strong>注解风格的配置</strong></h3>
+<p>基于注解风格的 SpEL 配置也非常简单，使用 @Value 注解来指定 SpEL 表达式，该注解可以放到字段、方法及方法参数上。</p>
+<p>测试 Bean 类如下，使用 @Value 来指定 SpEL 表达式：</p>
+<pre><code class="language-java">public class SpELBean {  
+    @Value(&quot;#{'Hello' + world}&quot;)  
+    private String value;  
+}
+
+</code></pre>
+<h3 id="在-bean-定义中-spel-的问题"><strong>在 Bean 定义中 SpEL 的问题</strong></h3>
+<p>如果有同学问 “#{我不是 SpEL 表达式}” 不是 SpEL 表达式，而是公司内部的模板，想换个前缀和后缀该如何实现呢？</p>
+<p>我们使用 BeanFactoryPostProcessor 接口提供 postProcessBeanFactory 回调方法，它是在 IoC 容器创建好但还未进行任何 Bean 初始化时被 ApplicationContext 实现调用，因此在这个阶段把 SpEL 前缀及后缀修改掉是安全的，具体代码如下：</p>
+<pre><code class="language-java">package com.javacode2018.spel.test1;
+
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.config.BeanExpressionResolver;
+import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
+import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+import org.springframework.context.expression.StandardBeanExpressionResolver;
+import org.springframework.stereotype.Component;
+
+@Component
+public class SpelBeanFactoryPostProcessor implements BeanFactoryPostProcessor {
+    @Override
+    public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
+        BeanExpressionResolver beanExpressionResolver = beanFactory.getBeanExpressionResolver();
+        if (beanExpressionResolver instanceof StandardBeanExpressionResolver) {
+            StandardBeanExpressionResolver resolver = (StandardBeanExpressionResolver) beanExpressionResolver;
+            resolver.setExpressionPrefix(&quot;%{&quot;);
+            resolver.setExpressionSuffix(&quot;}&quot;);
+        }
+    }
+}
+
+</code></pre>
+<p>上测试代码</p>
+<pre><code class="language-java">package com.javacode2018.spel.test1;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+@Component
+public class LessonModel {
+    @Value(&quot;你好,%{@name},%{@msg}&quot;)
+    private String desc;
+
+    @Override
+    public String toString() {
+        return &quot;LessonModel{&quot; +
+                &quot;desc='&quot; + desc + '\'' +
+                '}';
+    }
+}
+
+</code></pre>
+<p>@name：容器中 name 的 bean</p>
+<p>@msg：容器中 msg 的 bean</p>
+<p>下面我们来个配置类，顺便定义 name 和 msg 这 2 个 bean，顺便扫描上面 2 个配置类</p>
+<pre><code class="language-java">package com.javacode2018.spel.test1;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+
+@ComponentScan
+@Configuration
+public class MainConfig {
+    @Bean
+    public String name() {
+        return &quot;路粉&quot;;
+    }
+
+    @Bean
+    public String msg() {
+        return &quot;欢迎和我一起学习java各种技术！&quot;;
+    }
+}
+
+</code></pre>
+<p>测试用例</p>
+<pre><code class="language-java">@Test
+public void test12() {
+    AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
+    context.register(MainConfig.class);
+    context.refresh();
+    LessonModel lessonModel = context.getBean(LessonModel.class);
+    System.out.println(lessonModel);
+}
+
+</code></pre>
+<p>运行输出</p>
+<pre><code>LessonModel{desc='你好,路粉,欢迎和我一起学习java各种技术！'}
+
+</code></pre>
+<h2 id="总结"><strong>总结</strong></h2>
+<ol>
+<li>Spel 功能还是比较强大的，可以脱离 spring 环境独立运行</li>
+<li>spel 可以用在一些动态规则的匹配方面，比如监控系统中监控规则的动态匹配；其他的一些条件动态判断等等</li>
+<li>本文内容比较长，建议大家把案例都敲一遍，可以设置一些断点去研究一下源码，有问题的，欢迎大家留言交流。</li>
+</ol>
+<h2 id="案例源码"><strong>案例源码</strong></h2>
+<pre><code>https://gitee.com/javacode2018/spring-series
+</code></pre>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#spel-%E6%A6%82%E8%BF%B0"><strong>Spel 概述</strong></a></li>
+<li><a href="#spel-%E8%83%BD%E5%B9%B2%E4%BB%80%E4%B9%88"><strong>Spel 能干什么?</strong></a></li>
+<li><a href="#spel-%E5%9F%BA%E7%A1%80"><strong>SpEL 基础</strong></a>
+<ul>
+<li><a href="#helloworld"><strong>HelloWorld</strong></a></li>
+<li><a href="#spel-%E5%8E%9F%E7%90%86%E5%8F%8A%E6%8E%A5%E5%8F%A3"><strong>SpEL 原理及接口</strong></a></li>
+<li><a href="#%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86"><strong>工作原理</strong></a></li>
+<li><a href="#expressionparser-%E6%8E%A5%E5%8F%A3"><strong>ExpressionParser 接口</strong></a></li>
+<li><a href="#evaluationcontext-%E6%8E%A5%E5%8F%A3"><strong>EvaluationContext 接口</strong></a></li>
+<li><a href="#expression-%E6%8E%A5%E5%8F%A3"><strong>Expression 接口</strong></a></li>
+</ul>
+</li>
+<li><a href="#spel-%E8%AF%AD%E6%B3%95"><strong>SpEL 语法</strong></a>
+<ul>
+<li><a href="#%E5%9F%BA%E6%9C%AC%E8%A1%A8%E8%BE%BE%E5%BC%8F"><strong>基本表达式</strong></a></li>
+<li><a href="#%E5%AD%97%E9%9D%A2%E9%87%8F%E8%A1%A8%E8%BE%BE%E5%BC%8F"><strong>字面量表达式</strong></a></li>
+<li><a href="#%E7%AE%97%E6%95%B0%E8%BF%90%E7%AE%97%E8%A1%A8%E8%BE%BE%E5%BC%8F"><strong>算数运算表达式</strong></a></li>
+<li><a href="#%E5%85%B3%E7%B3%BB%E8%A1%A8%E8%BE%BE%E5%BC%8F"><strong>关系表达式</strong></a></li>
+<li><a href="#%E9%80%BB%E8%BE%91%E8%A1%A8%E8%BE%BE%E5%BC%8F"><strong>逻辑表达式</strong></a></li>
+<li><a href="#%E5%AD%97%E7%AC%A6%E4%B8%B2%E8%BF%9E%E6%8E%A5%E5%8F%8A%E6%88%AA%E5%8F%96%E8%A1%A8%E8%BE%BE%E5%BC%8F"><strong>字符串连接及截取表达式</strong></a></li>
+<li><a href="#%E4%B8%89%E7%9B%AE%E8%BF%90%E7%AE%97"><strong>三目运算</strong></a></li>
+<li><a href="#elivis-%E8%BF%90%E7%AE%97%E7%AC%A6"><strong>Elivis 运算符</strong></a></li>
+<li><a href="#%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F"><strong>正则表达式</strong></a></li>
+<li><a href="#%E6%8B%AC%E5%8F%B7%E4%BC%98%E5%85%88%E7%BA%A7%E8%A1%A8%E8%BE%BE%E5%BC%8F"><strong>括号优先级表达式</strong></a></li>
+<li><a href="#%E7%B1%BB%E7%9B%B8%E5%85%B3%E8%A1%A8%E8%BE%BE%E5%BC%8F"><strong>类相关表达式</strong></a></li>
+<li><a href="#%E7%B1%BB%E7%B1%BB%E5%9E%8B%E8%A1%A8%E8%BE%BE%E5%BC%8F"><strong>类类型表达式</strong></a></li>
+<li><a href="#%E7%B1%BB%E5%AE%9E%E4%BE%8B%E5%8C%96"><strong>类实例化</strong></a></li>
+<li><a href="#instanceof-%E8%A1%A8%E8%BE%BE%E5%BC%8F"><strong>instanceof 表达式</strong></a></li>
+<li><a href="#%E5%8F%98%E9%87%8F%E5%AE%9A%E4%B9%89%E5%8F%8A%E5%BC%95%E7%94%A8"><strong>变量定义及引用</strong></a></li>
+<li><a href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E5%87%BD%E6%95%B0"><strong>自定义函数</strong></a></li>
+<li><a href="#%E8%A1%A8%E8%BE%BE%E5%BC%8F%E8%B5%8B%E5%80%BC"><strong>表达式赋值</strong></a></li>
+<li><a href="#%E5%AF%B9%E8%B1%A1%E5%B1%9E%E6%80%A7%E5%AD%98%E5%8F%96%E5%8F%8A%E5%AE%89%E5%85%A8%E5%AF%BC%E8%88%AA%E8%A1%A8%E8%BE%BE%E5%BC%8F"><strong>对象属性存取及安全导航表达式</strong></a></li>
+<li><a href="#%E5%AF%B9%E8%B1%A1%E6%96%B9%E6%B3%95%E8%B0%83%E7%94%A8"><strong>对象方法调用</strong></a></li>
+<li><a href="#bean-%E5%BC%95%E7%94%A8"><strong>Bean 引用</strong></a></li>
+<li><a href="#%E9%9B%86%E5%90%88%E7%9B%B8%E5%85%B3%E8%A1%A8%E8%BE%BE%E5%BC%8F"><strong>集合相关表达式</strong></a></li>
+<li><a href="#%E5%86%85%E8%81%94-list"><strong>内联 List</strong></a></li>
+<li><a href="#%E5%86%85%E8%81%94%E6%95%B0%E7%BB%84"><strong>内联数组</strong></a></li>
+<li><a href="#%E9%9B%86%E5%90%88%E5%AD%97%E5%85%B8%E5%85%83%E7%B4%A0%E8%AE%BF%E9%97%AE"><strong>集合，字典元素访问</strong></a></li>
+<li><a href="#%E5%88%97%E8%A1%A8%E5%AD%97%E5%85%B8%E6%95%B0%E7%BB%84%E5%85%83%E7%B4%A0%E4%BF%AE%E6%94%B9"><strong>列表，字典，数组元素修改</strong></a></li>
+<li><a href="#%E9%9B%86%E5%90%88%E6%8A%95%E5%BD%B1"><strong>集合投影</strong></a></li>
+<li><a href="#%E9%9B%86%E5%90%88%E9%80%89%E6%8B%A9"><strong>集合选择</strong></a></li>
+<li><a href="#%E8%A1%A8%E8%BE%BE%E5%BC%8F%E6%A8%A1%E6%9D%BF"><strong>表达式模板</strong></a></li>
+</ul>
+</li>
+<li><a href="#%E5%9C%A8-bean-%E5%AE%9A%E4%B9%89%E4%B8%AD%E4%BD%BF%E7%94%A8-spel-%E8%A1%A8%E8%BE%BE%E5%BC%8F"><strong>在 Bean 定义中使用 spel 表达式</strong></a>
+<ul>
+<li><a href="#xml-%E9%A3%8E%E6%A0%BC%E7%9A%84%E9%85%8D%E7%BD%AE"><strong>xml 风格的配置</strong></a></li>
+<li><a href="#%E6%B3%A8%E8%A7%A3%E9%A3%8E%E6%A0%BC%E7%9A%84%E9%85%8D%E7%BD%AE"><strong>注解风格的配置</strong></a></li>
+<li><a href="#%E5%9C%A8-bean-%E5%AE%9A%E4%B9%89%E4%B8%AD-spel-%E7%9A%84%E9%97%AE%E9%A2%98"><strong>在 Bean 定义中 SpEL 的问题</strong></a></li>
+</ul>
+</li>
+<li><a href="#%E6%80%BB%E7%BB%93"><strong>总结</strong></a></li>
+<li><a href="#%E6%A1%88%E4%BE%8B%E6%BA%90%E7%A0%81"><strong>案例源码</strong></a></li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://xuyj1111.github.io/Kj_kWSjDE/">
+              <h3 class="post-title">
+                【转载】jackson 的几个注解
+              </h3>
+            </a>
+          </div>
+        
+
+        
+
+        <div class="site-footer">
+  
+  <a class="rss" href="https://xuyj1111.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+
+
+
+    <div id="vcomments"></div>
+    <script>
+        new Valine({
+            el: '#vcomments',
+            appId: 'ot2L3hKJVxTAXnr1VQt7wm70-gzGzoHsz',
+            appKey: 'BjaYGo2m6zV3mCvxGLGsDP5V'
+        })
+    </script>
+
+
+
+  </body>
+
+</html>

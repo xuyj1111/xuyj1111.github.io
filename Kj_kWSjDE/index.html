@@ -1,0 +1,405 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>【转载】jackson 的几个注解 | 洗衣机的博客</title>
+<link rel="shortcut icon" href="https://xuyj1111.github.io/favicon.ico?v=1705159156297">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://xuyj1111.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="【转载】jackson 的几个注解 | 洗衣机的博客 - Atom Feed" href="https://xuyj1111.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+
+    <meta name="description" content="
+注解@JsonIgnoreProperties, by 弄玉x
+
+一、jackson 的 mavern 依赖
+&lt;dependency&gt; 
+    &lt;groupId&gt;com.fasterxml.jackson.cor..." />
+    <meta name="keywords" content="Java,转载" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
+ <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://xuyj1111.github.io">
+  <img class="avatar" src="https://xuyj1111.github.io/images/avatar.png?v=1705159156297" alt="">
+  </a>
+  <h1 class="site-title">
+    洗衣机的博客
+  </h1>
+  <p class="site-description">
+    【一名Java开发】slave👉https://www.cnblogs.com/xuyj1111/
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="https://xuyj1111.github.io" class="menu">
+          主页
+        </a>
+      
+    
+      
+        <a href="https://xuyj1111.github.io/archives" class="menu">
+          文章
+        </a>
+      
+    
+      
+        <a href="https://xuyj1111.github.io/tags" class="menu">
+          标签
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/xuyj1111" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+  <form id="gridea-search-form" action="https://xuyj1111.github.io/search/">
+    <input name="q" />
+  </form>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              【转载】jackson 的几个注解
+            </h2>
+            <div class="post-info">
+              <span>
+                2023-02-15
+              </span>
+              <span>
+                6 min read
+              </span>
+              
+                <a href="https://xuyj1111.github.io/SOje8Joqr/" class="post-tag">
+                  # Java
+                </a>
+              
+                <a href="https://xuyj1111.github.io/JDrWa3FBq/" class="post-tag">
+                  # 转载
+                </a>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content">
+                <blockquote>
+<p><a href="https://blog.csdn.net/m0_46069861/article/details/108848223">注解@JsonIgnoreProperties</a>, by 弄玉x</p>
+</blockquote>
+<p><strong>一、jackson 的 mavern 依赖</strong></p>
+<pre><code>&lt;dependency&gt; 
+    &lt;groupId&gt;com.fasterxml.jackson.core&lt;/groupId&gt; 
+        &lt;artifactId&gt;jackson-databind&lt;/artifactId&gt; 
+    &lt;version&gt;2.5.3&lt;/version&gt;
+&lt;/dependency&gt;
+
+</code></pre>
+<p><strong>二、使用的背景</strong><br>
+springboot 项目中定义了很多类，我们在 rest 返回中直接返回或者在返回对象中使用这些类，spring 已经使用 jackson 自动帮我们完成这些的 to json。但是有时候自动转的 json 内容太多，或者格式不符合我们的期望，因此需要调整类的 to json 过程，或者说希望自定义类的 json 过程。<br>
+<strong>三、@JsonProperty</strong><br>
+1、概念：</p>
+<ul>
+<li>此注解用于属性上，作用是把该属性的名称序列化为另外一个名称，如把 trueName 属性序列化为 name，@JsonProperty(“name”)。</li>
+<li>对属性名称重命名，比如在很多场景下 Java 对象的属性是按照规范的驼峰书写，但在数据库设计时使用的是下划线连接方式，此处在进行映射的时候就可以使用该注解。</li>
+</ul>
+<p>2、用法<br>
+例如：使用该注解将以下表结构转化为 Javabean：</p>
+<figure data-type="image" tabindex="1"><img src="https://img-blog.csdnimg.cn/20200928140112977.png#pic_center" alt="" loading="lazy"></figure>
+<pre><code>public class CustomerInfo{
+    
+    private int id;
+
+    //使用 @JsonProperty注解将表结构中的字段映射到实体类中
+    @JsonProperty(&quot;customer_name&quot;)
+    private String customerName;
+    
+    @JsonProperty(&quot;customer_id&quot;)
+    private String customerId;
+    
+    @JsonProperty(&quot;product_id&quot;)
+    private String productId;
+    
+    @JsonProperty(&quot;source_address&quot;)
+    private String sourceAddress;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getCustomerName() {
+        return customerName;
+    }
+
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
+    }
+
+    public String getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(String customerId) {
+        this.customerId = customerId;
+    }
+
+    public String getProductId() {
+        return productId;
+    }
+
+    public void setProductId(String productId) {
+        this.productId = productId;
+    }
+
+    public String getSourceAddress() {
+        return sourceAddress;
+    }
+
+    public void setSourceAddress(String sourceAddress) {
+        this.sourceAddress = sourceAddress;
+    }
+}
+
+</code></pre>
+<p><strong>四、@JsonIgnore</strong><br>
+1、概念</p>
+<ul>
+<li>用于属性或者方法上（最好是属性上），用来完全忽略被注解的字段和方法对应的属性，即便这个字段或方法可以被自动检测到或者还有其他的注解，一般标记在属性或者方法上，返回的 json 数据即不包含该属性。</li>
+</ul>
+<p>2、用法<br>
+使用情景：需要把一个 List 转换成 json 格式的数据传递给前台。但实体类中基本属性字段的值都存储在快照属性字段中。此时我可以在业务层中做处理，把快照属性字段的值赋给实体类中对应的基本属性字段。最后，我希望返回的 json 数据中不包含这两个快照字段，那么在实体类中快照属性上加注解 @JsonIgnore，那么最后返回的 json 数据，将不会包含 customerId 和 productId 两个属性值。</p>
+<pre><code>public class CustomerInfo {
+    
+    private int id;
+    
+    //使用 @JsonIgnore注解在生成json数据时，忽略该字段
+    
+    private String customerName;
+    
+    @JsonIgnore
+    private String customerId;
+    
+    @JsonIgnore
+    private String productId;
+    
+    private String sourceAddress;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getCustomerName() {
+        return customerName;
+    }
+
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
+    }
+
+    public String getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(String customerId) {
+        this.customerId = customerId;
+    }
+
+    public String getProductId() {
+        return productId;
+    }
+
+    public void setProductId(String productId) {
+        this.productId = productId;
+    }
+
+    public String getSourceAddress() {
+        return sourceAddress;
+    }
+
+    public void setSourceAddress(String sourceAddress) {
+        this.sourceAddress = sourceAddress;
+    }
+}
+
+</code></pre>
+<p><strong>五、@JsonIgnoreProperties</strong><br>
+1、概念：<br>
+是类注解，作用是 json 序列化时将 java bean 中的一些属性忽略掉，序列化和反序列化都受影响。<br>
+2、用法：<br>
+@JsonIgnoreProperties(ignoreUnknown = true)，将这个注解写在类上之后，就会忽略类中不存在的字段。</p>
+<ul>
+<li>使用</li>
+</ul>
+<pre><code>@Data
+@JsonIgnoreProperties(value = {&quot;fullName&quot;, &quot;comment&quot;})
+public class User {
+    private String id;
+    private String name;
+    private String fullName;
+    private String comment;
+    private String mail;
+
+    @JsonIgnore
+    private String address;
+
+    @JsonFormat(timezone = &quot;GMT+8&quot;, pattern = &quot;yyyy-MM-dd HH:mm:ss&quot;)
+    private Date regDate;
+
+    private Date reg2Date;
+}
+
+
+
+</code></pre>
+<p>说明：User 类的 fullName 和 comment 字段会被 @JsonIgnoreProperties 注解忽略。address 字段会被 @JsonIgnore 注解忽略。regDate 会按照 @JsonFormat(timezone = “GMT+8”, pattern = “yyyy-MM-dd HH:mm:ss”) 进行格式转。</p>
+<ul>
+<li>我们的 controller 示例代码：</li>
+</ul>
+<pre><code>    @ApiOperation(value = &quot;按用户id删除&quot;, notes=&quot;private&quot;)
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = &quot;userId&quot;, defaultValue = &quot;2&quot;, value = &quot;userID&quot;, required = true, dataType = &quot;string&quot;, paramType = &quot;path&quot;),
+    })
+    @DeleteMapping(value = &quot;/users/{userId}&quot;, produces = &quot;application/json;charset=UTF-8&quot;)
+    public User delUser(@PathVariable String userId) {
+        User user = (User)userSvc.deleteById(userId);
+        log.info(&quot;rest del user={} by id={}&quot;, user, userId);
+        return user;
+    }
+
+
+</code></pre>
+<ul>
+<li>可以看到返回的对象是 User，然后 comment、fullName、address 属性被忽略了，regDate 的格式进行转换。<img src="https://img-blog.csdnimg.cn/20200928143036147.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzQ2MDY5ODYx,size_16,color_FFFFFF,t_70#pic_center" alt="" loading="lazy"><br>
+<strong>六、@JsonFormat</strong><br>
+1、概念：<br>
+用于属性或者方法上（最好是属性上），可以方便的把 Date 类型直接转化为我们想要的模式。<br>
+2、用法：</li>
+</ul>
+<pre><code>@JsonFormat(pattern=&quot;yyyy-MM-dd HH:mm:ss&quot;)
+private Date updateTime;
+
+</code></pre>
+<p><strong>七、@JsonSerialize</strong><br>
+用于属性或者 getter 方法上，用于在序列化时嵌入我们自定义的代码，比如序列化一个 double 时在其后面限制两位小数点。<br>
+<strong>八、@JsonDeserialize</strong><br>
+用于属性或者 setter 方法上，用于在反序列化时可以嵌入我们自定义的代码，类似于上面的 @JsonSerialize。<br>
+<strong>九、@JsonInclude</strong><br>
+属性值为 null 的不参与序列化。例子：@JsonInclude(Include.NON_NULL)。</p>
+
+              </div>
+              <div class="toc-container">
+                
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://xuyj1111.github.io/nZRRBCWiX/">
+              <h3 class="post-title">
+                【Java】HttpMessageConverters 类
+              </h3>
+            </a>
+          </div>
+        
+
+        
+
+        <div class="site-footer">
+  
+  <a class="rss" href="https://xuyj1111.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+
+
+
+    <div id="vcomments"></div>
+    <script>
+        new Valine({
+            el: '#vcomments',
+            appId: 'ot2L3hKJVxTAXnr1VQt7wm70-gzGzoHsz',
+            appKey: 'BjaYGo2m6zV3mCvxGLGsDP5V'
+        })
+    </script>
+
+
+
+  </body>
+
+</html>
