@@ -1,0 +1,265 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Bash和Zsh Shell命令行窗口 | 洗衣机的博客</title>
+<link rel="shortcut icon" href="https://xuyj1111.github.io/favicon.ico?v=1727363389169">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://xuyj1111.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="Bash和Zsh Shell命令行窗口 | 洗衣机的博客 - Atom Feed" href="https://xuyj1111.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+
+    <meta name="description" content="
+Shell、Bash、Zsh这都是啥啊，by 小白码上飞
+
+Bash 和 Zsh 都是 shell 命令行窗口
+Bash
+Bash 全称为 Bourne-Again Shell，是对 sh 的重写版，替代了 sh，是 Linux 的默认 ..." />
+    <meta name="keywords" content="原创,杂记" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
+ <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://xuyj1111.github.io">
+  <img class="avatar" src="https://xuyj1111.github.io/images/avatar.png?v=1727363389169" alt="">
+  </a>
+  <h1 class="site-title">
+    洗衣机的博客
+  </h1>
+  <p class="site-description">
+    【一名Java开发】slave👉https://www.cnblogs.com/xuyj1111/
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="https://xuyj1111.github.io" class="menu">
+          主页
+        </a>
+      
+    
+      
+        <a href="https://xuyj1111.github.io/archives" class="menu">
+          文章
+        </a>
+      
+    
+      
+        <a href="https://xuyj1111.github.io/tags" class="menu">
+          标签
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/xuyj1111" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+  <form id="gridea-search-form" action="https://xuyj1111.github.io/search/">
+    <input name="q" />
+  </form>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              Bash和Zsh Shell命令行窗口
+            </h2>
+            <div class="post-info">
+              <span>
+                2022-07-13
+              </span>
+              <span>
+                3 min read
+              </span>
+              
+                <a href="https://xuyj1111.github.io/WSbjWpIkN/" class="post-tag">
+                  # 原创
+                </a>
+              
+                <a href="https://xuyj1111.github.io/CseDYEWrD/" class="post-tag">
+                  # 杂记
+                </a>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content">
+                <blockquote>
+<p><a href="https://blog.csdn.net/u011291072/article/details/122782942?spm=1001.2101.3001.6661.1&amp;utm_medium=distribute.pc_relevant_t0.none-task-blog-2%7Edefault%7ECTRLIST%7Edefault-1-122782942-blog-104642218.pc_relevant_multi_platform_whitelistv2&amp;depth_1-utm_source=distribute.pc_relevant_t0.none-task-blog-2%7Edefault%7ECTRLIST%7Edefault-1-122782942-blog-104642218.pc_relevant_multi_platform_whitelistv2&amp;utm_relevant_index=1">Shell、Bash、Zsh这都是啥啊</a>，by 小白码上飞</p>
+</blockquote>
+<p>Bash 和 Zsh 都是 shell 命令行窗口</p>
+<h2 id="bash">Bash</h2>
+<p>Bash 全称为 Bourne-Again Shell，是对 sh 的重写版，替代了 sh，是 Linux 的默认 Shell</p>
+<h3 id="配置文件">配置文件</h3>
+<ul>
+<li>/etc/profile：为系统的每个用户设置环境信息，当用户第一次登录时会执行该文件里的命令。默认会直接调用/etc/bashrc。该文件的改动需要重启才能生效</li>
+<li>/etc/bashrc：为每一个运行 bash shell 的用户执行此文件。当 bash shell 被打开时，会读取并执行该文件中的命令。所以修改该文件后，重新打开 Shell 即可生效</li>
+<li>~/.bash_profile：和/etc/profile类似，但是只对当前用户生效</li>
+<li>~/.bashrc：和/etc/bashrc类似，但是只对当前用户生效</li>
+<li>~/.bash_logout：当每次退出 bash shell 时，执行该文件</li>
+<li>~/.bash_history：保存了历史命令。在 Shell 为 Bash 时，每次敲击命令时，都会保存在这个文件里</li>
+</ul>
+<h2 id="zsh">Zsh</h2>
+<p>Zsh 即 Z shell，Zsh 对 sh 做出了大量改进，同时加入了 Bash、ksh 及 tcsh 的某些功能<br>
+从 2019 年起，macOS 的默认 Shell 从 Bash 改为 Zsh</p>
+<h3 id="配置文件-2">配置文件</h3>
+<ul>
+<li>~/.zshenv：存放的环境变量配置项在任何场景下都能被读取，这里通常把 $PATH 等变量写在这里，这样无论是在交互 shell，或者运行程序都会读取此文件。个人理解对标 Bash 的 profile</li>
+<li>~/.zprofile：和 .zlogin 类似，但是是在 .zshrc 之前加载</li>
+<li>~/.zshrc：在交互式 shell 中会读取并执行该文件，包含设置别名、函数、选项、键绑定等命令。对标 bashrc</li>
+<li>~/.zlogin：在 login shell 的时候读取</li>
+<li>~/.zlogout：退出终端的时候读取，用于做一些清理工作。对标 bash_logout</li>
+<li>~/.zsh_history：保存了历史命令。在 Shell 为 Zsh 时，每次敲击命令时，都会保存在这个文件里<br>
+<strong>读取顺序</strong>：.zshenv → [.zprofile if login] → [.zshrc if interactive] → [.zlogin if login] → [.zlogout sometimes]</li>
+</ul>
+<h2 id="zshrcbashrc的使用">.zshrc（.bashrc）的使用</h2>
+<p>在这个文件中，可自定义一些操作</p>
+<ul>
+<li>给已存在的命令起别名，实现新建命令的操作
+<ul>
+<li>例：Mac 没有 <code>updatedb</code>命令，则在此文件中写入<code>alias updatedb='echo jayxcyujz | sudo -S /usr/libexec/locate.updatedb'</code></li>
+</ul>
+</li>
+</ul>
+<h2 id="一些命令">一些命令</h2>
+<ul>
+<li>查看当前 Linux 的全部 Shell：<code>cat /etc/shells</code></li>
+<li>查看当前使用的 Shell：<code>echo $SHELL</code>或者<code>echo $0</code><br>
+切换默认的 Shell：<code>chsh -s [shell的二进制文件路径]</code>，之后要重新登陆 Shell 才能生效哈。例如：</li>
+<li>切换为 Bash：<code>chsh -s /bin/bash</code></li>
+<li>切换为 Zsh：<code>chsh -s /bin/zsh</code></li>
+</ul>
+<h2 id="一些问题">一些问题</h2>
+<ol>
+<li>在修改了配置文件后，需要<code>source fileName</code>加载配置文件</li>
+<li>因 2019 年起，<strong>macOs 的 shell 改为 Zsh</strong>。因此在 Bash 的配置文件无效，使用<code>source</code>命令仅会在当前命令行窗口有效，应该在 Zsh 的配置文件中修改</li>
+</ol>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#bash">Bash</a>
+<ul>
+<li><a href="#%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6">配置文件</a></li>
+</ul>
+</li>
+<li><a href="#zsh">Zsh</a>
+<ul>
+<li><a href="#%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6-2">配置文件</a></li>
+</ul>
+</li>
+<li><a href="#zshrcbashrc%E7%9A%84%E4%BD%BF%E7%94%A8">.zshrc（.bashrc）的使用</a></li>
+<li><a href="#%E4%B8%80%E4%BA%9B%E5%91%BD%E4%BB%A4">一些命令</a></li>
+<li><a href="#%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98">一些问题</a></li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://xuyj1111.github.io/CgFjDynFC/">
+              <h3 class="post-title">
+                【Redis】使用Lua脚本
+              </h3>
+            </a>
+          </div>
+        
+
+        
+
+        <div class="site-footer">
+  
+  <a class="rss" href="https://xuyj1111.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+
+
+
+    <div id="vcomments"></div>
+    <script>
+        new Valine({
+            el: '#vcomments',
+            appId: 'ot2L3hKJVxTAXnr1VQt7wm70-gzGzoHsz',
+            appKey: 'BjaYGo2m6zV3mCvxGLGsDP5V'
+        })
+    </script>
+
+
+
+  </body>
+
+</html>

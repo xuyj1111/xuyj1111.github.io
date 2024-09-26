@@ -1,0 +1,331 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>【Java】Redis的配置和使用 | 洗衣机的博客</title>
+<link rel="shortcut icon" href="https://xuyj1111.github.io/favicon.ico?v=1727363389169">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://xuyj1111.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="【Java】Redis的配置和使用 | 洗衣机的博客 - Atom Feed" href="https://xuyj1111.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+
+    <meta name="description" content="引入 spring-data-redis 依赖
+implementation &quot;org.springframework.data:spring-data-redis&quot;
+
+官网说明文档
+与 Redis 连接，有多种连接器。..." />
+    <meta name="keywords" content="Java,原创,使用手册,Redis" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
+ <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://xuyj1111.github.io">
+  <img class="avatar" src="https://xuyj1111.github.io/images/avatar.png?v=1727363389169" alt="">
+  </a>
+  <h1 class="site-title">
+    洗衣机的博客
+  </h1>
+  <p class="site-description">
+    【一名Java开发】slave👉https://www.cnblogs.com/xuyj1111/
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="https://xuyj1111.github.io" class="menu">
+          主页
+        </a>
+      
+    
+      
+        <a href="https://xuyj1111.github.io/archives" class="menu">
+          文章
+        </a>
+      
+    
+      
+        <a href="https://xuyj1111.github.io/tags" class="menu">
+          标签
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/xuyj1111" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+  <form id="gridea-search-form" action="https://xuyj1111.github.io/search/">
+    <input name="q" />
+  </form>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              【Java】Redis的配置和使用
+            </h2>
+            <div class="post-info">
+              <span>
+                2022-04-06
+              </span>
+              <span>
+                3 min read
+              </span>
+              
+                <a href="https://xuyj1111.github.io/SOje8Joqr/" class="post-tag">
+                  # Java
+                </a>
+              
+                <a href="https://xuyj1111.github.io/WSbjWpIkN/" class="post-tag">
+                  # 原创
+                </a>
+              
+                <a href="https://xuyj1111.github.io/0shj16Tx0/" class="post-tag">
+                  # 使用手册
+                </a>
+              
+                <a href="https://xuyj1111.github.io/FktD58SLR/" class="post-tag">
+                  # Redis
+                </a>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content">
+                <p>引入 <em>spring-data-redis</em> 依赖<br>
+<code>implementation &quot;org.springframework.data:spring-data-redis&quot;</code></p>
+<blockquote>
+<p><a href="https://docs.spring.io/spring-data/redis/docs/1.4.0.M1/reference/htmlsingle/">官网说明文档</a><br>
+与 Redis 连接，有多种连接器。根据官网文档介绍，有以下几种：</p>
+<ul>
+<li>Jedis connector</li>
+<li>JRedis connector</li>
+<li>SRP connector</li>
+<li>Lettuce connector</li>
+</ul>
+</blockquote>
+<p>以下只介绍 Jedis，但推荐使用 Lettuce，因为 Jedis 线程不安全，Lettuce 线程安全.</p>
+<blockquote>
+<p>Jedis 和 Jedis Pool 的具体介绍请参考<a href="https://zhuanlan.zhihu.com/p/84481313">Jedis和Jedis连接池的基本使用和配置</a></p>
+</blockquote>
+<h2 id="springboot-自动配置连接-jedis">SpringBoot 自动配置连接 Jedis</h2>
+<blockquote>
+<p>在 SpringBoot2.× 使用 jedis，之后被替换为 lettuce</p>
+</blockquote>
+<h3 id="配置信息">配置信息</h3>
+<p>在 application.yml 中写配置信息</p>
+<pre><code class="language-yaml">spring:
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    database: 0											
+    password:
+    jedis:
+      pool:
+        max-active: 32
+        max-wait: -1
+        max-idle: 8
+        min-idle: 0
+</code></pre>
+<p>p.s. 新版本的 jedis 中将 maxActive 改成了 maxTotal，MaxWait 改成了 MaxWaitMillis</p>
+<h3 id="自动装配">自动装配</h3>
+<p>SpringBoot 会自动配置 Redis，所以只需要的地方使用 RedisTemplate</p>
+<pre><code class="language-java">@Autowired
+private RedisTemplate&lt;String, String&gt; redisTemplate;
+</code></pre>
+<hr>
+<h2 id="自定义配置连接-jedis">自定义配置连接 Jedis</h2>
+<p>若需要将 redis 某功能封装成 framework，并可作为第三方包引入使用，则需要自行配置</p>
+<h3 id="排除自动装配">排除自动装配</h3>
+<p><code>@SpringBootApplication(exclude = {RedisAutoConfiguration.class})</code></p>
+<h3 id="创建配置类">创建配置类</h3>
+<blockquote>
+<p>配置 JedisConnectionFactory 和 RedisTemplate Bean，注入 IOC 容器</p>
+</blockquote>
+<pre><code class="language-java">@Configuration
+public class RedisConfiguration {
+
+    @Value(&quot;${spring.redis.host}&quot;)
+    private String host;
+    @Value(&quot;${spring.redis.port}&quot;)
+    private int port;
+    @Value(&quot;${spring.redis.database}&quot;)
+    private int database;
+    @Value(&quot;${spring.redis.password}&quot;)
+    private String password;
+    @Value(&quot;${spring.redis.jedis.pool.max-active}&quot;)
+    private int maxActive;
+    @Value(&quot;${spring.redis.jedis.pool.max-wait}&quot;)
+    private int maxWait;
+    @Value(&quot;${spring.redis.jedis.pool.max-idle}&quot;)
+    private int maxIdle;
+    @Value(&quot;${spring.redis.jedis.pool.min-idle}&quot;)
+    private int minIdle;
+
+    @Bean
+    public JedisConnectionFactory redisConnectionFactory() {
+        RedisStandaloneConfiguration serverConfig = new RedisStandaloneConfiguration(host, port);
+        serverConfig.setDatabase(database);
+        if (Strings.isNotBlank(password)) {
+            serverConfig.setPassword(password);
+        }
+        JedisPoolConfig poolConfig = new JedisPoolConfig();
+        poolConfig.setMaxTotal(maxActive);
+        poolConfig.setMaxWaitMillis(maxWait);
+        poolConfig.setMaxIdle(maxIdle);
+        poolConfig.setMinIdle(minIdle);
+        JedisClientConfiguration.JedisPoolingClientConfigurationBuilder jpcb = (JedisClientConfiguration.JedisPoolingClientConfigurationBuilder) JedisClientConfiguration.builder();
+        jpcb.poolConfig(poolConfig);
+        JedisClientConfiguration jedisClientConfiguration = jpcb.build();
+        return new JedisConnectionFactory(serverConfig, jedisClientConfiguration);
+    }
+
+    @Bean
+    public RedisTemplate&lt;String, String&gt; redisTemplate(JedisConnectionFactory redisConnectionFactory) {
+        RedisTemplate&lt;String, String&gt; redisTemplate = new RedisTemplate&lt;&gt;();
+        redisTemplate.setConnectionFactory(redisConnectionFactory);
+        //设置序列化，防止乱码
+        RedisSerializer stringSerializer = new StringRedisSerializer();
+        redisTemplate.setKeySerializer(stringSerializer);
+        redisTemplate.setValueSerializer(stringSerializer);
+        redisTemplate.setHashKeySerializer(stringSerializer);
+        redisTemplate.setHashValueSerializer(stringSerializer);
+        //刷新配置
+        redisTemplate.afterPropertiesSet();
+        return redisTemplate;
+    }
+}
+</code></pre>
+<h3 id="自动装配-2">自动装配</h3>
+<p>在需要的地方使用 RedisTemplate</p>
+<pre><code class="language-java">@Autowired
+private RedisTemplate&lt;String, String&gt; redisTemplate;
+</code></pre>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#springboot-%E8%87%AA%E5%8A%A8%E9%85%8D%E7%BD%AE%E8%BF%9E%E6%8E%A5-jedis">SpringBoot 自动配置连接 Jedis</a>
+<ul>
+<li><a href="#%E9%85%8D%E7%BD%AE%E4%BF%A1%E6%81%AF">配置信息</a></li>
+<li><a href="#%E8%87%AA%E5%8A%A8%E8%A3%85%E9%85%8D">自动装配</a></li>
+</ul>
+</li>
+<li><a href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E9%85%8D%E7%BD%AE%E8%BF%9E%E6%8E%A5-jedis">自定义配置连接 Jedis</a>
+<ul>
+<li><a href="#%E6%8E%92%E9%99%A4%E8%87%AA%E5%8A%A8%E8%A3%85%E9%85%8D">排除自动装配</a></li>
+<li><a href="#%E5%88%9B%E5%BB%BA%E9%85%8D%E7%BD%AE%E7%B1%BB">创建配置类</a></li>
+<li><a href="#%E8%87%AA%E5%8A%A8%E8%A3%85%E9%85%8D-2">自动装配</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://xuyj1111.github.io/iJYYroozC/">
+              <h3 class="post-title">
+                【MySQL】表分区的使用
+              </h3>
+            </a>
+          </div>
+        
+
+        
+
+        <div class="site-footer">
+  
+  <a class="rss" href="https://xuyj1111.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+
+
+
+    <div id="vcomments"></div>
+    <script>
+        new Valine({
+            el: '#vcomments',
+            appId: 'ot2L3hKJVxTAXnr1VQt7wm70-gzGzoHsz',
+            appKey: 'BjaYGo2m6zV3mCvxGLGsDP5V'
+        })
+    </script>
+
+
+
+  </body>
+
+</html>

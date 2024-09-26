@@ -1,0 +1,257 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>JVM基础 | 洗衣机的博客</title>
+<link rel="shortcut icon" href="https://xuyj1111.github.io/favicon.ico?v=1727363389169">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://xuyj1111.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="JVM基础 | 洗衣机的博客 - Atom Feed" href="https://xuyj1111.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+
+    <meta name="description" content="什么是JVM
+
+JVM是Java虚拟机，是用来执行Java字节码(二进制的形式)的虚拟计算机
+JVM是运行在操作系统之上的，与硬件没有任何关系
+
+跨平台性
+由Java编写的程序可以在不同的操作系统上运行，一次编写，多处运行
+原理：编译之后的..." />
+    <meta name="keywords" content="" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
+ <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://xuyj1111.github.io">
+  <img class="avatar" src="https://xuyj1111.github.io/images/avatar.png?v=1727363389169" alt="">
+  </a>
+  <h1 class="site-title">
+    洗衣机的博客
+  </h1>
+  <p class="site-description">
+    【一名Java开发】slave👉https://www.cnblogs.com/xuyj1111/
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="https://xuyj1111.github.io" class="menu">
+          主页
+        </a>
+      
+    
+      
+        <a href="https://xuyj1111.github.io/archives" class="menu">
+          文章
+        </a>
+      
+    
+      
+        <a href="https://xuyj1111.github.io/tags" class="menu">
+          标签
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/xuyj1111" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+  <form id="gridea-search-form" action="https://xuyj1111.github.io/search/">
+    <input name="q" />
+  </form>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              JVM基础
+            </h2>
+            <div class="post-info">
+              <span>
+                2021-09-30
+              </span>
+              <span>
+                2 min read
+              </span>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content">
+                <h3 id="什么是jvm">什么是JVM</h3>
+<ol>
+<li>JVM是Java虚拟机，是用来执行Java字节码(二进制的形式)的虚拟计算机</li>
+<li>JVM是运行在操作系统之上的，与硬件没有任何关系</li>
+</ol>
+<h3 id="跨平台性">跨平台性</h3>
+<p>由Java编写的程序可以在不同的操作系统上运行，一次编写，多处运行<br>
+原理：编译之后的字节码文件和平台无关，需要在不同的操作系统上安装一个对应版本的虚拟机(JVM)<br>
+<img src="https://xuyj1111.github.io/post-images/1632972567502.png" alt="" loading="lazy"><br>
+无论使用何种语言进行软件开发，只要将源文件编译为正确的Class文件，那么这种语言就可以在Java虚拟机上执行<br>
+​</p>
+<h3 id="运行图">运行图</h3>
+<figure data-type="image" tabindex="1"><img src="https://xuyj1111.github.io/post-images/1632972574229.png" alt="" loading="lazy"></figure>
+<h3 id="hotspot虚拟机">HotSpot虚拟机</h3>
+<p>是Sun JDK和OpenJDK中所带的虚拟机，也是目前使用范围最广的Java虚拟机</p>
+<ul>
+<li>采用解释器和即时编译器（<strong>JIT编译器</strong>）并存的架构</li>
+</ul>
+<p>ps：解释器程序响应时间快，编译器执行性能好，两者协同工作取得平衡<br>
+<img src="https://xuyj1111.github.io/post-images/1632972578623.png" alt="" loading="lazy"></p>
+<h3 id="jvm的架构模型">JVM的架构模型</h3>
+<p>Java编译器输入的指令流_基于栈的指令集架构_，另一种_基于寄存器的指令集架构_</p>
+<h4 id="基于栈架构">基于栈架构</h4>
+<ul>
+<li>设计和实现简单，适合资源受限的系统
+<ul>
+<li>ps：入栈出栈的动作，打印机等系统受限的系统</li>
+</ul>
+</li>
+<li>使用_零地址_指令分配方式，避免寄存器分配问题，指令集更小，编译器更容易实现
+<ul>
+<li>零地址：操作数【只有操作数，依赖于栈】</li>
+<li>一地址：地址值 操作数【一对一】</li>
+<li>二地址：地址值 操作数【二对一】</li>
+</ul>
+</li>
+<li>不需要硬件支持，可移植性好，实现跨平台
+<ul>
+<li>ps：栈是内存级别的东西</li>
+</ul>
+</li>
+</ul>
+<h4 id="基于寄存器架构">基于寄存器架构</h4>
+<p>比如传统的PC等</p>
+<ul>
+<li>完全依赖硬件，可移植性差</li>
+<li>性能优秀</li>
+<li>花费更少的指令完成一项操作
+<ul>
+<li>ps：指令少，指令集多【栈架构相反】</li>
+</ul>
+</li>
+</ul>
+<h3 id="参考来源">参考来源</h3>
+<p><a href="https://blog.csdn.net/TZ845195485/article/details/108072319">https://blog.csdn.net/TZ845195485/article/details/108072319</a></p>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#%E4%BB%80%E4%B9%88%E6%98%AFjvm">什么是JVM</a></li>
+<li><a href="#%E8%B7%A8%E5%B9%B3%E5%8F%B0%E6%80%A7">跨平台性</a></li>
+<li><a href="#%E8%BF%90%E8%A1%8C%E5%9B%BE">运行图</a></li>
+<li><a href="#hotspot%E8%99%9A%E6%8B%9F%E6%9C%BA">HotSpot虚拟机</a></li>
+<li><a href="#jvm%E7%9A%84%E6%9E%B6%E6%9E%84%E6%A8%A1%E5%9E%8B">JVM的架构模型</a>
+<ul>
+<li><a href="#%E5%9F%BA%E4%BA%8E%E6%A0%88%E6%9E%B6%E6%9E%84">基于栈架构</a></li>
+<li><a href="#%E5%9F%BA%E4%BA%8E%E5%AF%84%E5%AD%98%E5%99%A8%E6%9E%B6%E6%9E%84">基于寄存器架构</a></li>
+</ul>
+</li>
+<li><a href="#%E5%8F%82%E8%80%83%E6%9D%A5%E6%BA%90">参考来源</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+
+        
+
+        <div class="site-footer">
+  
+  <a class="rss" href="https://xuyj1111.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+
+
+
+    <div id="vcomments"></div>
+    <script>
+        new Valine({
+            el: '#vcomments',
+            appId: 'ot2L3hKJVxTAXnr1VQt7wm70-gzGzoHsz',
+            appKey: 'BjaYGo2m6zV3mCvxGLGsDP5V'
+        })
+    </script>
+
+
+
+  </body>
+
+</html>

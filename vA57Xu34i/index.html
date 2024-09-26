@@ -1,0 +1,519 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>【MySQL】JSON 数据类型 | 洗衣机的博客</title>
+<link rel="shortcut icon" href="https://xuyj1111.github.io/favicon.ico?v=1727363389169">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://xuyj1111.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="【MySQL】JSON 数据类型 | 洗衣机的博客 - Atom Feed" href="https://xuyj1111.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+
+    <meta name="description" content="
+从 MySQL5.7.8 开始，支持字段使用 JSON 数据类型
+JSON 数据类型（官网）
+JSON 函数目录（官网）
+
+开始
+创建表和字段
+CREATE TABLE t1 (
+  `id` BIGINT(20) NOT NULL AU..." />
+    <meta name="keywords" content="原创,MySQL" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
+ <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://xuyj1111.github.io">
+  <img class="avatar" src="https://xuyj1111.github.io/images/avatar.png?v=1727363389169" alt="">
+  </a>
+  <h1 class="site-title">
+    洗衣机的博客
+  </h1>
+  <p class="site-description">
+    【一名Java开发】slave👉https://www.cnblogs.com/xuyj1111/
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="https://xuyj1111.github.io" class="menu">
+          主页
+        </a>
+      
+    
+      
+        <a href="https://xuyj1111.github.io/archives" class="menu">
+          文章
+        </a>
+      
+    
+      
+        <a href="https://xuyj1111.github.io/tags" class="menu">
+          标签
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/xuyj1111" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+  <form id="gridea-search-form" action="https://xuyj1111.github.io/search/">
+    <input name="q" />
+  </form>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              【MySQL】JSON 数据类型
+            </h2>
+            <div class="post-info">
+              <span>
+                2023-02-08
+              </span>
+              <span>
+                10 min read
+              </span>
+              
+                <a href="https://xuyj1111.github.io/WSbjWpIkN/" class="post-tag">
+                  # 原创
+                </a>
+              
+                <a href="https://xuyj1111.github.io/eng41sp6q/" class="post-tag">
+                  # MySQL
+                </a>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content">
+                <blockquote>
+<p>从 MySQL5.7.8 开始，支持字段使用 JSON 数据类型<br>
+<a href="https://dev.mysql.com/doc/refman/5.7/en/json.html">JSON 数据类型（官网）</a><br>
+<a href="https://dev.mysql.com/doc/refman/5.7/en/json-function-reference.html">JSON 函数目录（官网）</a></p>
+</blockquote>
+<h2 id="开始">开始</h2>
+<p>创建表和字段</p>
+<pre><code class="language-sql">CREATE TABLE t1 (
+  `id` BIGINT(20) NOT NULL AUTO_INCREMENT,
+  `data` JSON,
+  PRIMARY KEY (`id`)
+);
+</code></pre>
+<p>JSON 类型支持“JSON对象”和“JSON数组”👇</p>
+<ul>
+<li>JSON 对象：<code>{&quot;k1&quot;: &quot;value&quot;, &quot;k2&quot;: 10}</code></li>
+<li>JSON 数组：<code>[&quot;abc&quot;, 10, null, true, false]</code></li>
+</ul>
+<p>JSON 数组和 JSON 对象允许互相嵌套👇</p>
+<pre><code class="language-json">[99, {&quot;id&quot;: &quot;HK500&quot;, &quot;cost&quot;: 75.99}, [&quot;hot&quot;, &quot;cold&quot;]]
+{&quot;k1&quot;: &quot;value&quot;, &quot;k2&quot;: [10, 20]}
+</code></pre>
+<p>插入数据示例👇<br /><code>INSERT INTO t1(</code>data<code>) VALUES('{&quot;key1&quot;: &quot;value1&quot;, &quot;key2&quot;: &quot;value2&quot;}');</code><br /><code>INSERT INTO t1(</code>data<code>) VALUES('[&quot;a&quot;, 1, &quot;2015-07-27 09:43:47.000000&quot;] ');</code></p>
+<h3 id="json-赋值给变量">JSON 赋值给变量</h3>
+<p>JSON 值可以赋值给变量，但不是 JSON 类型，而是转换为字符串<code>SET @j = JSON_OBJECT('key', 'value');</code><br />转换的字符串具有字符集“utf8mb4”，排序规则“utf8mb4_bin”。执行<code>SELECT CHARSET(@j),COLLATION(@j)</code>可查看<br />utf8mb4_bin 是二进制排序规则，所以 JSON 值区分大小写。<code>null、true、false</code>在 JSON 中必须是小写字母</p>
+<pre><code class="language-sql">mysql&gt; SELECT JSON_VALID('null'), JSON_VALID('Null');
++--------------------+--------------------+
+| JSON_VALID('null') | JSON_VALID('Null') |
++--------------------+--------------------+
+|                  1 |                  0 |
++--------------------+--------------------+
+</code></pre>
+<h2 id="创建-json">创建 JSON</h2>
+<p>JSON_ARRAY([<strong><em>val</em></strong>[, <strong><em>val</em></strong>] ...]) 创建 JSON 数据👇</p>
+<pre><code class="language-sql">mysql&gt; SELECT JSON_ARRAY(1, &quot;abc&quot;, NULL, TRUE, CURTIME());
++---------------------------------------------+
+| JSON_ARRAY(1, &quot;abc&quot;, NULL, TRUE, CURTIME()) |
++---------------------------------------------+
+| [1, &quot;abc&quot;, null, true, &quot;10:47:25.000000&quot;]   |
++---------------------------------------------+
+</code></pre>
+<p>JSON_OBJECT([<strong><em>key</em></strong>, <strong><em>val</em></strong>[, <strong><em>key</em></strong>, <strong><em>val</em></strong>] ...]) 创建 JSON 对象👇</p>
+<pre><code class="language-sql">mysql&gt; SELECT JSON_OBJECT('id', 87, 'name', 'carrot');
++-----------------------------------------+
+| JSON_OBJECT('id', 87, 'name', 'carrot') |
++-----------------------------------------+
+| {&quot;id&quot;: 87, &quot;name&quot;: &quot;carrot&quot;}            |
++-----------------------------------------+
+</code></pre>
+<p>JSON_QUOTE(<strong><em>string</em></strong>) 生成 JSON 字符串文字👇</p>
+<pre><code class="language-sql">mysql&gt; SELECT JSON_QUOTE('null'), JSON_QUOTE('&quot;null&quot;'), JSON_QUOTE('[1, 2, 3]'); 
++--------------------+----------------------+-------------------------+
+| JSON_QUOTE('null') | JSON_QUOTE('&quot;null&quot;') | JSON_QUOTE('[1, 2, 3]') |
++--------------------+----------------------+-------------------------+
+| &quot;null&quot;             | &quot;\&quot;null\&quot;&quot;           | &quot;[1, 2, 3]&quot;             |
++--------------------+----------------------+-------------------------+
+</code></pre>
+<h2 id="合并-json">合并 JSON</h2>
+<p>JSON_MERGE(<strong><em>json_doc</em></strong>, <strong><em>json_doc</em></strong>[, <strong><em>json_doc</em></strong>] ...)👇</p>
+<pre><code class="language-sql">-- 合并多个数组
+mysql&gt; SELECT JSON_MERGE('[1, 2]', '[&quot;a&quot;, &quot;b&quot;]', '[true, false]');
++-----------------------------------------------------+
+| JSON_MERGE('[1, 2]', '[&quot;a&quot;, &quot;b&quot;]', '[true, false]') |
++-----------------------------------------------------+
+| [1, 2, &quot;a&quot;, &quot;b&quot;, true, false]                       |
++-----------------------------------------------------+
+
+-- 合并多个对象
+mysql&gt; SELECT JSON_MERGE('{&quot;a&quot;: 1, &quot;b&quot;: 2}', '{&quot;c&quot;: 3, &quot;a&quot;: 4}');
++----------------------------------------------------+
+| JSON_MERGE('{&quot;a&quot;: 1, &quot;b&quot;: 2}', '{&quot;c&quot;: 3, &quot;a&quot;: 4}') |
++----------------------------------------------------+
+| {&quot;a&quot;: [1, 4], &quot;b&quot;: 2, &quot;c&quot;: 3}                      |
++----------------------------------------------------+
+
+-- 合并多个值
+mysql&gt; SELECT JSON_MERGE('1', '2');
++----------------------+
+| JSON_MERGE('1', '2') |
++----------------------+
+| [1, 2]               |
++----------------------+
+
+-- 合并数组和对象
+mysql&gt; SELECT JSON_MERGE('[10, 20]', '{&quot;a&quot;: &quot;x&quot;, &quot;b&quot;: &quot;y&quot;}');
++------------------------------------------------+
+| JSON_MERGE('[10, 20]', '{&quot;a&quot;: &quot;x&quot;, &quot;b&quot;: &quot;y&quot;}') |
++------------------------------------------------+
+| [10, 20, {&quot;a&quot;: &quot;x&quot;, &quot;b&quot;: &quot;y&quot;}]                 |
++------------------------------------------------+
+</code></pre>
+<p>若 JSON 数据中的 key 相同，也会合并数据</p>
+<pre><code class="language-sql">mysql&gt; INSERT INTO t1(`data`) VALUES
+&gt;     ('{&quot;x&quot;: 17, &quot;x&quot;: &quot;red&quot;}'),
+&gt;     ('{&quot;x&quot;: 17, &quot;x&quot;: &quot;red&quot;, &quot;x&quot;: [3, 5, 7]}');
+
+mysql&gt; SELECT c1 FROM t1;
++-----------+
+| c1        |
++-----------+
+| {&quot;x&quot;: 17} |
+| {&quot;x&quot;: 17} |
++-----------+
+</code></pre>
+<h2 id="搜索-json">搜索 JSON</h2>
+<p>JSON_EXTRACT(<em><strong>json_doc</strong></em>, <em><strong>path</strong>[, <strong>path</strong>]</em> ...)👇</p>
+<pre><code class="language-sql">-- 根据索引，查找 value
+mysql&gt; SELECT JSON_EXTRACT('[10, 20, [30, 40]]', '$[1]');
++--------------------------------------------+
+| JSON_EXTRACT('[10, 20, [30, 40]]', '$[1]') |
++--------------------------------------------+
+| 20                                         |
++--------------------------------------------+
+mysql&gt; SELECT JSON_EXTRACT('[10, 20, [30, 40]]', '$[1]', '$[0]');
++----------------------------------------------------+
+| JSON_EXTRACT('[10, 20, [30, 40]]', '$[1]', '$[0]') |
++----------------------------------------------------+
+| [20, 10]                                           |
++----------------------------------------------------+
+mysql&gt; SELECT JSON_EXTRACT('[10, 20, [30, 40]]', '$[2][*]');
++-----------------------------------------------+
+| JSON_EXTRACT('[10, 20, [30, 40]]', '$[2][*]') |
++-----------------------------------------------+
+| [30, 40]                                      |
++-----------------------------------------------+
+
+-- 根据 key，查找 value
+mysql&gt; SELECT JSON_EXTRACT('{&quot;id&quot;: 14, &quot;name&quot;: &quot;Aztalan&quot;}', '$.name');
++---------------------------------------------------------+
+| JSON_EXTRACT('{&quot;id&quot;: 14, &quot;name&quot;: &quot;Aztalan&quot;}', '$.name') |
++---------------------------------------------------------+
+| &quot;Aztalan&quot;                                               |
++---------------------------------------------------------+
+</code></pre>
+<p>JSON_KEYS(<strong><em>json_doc</em></strong>[, <strong><em>path</em></strong>])👇</p>
+<pre><code class="language-sql">-- 未指定 path，默认返回第一层的 keys
+mysql&gt; SELECT JSON_KEYS('{&quot;a&quot;: 1, &quot;b&quot;: {&quot;c&quot;: 30}}');
++---------------------------------------+
+| JSON_KEYS('{&quot;a&quot;: 1, &quot;b&quot;: {&quot;c&quot;: 30}}') |
++---------------------------------------+
+| [&quot;a&quot;, &quot;b&quot;]                            |
++---------------------------------------+
+
+-- 指定 path，返回指定节点下的 keys
+mysql&gt; SELECT JSON_KEYS('{&quot;a&quot;: 1, &quot;b&quot;: {&quot;c&quot;: 30}}', '$.b');
++----------------------------------------------+
+| JSON_KEYS('{&quot;a&quot;: 1, &quot;b&quot;: {&quot;c&quot;: 30}}', '$.b') |
++----------------------------------------------+
+| [&quot;c&quot;]                                        |
++----------------------------------------------+
+</code></pre>
+<p>JSON_SEARCH(<strong><em>json_doc</em></strong>, <strong><em>one_or_all</em></strong>, <strong><em>search_str</em></strong>[, <strong><em>escape_char</em></strong>[, <strong><em>path</em></strong>] ...]) 返回 JSON 文档中匹配字符串的路径👇</p>
+<pre><code class="language-sql">mysql&gt; SET @j = '[&quot;abc&quot;, [{&quot;k&quot;: &quot;10&quot;}, &quot;def&quot;], {&quot;x&quot;:&quot;abc&quot;}, {&quot;y&quot;:&quot;bcd&quot;}]';
+
+-- one 表示只匹配第一个
+mysql&gt; SELECT JSON_SEARCH(@j, 'one', 'abc');
++-------------------------------+
+| JSON_SEARCH(@j, 'one', 'abc') |
++-------------------------------+
+| &quot;$[0]&quot;                        |
++-------------------------------+
+
+-- all 表示匹配所有
+mysql&gt; SELECT JSON_SEARCH(@j, 'all', 'abc');
++-------------------------------+
+| JSON_SEARCH(@j, 'all', 'abc') |
++-------------------------------+
+| [&quot;$[0]&quot;, &quot;$[2].x&quot;]            |
++-------------------------------+
+
+-- search_str 可以只用 &quot;%&quot; 和 &quot;_&quot; 通配符
+mysql&gt; SELECT JSON_SEARCH(@j, 'all', '%a%');
++-------------------------------+
+| JSON_SEARCH(@j, 'all', '%a%') |
++-------------------------------+
+| [&quot;$[0]&quot;, &quot;$[2].x&quot;]            |
++-------------------------------+
+
+-- escape_char：指定转义字符，必须是常量（为空或一个字符）。参数值为 NULL 或 不存在时，默认 &quot;\&quot;
+-- 按照格式，必须要指定转义字符，才可以使用 path，path 即指定匹配的路径
+mysql&gt; SELECT JSON_SEARCH(@j, 'all', '%b%', '', '$[3]');
++-------------------------------------------+
+| JSON_SEARCH(@j, 'all', '%b%', '', '$[3]') |
++-------------------------------------------+
+| &quot;$[3].y&quot;                                  |
++-------------------------------------------+
+</code></pre>
+<h2 id="插入修改删除-json">插入/修改/删除 JSON</h2>
+<p>JSON_INSERT(<strong><em>json_doc</em></strong>, <strong><em>path</em></strong>, <strong><em>val</em></strong>[, <strong><em>path</em></strong>, <strong><em>val</em></strong>] ...)👇</p>
+<pre><code class="language-sql">mysql&gt; SET @j = '{ &quot;a&quot;: 1, &quot;b&quot;: [2, 3]}';
+mysql&gt; SELECT JSON_INSERT(@j, '$.a', 10, '$.c', '[true, false]');
++----------------------------------------------------+
+| JSON_INSERT(@j, '$.a', 10, '$.c', '[true, false]') |
++----------------------------------------------------+
+| {&quot;a&quot;: 1, &quot;b&quot;: [2, 3], &quot;c&quot;: &quot;[true, false]&quot;}        |
++----------------------------------------------------+
+
+-- 上方的&quot;[true, false]&quot;为字符串，若要转为 JSON，需要用到 CAST 函数
+mysql&gt; SELECT JSON_INSERT(@j, '$.a', 10, '$.c', CAST('[true, false]' AS JSON));
++------------------------------------------------------------------+
+| JSON_INSERT(@j, '$.a', 10, '$.c', CAST('[true, false]' AS JSON)) |
++------------------------------------------------------------------+
+| {&quot;a&quot;: 1, &quot;b&quot;: [2, 3], &quot;c&quot;: [true, false]}                        |
++------------------------------------------------------------------+
+</code></pre>
+<p>JSON_REPLACE(<strong><em>json_doc</em></strong>, <strong><em>path</em></strong>, <strong><em>val</em></strong>[, <strong><em>path</em></strong>, <strong><em>val</em></strong>] ...) 替换JSON文档中的现有值并返回结果👇</p>
+<pre><code class="language-sql">-- 文档中存在则替换，不存在忽略
+mysql&gt; SELECT JSON_REPLACE('{ &quot;a&quot;: 1, &quot;b&quot;: [2, 3]}', '$.a', 10, '$.c', '[true, false]');
++---------------------------------------------------------------------------+
+| JSON_REPLACE('{ &quot;a&quot;: 1, &quot;b&quot;: [2, 3]}', '$.a', 10, '$.c', '[true, false]') |
++---------------------------------------------------------------------------+
+| {&quot;a&quot;: 10, &quot;b&quot;: [2, 3]}                                                    |
++---------------------------------------------------------------------------+
+</code></pre>
+<p>JSON_SET(<strong><em>json_doc</em></strong>, <strong><em>path</em></strong>, <strong><em>val</em></strong>[, <strong><em>path</em></strong>, <strong><em>val</em></strong>] ...) 在JSON文档中插入或更新数据并返回结果👇</p>
+<pre><code class="language-sql">-- JSON_SET = JSON_INSERT + JSON_REPLACE
+mysql&gt; SELECT JSON_SET('{ &quot;a&quot;: 1, &quot;b&quot;: [2, 3]}', '$.a', 10, '$.c', '[true, false]');
++-----------------------------------------------------------------------+
+| JSON_SET('{ &quot;a&quot;: 1, &quot;b&quot;: [2, 3]}', '$.a', 10, '$.c', '[true, false]') |
++-----------------------------------------------------------------------+
+| {&quot;a&quot;: 10, &quot;b&quot;: [2, 3], &quot;c&quot;: &quot;[true, false]&quot;}                          |
++-----------------------------------------------------------------------+
+</code></pre>
+<p>JSON_REMOVE(<strong><em>json_doc</em></strong>, <strong><em>path</em></strong>[, <strong><em>path</em></strong>] ...) 删除并返回结果👇</p>
+<pre><code class="language-sql">mysql&gt; SELECT JSON_REMOVE('[&quot;a&quot;, [&quot;b&quot;, &quot;c&quot;], &quot;d&quot;]', '$[1]');
++-----------------------------------------------+
+| JSON_REMOVE('[&quot;a&quot;, [&quot;b&quot;, &quot;c&quot;], &quot;d&quot;]', '$[1]') |
++-----------------------------------------------+
+| [&quot;a&quot;, &quot;d&quot;]                                    |
++-----------------------------------------------+
+</code></pre>
+<h2 id="其他-json-函数">其他 JSON 函数</h2>
+<p>JSON_TYPE(<strong><em>json_val</em></strong>) 判断值的类型👇</p>
+<pre><code class="language-sql">mysql&gt; SELECT JSON_TYPE('[&quot;a&quot;, &quot;b&quot;, 1]'), 
+    -&gt; JSON_TYPE('{&quot;key1&quot;: &quot;value1&quot;, &quot;key2&quot;: &quot;value2&quot;}'),
+    -&gt; JSON_TYPE('&quot;hello&quot;');
++----------------------------+---------------------------------------------------+----------------------+
+| JSON_TYPE('[&quot;a&quot;, &quot;b&quot;, 1]') | JSON_TYPE('{&quot;key1&quot;: &quot;value1&quot;, &quot;key2&quot;: &quot;value2&quot;}') | JSON_TYPE('&quot;hello&quot;') |
++----------------------------+---------------------------------------------------+----------------------+
+| ARRAY                      | OBJECT                                            | STRING               |
++----------------------------+---------------------------------------------------+----------------------+
+</code></pre>
+<p>JSON_LENGTH(<strong><em>json_doc</em></strong>[, <strong><em>path</em></strong>]) 返回 JSON 文档的长度👇</p>
+<pre><code class="language-sql">-- 未指定 path，默认返回第一层的长度
+mysql&gt; SELECT JSON_LENGTH('[1, 2, {&quot;a&quot;: 3}]');
++---------------------------------+
+| JSON_LENGTH('[1, 2, {&quot;a&quot;: 3}]') |
++---------------------------------+
+|                               3 |
++---------------------------------+
+mysql&gt; SELECT JSON_LENGTH('{&quot;a&quot;: 1, &quot;b&quot;: {&quot;c&quot;: 30}}');
++-----------------------------------------+
+| JSON_LENGTH('{&quot;a&quot;: 1, &quot;b&quot;: {&quot;c&quot;: 30}}') |
++-----------------------------------------+
+|                                       2 |
++-----------------------------------------+
+
+-- 指定 path，返回指定节点下的长度
+mysql&gt; SELECT JSON_LENGTH('{&quot;a&quot;: 1, &quot;b&quot;: {&quot;c&quot;: 30}}', '$.b');
++------------------------------------------------+
+| JSON_LENGTH('{&quot;a&quot;: 1, &quot;b&quot;: {&quot;c&quot;: 30}}', '$.b') |
++------------------------------------------------+
+|                                              1 |
++------------------------------------------------+
+</code></pre>
+<p>JSON_VALID(<strong><em>val</em></strong>) 校验JSON值是否有效👇</p>
+<pre><code class="language-sql">mysql&gt; SELECT JSON_VALID('{&quot;a&quot;: 1}'), JSON_VALID('hello'), JSON_VALID('&quot;hello&quot;');
++------------------------+---------------------+-----------------------+
+| JSON_VALID('{&quot;a&quot;: 1}') | JSON_VALID('hello') | JSON_VALID('&quot;hello&quot;') |
++------------------------+---------------------+-----------------------+
+|                      1 |                   0 |                     1 |
++------------------------+---------------------+-----------------------+
+</code></pre>
+<h2 id="json-新运算符">JSON 新运算符</h2>
+<p>插入数据<code>INSERT INTO t1(</code>data<code>) VALUES (JSON_OBJECT(&quot;mascot&quot;, &quot;Our mascot is a dolphin named \&quot;Sakila\&quot;.&quot;));</code><br />可以根据 key 查找匹配项<code>SELECT data-&gt;&quot;$.mascot&quot; FROM t1</code>，用到了&quot;-&gt;&quot;列路径运算符</p>
+<pre><code class="language-sql">-- 这种写法会与每条数据都匹配查询一次，未找到的返回 null
+mysql&gt; SELECT data-&gt;&quot;$.mascot&quot; FROM t1;
++---------------------------------------------+
+| data-&gt;&quot;$.mascot&quot;                            |
++---------------------------------------------+
+| NULL                                        |
+| NULL                                        |
+| &quot;Our mascot is a dolphin named \&quot;Sakila\&quot;.&quot; |
++---------------------------------------------+
+
+-- 使用子查询解决上面问题，必须要把子查询命名为派生表【也可以使用 JSON_EXTRACT 函数】
+mysql&gt; SELECT data-&gt;&quot;$.mascot&quot; FROM (SELECT data FROM t1 WHERE `id` = 3) AS tt;
++---------------------------------------------+
+| data-&gt;&quot;$.mascot&quot;                            |
++---------------------------------------------+
+| &quot;Our mascot is a dolphin named \&quot;Sakila\&quot;.&quot; |
++---------------------------------------------+
+</code></pre>
+<p>使用&quot;-&gt;&gt;&quot;内联路径运算符</p>
+<pre><code class="language-sql">mysql&gt; SELECT data-&gt;&gt;&quot;$.mascot&quot; FROM t1;
++-----------------------------------------+
+| data-&gt;&gt;&quot;$.mascot&quot;                       |
++-----------------------------------------+
+| NULL                                    |
+| NULL                                    |
+| Our mascot is a dolphin named &quot;Sakila&quot;. |
++-----------------------------------------+
+</code></pre>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E5%BC%80%E5%A7%8B">开始</a>
+<ul>
+<li><a href="#json-%E8%B5%8B%E5%80%BC%E7%BB%99%E5%8F%98%E9%87%8F">JSON 赋值给变量</a></li>
+</ul>
+</li>
+<li><a href="#%E5%88%9B%E5%BB%BA-json">创建 JSON</a></li>
+<li><a href="#%E5%90%88%E5%B9%B6-json">合并 JSON</a></li>
+<li><a href="#%E6%90%9C%E7%B4%A2-json">搜索 JSON</a></li>
+<li><a href="#%E6%8F%92%E5%85%A5%E4%BF%AE%E6%94%B9%E5%88%A0%E9%99%A4-json">插入/修改/删除 JSON</a></li>
+<li><a href="#%E5%85%B6%E4%BB%96-json-%E5%87%BD%E6%95%B0">其他 JSON 函数</a></li>
+<li><a href="#json-%E6%96%B0%E8%BF%90%E7%AE%97%E7%AC%A6">JSON 新运算符</a></li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://xuyj1111.github.io/yZ13CWGFl/">
+              <h3 class="post-title">
+                【转载】MySQL预处理
+              </h3>
+            </a>
+          </div>
+        
+
+        
+
+        <div class="site-footer">
+  
+  <a class="rss" href="https://xuyj1111.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+
+
+
+    <div id="vcomments"></div>
+    <script>
+        new Valine({
+            el: '#vcomments',
+            appId: 'ot2L3hKJVxTAXnr1VQt7wm70-gzGzoHsz',
+            appKey: 'BjaYGo2m6zV3mCvxGLGsDP5V'
+        })
+    </script>
+
+
+
+  </body>
+
+</html>

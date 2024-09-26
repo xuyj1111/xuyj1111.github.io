@@ -1,0 +1,423 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>【转载】域名背后那些事 | 洗衣机的博客</title>
+<link rel="shortcut icon" href="https://xuyj1111.github.io/favicon.ico?v=1727363389169">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://xuyj1111.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="【转载】域名背后那些事 | 洗衣机的博客 - Atom Feed" href="https://xuyj1111.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+
+    <meta name="description" content="
+域名背后那些事，by LeanCloud
+
+互联网中的地址是数字的 IP 地址，例如61.135.169.125就是百度的官网地址之一，如果每次访问百度都需要输入 IP 的话，估计到今天互联网都还没有走出鸿蒙阶段。
+在网络发展历史上，最开..." />
+    <meta name="keywords" content="转载,杂记" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
+ <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://xuyj1111.github.io">
+  <img class="avatar" src="https://xuyj1111.github.io/images/avatar.png?v=1727363389169" alt="">
+  </a>
+  <h1 class="site-title">
+    洗衣机的博客
+  </h1>
+  <p class="site-description">
+    【一名Java开发】slave👉https://www.cnblogs.com/xuyj1111/
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="https://xuyj1111.github.io" class="menu">
+          主页
+        </a>
+      
+    
+      
+        <a href="https://xuyj1111.github.io/archives" class="menu">
+          文章
+        </a>
+      
+    
+      
+        <a href="https://xuyj1111.github.io/tags" class="menu">
+          标签
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/xuyj1111" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+  <form id="gridea-search-form" action="https://xuyj1111.github.io/search/">
+    <input name="q" />
+  </form>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              【转载】域名背后那些事
+            </h2>
+            <div class="post-info">
+              <span>
+                2022-04-29
+              </span>
+              <span>
+                20 min read
+              </span>
+              
+                <a href="https://xuyj1111.github.io/JDrWa3FBq/" class="post-tag">
+                  # 转载
+                </a>
+              
+                <a href="https://xuyj1111.github.io/CseDYEWrD/" class="post-tag">
+                  # 杂记
+                </a>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content">
+                <blockquote>
+<p><a href="https://leancloudblog.com/Domain-Name-Story-confirm/">域名背后那些事</a>，by LeanCloud</p>
+</blockquote>
+<p>互联网中的地址是数字的 IP 地址，例如<code>61.135.169.125</code>就是百度的官网地址之一，如果每次访问百度都需要输入 IP 的话，估计到今天互联网都还没有走出鸿蒙阶段。</p>
+<p>在网络发展历史上，最开始确实就是直接使用 IP 地址来访问远程主机的。早期联网的每台计算机都是采用主机文件（即我们俗称的 hosts 文件）来进行地址配置和解析的，后来联网机器越来越多，主机文件的更新和同步就成了很大的问题。于是，1983 年保罗 · 莫卡派乔斯发明了域名解析服务和域名系统，在 1985 年 1 月 1 日，世界上第一个域名 <a href="http://nordu.net/">nordu.net</a> 才被注册成功。</p>
+<p>域名比 IP 地址更容易记忆，本质上只是为数字化的互联网资源提供了易于记忆的别名，就像在北京提起「故宫博物院」就都知道指的是「东城区景山前街 4 号」的那个大院子一样。如果把 IP 地址看成电话号码，那域名系统就是通讯录。我们在通讯录里保存了朋友和家人的信息，每次通过名字找到某人打电话的时候，通讯录就会查出与之关联的电话号码，然后拨号过去。我们可能记不下多少完整的电话号码，但是联系人的名字却是一定记得的。</p>
+<p>既然「域名」只是一个别名，单凭这一个名字我们并不能访问到正确的地址，只有能将域名解析成实际的网络地址，网络访问才能成功。这种解析工作由专门的「域名系统」（Domain Name System，简称 DNS）完成，DNS 也是互联网的核心基础服务之一。</p>
+<h2 id="域名解析是怎么完成的">域名解析是怎么完成的</h2>
+<p>DNS 解析的过程是什么样子的呢？在开始这个问题之前，我们先看一看域名的层次结构。</p>
+<h3 id="域名的层级结构">域名的层级结构</h3>
+<p>在讨论域名的时候，我们经常听到有人说「顶级域名」、「一级域名」、「二级域名」等概念，域名级别究竟是怎么划分的呢？</p>
+<ul>
+<li>根域名。还是以百度为例，通过一些域名解析工具，我们可以看到百度官网域名显示为 <code>www.baidu.com.</code>，细心的人会注意到，这里最后有一个 <code>.</code>，这不是 bug，而是所有域名的尾部都有一个根域名。<code>www.baidu.com</code> 真正的域名是 <code>www.baidu.com.root</code>，简写为<code>www.baidu.com.</code>，又因为根域名<code>.root</code>对于所有域名都是一样的，所以平时是省略的，最终就变成了我们常见的样子。</li>
+<li>根域名的下一级叫做顶级域名（top-level domain，缩写为 TLD），也叫做一级域名，常见的如 .com / .net / .org / .cn 等等，他们就是顶级域名。</li>
+<li>再下一级叫做二级域名（second-level domain，缩写为 SLD），比如 baidu.com。这是我们能够购买和注册的最高级域名。</li>
+<li>次级域名之下，就是主机名（host），也可以称为三级域名，比如 www.baidu.com，由此往下，基本上 N 级域名就是在 N-1 级域名前追加一级。</li>
+</ul>
+<p>总结一下，常见的域名层级结构如下：</p>
+<pre><code>主机名.次级域名.顶级域名.根域名
+www.baidu.com.root
+
+</code></pre>
+<p>一般来说我们购买一个域名就是购买一个二级域名（SLD）的管理权（如 leancloud.cn），有了这个管理权我们就可以随意设置三级、四级域名了。</p>
+<h3 id="域名解析的过程">域名解析的过程</h3>
+<p>与域名的分级结构对应，DNS 系统也是一个树状结构，不同级别的域名由不同的域名服务器来解析，整个过程是一个「层级式」的。</p>
+<p>层级式域名解析体系的第一层就是根域名服务器，全世界 IPv4 根域名服务器只有 13 台（名字分别为 A 至 M），1 个为主根服务器在美国，其余 12 个均为辅根服务器，它们负责管理世界各国的域名信息。在根服务器下面是顶级域名服务器，即相关国家域名管理机构的数据库，如中国互联网络信息中心（CNNIC）。然后是再下一级的权威域名服务器和 ISP 的缓存服务器。</p>
+<p>一个域名必须首先经过根数据库的解析后，才能转到顶级域名服务器进行解析，这一点与生活中问路的情形有几分相似。</p>
+<p>假设北京市设立了一个专门的「道路咨询局」，里面设置了局长、部长、处长、科员好几个级别的公务员，不同的部门、科室、人员负责解答不同区域的道路问题。这里的人都有一个共同特点，信奉「好记性不如烂笔头」的哲理，喜欢将自己了解到的信息记录到笔记本上。但是有一点遗憾的是，他们写字用的墨水只有一种，叫「魔术墨水」，初写字迹浓厚，之后会慢慢变淡，1 小时之后则会完全消失。道路咨询局门口还有一个门卫大爷，所有的人要问路都需要通过他来传达和回复，市民并不能进入办公楼。</p>
+<p>如果市民 A 先生来找门卫大爷询问「北海公园」的地址，门卫大爷会先看一下自己的笔记本，找找看之前有没有人问过北海公园，如果没有，他就会拨打内线去找局长求助。局长说北海是西城区，你去问负责西城区道路信息的赵部长吧。门卫大爷又去问赵部长，赵部长查了一下，说这个地址你去问负责核心区的钱处长吧。门卫大爷又给钱处长打过去电话，钱处长说这个地址我也不掌握啊，你去问一下负责景山片区的科员小孙吧。门卫大爷从小孙那里终于知道了北海公园地址，他赶紧记到自己的小本本上，然后把结果告诉了市民 A 先生。接下来一小时内，如果还有市民 B 先生再来问北海公园的话，门卫大爷就直接用笔记本上记载的结果回复了。当然，如果市民 C 女士过来问别的地址的话，门卫大爷就要把处理 A 先生问询的流程再走一遍了。</p>
+<h3 id="分级查询的实例">分级查询的实例</h3>
+<p>现在我们来看一个实际的例子。如果我们在浏览器中输入<code>https://news.qq.com</code>，那浏览器会从接收到的 URL 中抽取出域名字段（news.qq.com），然后将它传给 DNS 客户端（操作系统提供）来解析。</p>
+<p>首先我们说明一下本机 DNS 配置（就是 /etc/resolv.conf 文件，里面指定了本地 DNS 服务器的地址，Windows 系统可能会有所不同）：</p>
+<pre><code>$ cat /etc/resolv.conf 
+nameserver 202.106.0.20
+nameserver 202.106.196.115
+
+</code></pre>
+<p>然后我们用 dig 这个工具查看一下 news.qq.com 的解析结果（其中中文部分是解释说明）：</p>
+<pre><code>$ dig news.qq.com
+
+; &lt;&lt;&gt;&gt; DiG 9.10.6 &lt;&lt;&gt;&gt; news.qq.com
+这是 dig 程序的版本号与要查询的域名
+
+;; global options: +cmd
+;; Got answer:
+以下是要获取的内容。
+
+;; -&gt;&gt;HEADER&lt;&lt;- opcode: QUERY, status: NOERROR, id: 47559
+;; flags: qr rd ra; QUERY: 1, ANSWER: 2, AUTHORITY: 0, ADDITIONAL: 0
+这个是返回应答的头部信息：
+1. opcode：操作码，QUERY 代表查询操作；
+2. status: 状态，NOERROR 代表没有错误;
+3. id：编号，在 DNS 协议中通过编号匹配返回和查询；
+4. flags: 标志，含义如下:
+   - qr：query，查询标志，代表是查询操作
+   - rd：recursion desired，代表希望进行递归查询操作;
+   - ra：recursive available，代表查询的服务器支持递归查询操作;
+5. QUERY 查询数，与下面 QUESTION SECTION 的记录数一一对应；
+6. ANSWER 结果数，与下面的 ANSWER SECTION 的记录数一一对应；
+7. AUTHORITY 权威回复数，如果查询结果由管理域名的域名服务器而不是缓存服务器提供的，则称为权威回复。
+             0 表示所有结果都不是权威回复；
+8. ADDITIONAL 额外记录数；
+
+;; QUESTION SECTION:
+;news.qq.com.			IN	A
+查询部分,从左到右部分意义如下:
+1、要查询的域名；
+2、要查询信息的类别，IN 代表类别为 IP 协议，即 Internet。
+3、查询的记录类型，A 记录(Address)代表要查询 IPv4 地址。
+
+;; ANSWER SECTION:
+news.qq.com.		136	IN	CNAME	https.qq.com.
+https.qq.com.		476	IN	A	125.39.52.26
+回应部分，从左到右各部分意义：
+1、对应的域名
+2、TTL，time to live，缓存时间，单位秒，代表缓存域名服务器可以在缓存中保存的期限。
+3、查询信息的类别
+4、查询的记录类型，CNAME 表示别名记录，A 记录(Address)代表 IPv4 地址。
+5、域名对应的 ip 地址。
+
+;; Query time: 56 msec
+;; SERVER: 202.106.0.20#53(202.106.0.20)
+查询使用的服务器地址和端口,其实就是本地 DNS 域名服务器
+;; WHEN: Thu Jul 11 15:59:37 CST 2019
+;; MSG SIZE  rcvd: 65
+查询的时间与回应的大小，收到 65 字节的应答数据。
+
+</code></pre>
+<p>从这个应答可以看到，我们得到的结果不是权威回复，只是本地 DNS 服务器从缓存中给了应答。</p>
+<p>接下来我们在 dig 命令中增加一个参数 <code>+trace</code>，看看完整的分级查询过程：</p>
+<pre><code>$ dig +trace news.qq.com
+
+; &lt;&lt;&gt;&gt; DiG 9.10.6 &lt;&lt;&gt;&gt; +trace news.qq.com
+;; global options: +cmd
+.			432944	IN	NS	g.root-servers.net.
+.			432944	IN	NS	k.root-servers.net.
+.			432944	IN	NS	b.root-servers.net.
+.			432944	IN	NS	h.root-servers.net.
+.			432944	IN	NS	i.root-servers.net.
+.			432944	IN	NS	f.root-servers.net.
+.			432944	IN	NS	d.root-servers.net.
+.			432944	IN	NS	e.root-servers.net.
+.			432944	IN	NS	j.root-servers.net.
+.			432944	IN	NS	l.root-servers.net.
+.			432944	IN	NS	c.root-servers.net.
+.			432944	IN	NS	m.root-servers.net.
+.			432944	IN	NS	a.root-servers.net.
+;; Received 228 bytes from 202.106.0.20#53(202.106.0.20) in 45 ms
+这些就是神秘的根域名服务器，由本地 DNS 服务器返回了所有根域名服务器地址。
+
+com.			172800	IN	NS	g.gtld-servers.net.
+com.			172800	IN	NS	a.gtld-servers.net.
+com.			172800	IN	NS	b.gtld-servers.net.
+com.			172800	IN	NS	m.gtld-servers.net.
+com.			172800	IN	NS	d.gtld-servers.net.
+com.			172800	IN	NS	c.gtld-servers.net.
+com.			172800	IN	NS	j.gtld-servers.net.
+com.			172800	IN	NS	h.gtld-servers.net.
+com.			172800	IN	NS	f.gtld-servers.net.
+com.			172800	IN	NS	l.gtld-servers.net.
+com.			172800	IN	NS	e.gtld-servers.net.
+com.			172800	IN	NS	k.gtld-servers.net.
+com.			172800	IN	NS	i.gtld-servers.net.
+;; Received 1171 bytes from 192.36.148.17#53(i.root-servers.net) in 57 ms
+这里显示的是 .com 域名的 13 条 NS 记录，本地 DNS 服务器向这些顶级域名服务器发出查询请求，
+询问 qq.com 的 NS 记录。
+
+qq.com.			172800	IN	NS	ns1.qq.com.
+qq.com.			172800	IN	NS	ns2.qq.com.
+qq.com.			172800	IN	NS	ns3.qq.com.
+qq.com.			172800	IN	NS	ns4.qq.com.
+;; Received 805 bytes from 192.48.79.30#53(j.gtld-servers.net) in 331 ms
+这里显示的是 qq.com 的 4 条 NS 记录，由 j.gtld-servers.net 这台服务器最先返回。
+然后本地 DNS 服务器向这四台服务器查询下一级域名 news.qq.com 的 NS 记录。
+
+news.qq.com.		86400	IN	NS	ns-cnc1.qq.com.
+news.qq.com.		86400	IN	NS	ns-cnc2.qq.com.
+;; Received 180 bytes from 58.144.154.100#53(ns4.qq.com) in 37 ms
+这里显示的是 news.qq.com 的 NS 记录，它们是由上面的 ns4.qq.com 域名服务器返回的。
+然后本地 DNS 服务器向这两台机器查询 news.qq.com 的主机名。
+
+news.qq.com.		600	IN	CNAME	https.qq.com.
+https.qq.com.		600	IN	A	125.39.52.26
+;; Received 76 bytes from 223.167.83.104#53(ns-cnc2.qq.com) in 29 ms
+这是上面的 ns-cnc2.qq.com 返回的最终查询结果：
+news.qq.com 是 https.qq.com 的别名，而 https.qq.com 的 A 记录地址是 125.39.52.26
+
+</code></pre>
+<p>实际的流程里面，本地 DNS 服务器相当于门卫大爷，根域名服务器相当于局长同志，其余以此类推。客户端与本地 DNS 服务器之间的查询叫递归查询，本地 DNS 服务器与其他域名服务器之间的查询就叫迭代查询。</p>
+<h2 id="域名记录的类型">域名记录的类型</h2>
+<p>域名服务器之所以能知道域名与 IP 地址的映射信息，是因为我们在域名服务商那里提交了域名记录。购买了一个域名之后，我们需要在域名服务商那里设置域名解析的记录，域名服务商把这些记录推送到权威域名服务器，这样我们的域名才能正式生效。</p>
+<p>在设置域名记录的时候，会遇到「A 记录」、「CNAME」 等不同类型，这正是前面做域名解析的时候我们碰到的结果。这些类型是什么意思，它们之间有什么区别呢？接下来我们看看常见的记录类型。</p>
+<ul>
+<li>
+<p><strong>A 记录</strong>。A (Address) 记录用来直接指定主机名（或域名）对应的 IP 地址。主机名就是域名前缀，常见有如下几种：</p>
+<ul>
+<li><strong>www</strong>：解析后的域名为 www.yourdomain.com，一般用于网站地址。</li>
+<li><strong>@</strong>：直接解析主域名。</li>
+<li>*：泛解析，指将 <code>*.yourdomain.com</code> 解析到同一 IP。</li>
+</ul>
+</li>
+<li>
+<p><strong>CNAME 记录</strong>。CNAME 的全称是 <strong>Canonical Name</strong>，通常称别名记录。如果需要将域名指向另一个域名，再由另一个域名提供 IP 地址，就需要添加 CNAME 记录。</p>
+</li>
+<li>
+<p>MX 记录。邮件交换记录，用于将以该域名为结尾的电子邮件指向对应的邮件服务器以进行处理。</p>
+</li>
+<li>
+<p>NS 记录。域名服务器记录，如果需要把子域名交给其他 DNS 服务器解析，就需要添加 NS 记录。</p>
+</li>
+<li>
+<p>AAAA 记录。用来指定主机名（或域名）对应的 IPv6 地址，不常用。</p>
+</li>
+<li>
+<p>TXT 记录。可以填写任何东西，长度限制 255。绝大多数的 TXT 记录是用来做 SPF 记录（反垃圾邮件），MX 记录的作用是给寄信者指明某个域名的邮件服务器有哪些。SPF 的作用跟 MX 相反，它向收信者表明，哪些邮件服务器是经过某个域名认可会发送邮件的。</p>
+</li>
+<li>
+<p>显性 URL。从一个地址 301 重定向（也叫「永久性转移」）到另一个地址的时候，就需要添加显性 URL 记录。</p>
+</li>
+<li>
+<p>隐性 URL。从一个地址 302 跳转（也叫「临时跳转」）到另一个地址，需要添加隐性 URL 记录。它类似于显性 URL，区别在于隐性 URL 不会改变地址栏中的域名。</p>
+</li>
+</ul>
+<p>在填写各种记录的时候，我们还会碰到一个特殊的设置项——<code>TTL</code>，生存时间（Time To Live）。</p>
+<p><code>TTL</code>表示解析记录在 DNS 服务器中的缓存时间，时间长度单位是秒，一般为 3600 秒。比如：在访问<code>news.qq.com</code>时，如果在 DNS 服务器的缓存中没有该记录，就会向某个 NS 服务器发出请求，获得该记录后，该记录会在 DNS 服务器上保存<code>TTL</code>的时间长度，在<code>TTL</code>有效期内访问<code>news.qq.com</code>，DNS 服务器会直接缓存中返回刚才的记录。</p>
+<h2 id="dns-智能解析">DNS 智能解析</h2>
+<p>DNS 主要的工作就是完成域名到 IP 的映射，但是也不是简单到查查字典就可以搞定的程度。在设置 DNS 解析的时候，我们还有一些额外的需求，例如：</p>
+<h3 id="将一个域名解析到多个-ip">将一个域名解析到多个 IP</h3>
+<p>例如我们一个网站有多台前端机，希望用户访问的时候，可以随机分散到这些机器上，以增加网站承载能力。有一种解决的办法就是对同一个域名设置多条 A 记录，分别指定到不同的 IP 上。</p>
+<h3 id="根据特征差异将不同请求解析到不同-ip智能解析">根据特征差异将不同请求解析到不同 IP（智能解析）</h3>
+<p>国内互联网的架构其实远比我们想象的复杂，基本上还是根据运营商的不同切割成多个平行网络，只有在固定的几个节点这些平行网络才会有交叉。例如电信和联通之间的互联是通过「国家级互联网骨干直联点」接入的，目前我们一共建设了三批国家级互联网骨干直联点：</p>
+<ol>
+<li>第一批 2001 年投入使用：北京，上海，广州</li>
+<li>第二批 2014 年投入使用：成都，郑州，武汉，西安，沈阳，南京，重庆</li>
+<li>第三批 2017 年投入使用：杭州，贵阳 / 贵安，福州</li>
+</ol>
+<p>教育网目前还只能通过北上广三个点进行连接。这样的网络拓扑结构，给 DNS 解析带来了新的挑战。</p>
+<p>传统 DNS 解析，不判断访问者来源，会随机选择其中一个 IP 地址返回给访问者。如果让电信用户使用了联通 IP 来访问网站，那结果自然不如使用电信 IP 访问来的快捷。而智能 DNS 解析，会判断访问者的来源特征，为不同的访问者返回不同的 IP 地址，能够减少解析时延，并提升网络访问速度。例如，国内某著名 DNS 服务商不光可以区分网络运营商，还可以根据访问者的地理位置来设置不同的解析线路，而且甚至还可以为搜索引擎设置特定的解析地址。</p>
+<h3 id="cname-和-a-记录区别">CNAME 和 A 记录区别</h3>
+<p>按照前面的解释，A 记录就是把一个域名解析到一个 IP 地址，而 CNAME 记录就是把一个域名解析到另外一个域名，其功能差不多。但是 CNAME 相当于将域名和 IP 地址之间加了一个中间层，可以带来很大的灵活性，特别是当你要使用但是并不拥有那些域名的时候。</p>
+<p>例如我们使用 CDN 服务，服务商提供给我们的是一个 CNAME 地址，我们可以把自己的域名绑定到这一个地址上，这样万一以后服务商的 IP 地址更换了，我们自己的域名解析是不需要做任何变更的，只要服务商调整一下 CNAME 地址的解析结果，所有使用者都可以无感知的切换。</p>
+<p>从 6 月底开始，LeanCloud 新推出了<a href="https://leancloudblog.com/custom-domains-for-api-file-leanengine/">绑定自定义域名</a>的功能，全面支持开发者设置自己的 API、文件、云引擎域名，也正是依赖于 CNAME 记录的这一特点来实现的。</p>
+<h2 id="dns-污染与安全挑战">DNS 污染与安全挑战</h2>
+<p>DNS 是最早商用的大型分布式系统，虽然现在看起来已经很完备了，但是实际使用的时候，特别是国内复杂的网络环境，我们还是会遇到很多问题。</p>
+<p>作为互联网早期产物，DNS 使用无连接的 UDP 协议虽然降低了开销也保证了高效的通信，但是没有太考虑安全问题。由于它使用目的端口为 53 的 UDP 明文进行通信，DNS 解析器识别是自己发出的数据包的唯一标准就是随机的源端口号，如果端口号匹配则认为是正确回复，而不会验证来源。所以也带来了诸如 DNS 欺骗、DNS Cache 污染、DNS 放大攻击等问题，同时给一些区域运营商带来了「商机」。</p>
+<p>为此业界提出了 DNSSec（Domain Name System Security Extensions，也叫「DNS 安全扩展」）机制，使用密码学方法，让客户端对域名来源身份进行验证，并且检查来自 DNS 域名服务器应答记录的完整性，以及验证是否在传输过程中被篡改过，等等一系列措施来保证数据通信的安全性。对这方面感兴趣的读者，可以关注我们的后续文章。</p>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E5%9F%9F%E5%90%8D%E8%A7%A3%E6%9E%90%E6%98%AF%E6%80%8E%E4%B9%88%E5%AE%8C%E6%88%90%E7%9A%84">域名解析是怎么完成的</a>
+<ul>
+<li><a href="#%E5%9F%9F%E5%90%8D%E7%9A%84%E5%B1%82%E7%BA%A7%E7%BB%93%E6%9E%84">域名的层级结构</a></li>
+<li><a href="#%E5%9F%9F%E5%90%8D%E8%A7%A3%E6%9E%90%E7%9A%84%E8%BF%87%E7%A8%8B">域名解析的过程</a></li>
+<li><a href="#%E5%88%86%E7%BA%A7%E6%9F%A5%E8%AF%A2%E7%9A%84%E5%AE%9E%E4%BE%8B">分级查询的实例</a></li>
+</ul>
+</li>
+<li><a href="#%E5%9F%9F%E5%90%8D%E8%AE%B0%E5%BD%95%E7%9A%84%E7%B1%BB%E5%9E%8B">域名记录的类型</a></li>
+<li><a href="#dns-%E6%99%BA%E8%83%BD%E8%A7%A3%E6%9E%90">DNS 智能解析</a>
+<ul>
+<li><a href="#%E5%B0%86%E4%B8%80%E4%B8%AA%E5%9F%9F%E5%90%8D%E8%A7%A3%E6%9E%90%E5%88%B0%E5%A4%9A%E4%B8%AA-ip">将一个域名解析到多个 IP</a></li>
+<li><a href="#%E6%A0%B9%E6%8D%AE%E7%89%B9%E5%BE%81%E5%B7%AE%E5%BC%82%E5%B0%86%E4%B8%8D%E5%90%8C%E8%AF%B7%E6%B1%82%E8%A7%A3%E6%9E%90%E5%88%B0%E4%B8%8D%E5%90%8C-ip%E6%99%BA%E8%83%BD%E8%A7%A3%E6%9E%90">根据特征差异将不同请求解析到不同 IP（智能解析）</a></li>
+<li><a href="#cname-%E5%92%8C-a-%E8%AE%B0%E5%BD%95%E5%8C%BA%E5%88%AB">CNAME 和 A 记录区别</a></li>
+</ul>
+</li>
+<li><a href="#dns-%E6%B1%A1%E6%9F%93%E4%B8%8E%E5%AE%89%E5%85%A8%E6%8C%91%E6%88%98">DNS 污染与安全挑战</a></li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://xuyj1111.github.io/dFvS6kPBm/">
+              <h3 class="post-title">
+                使用二进制编程心得
+              </h3>
+            </a>
+          </div>
+        
+
+        
+
+        <div class="site-footer">
+  
+  <a class="rss" href="https://xuyj1111.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+
+
+
+    <div id="vcomments"></div>
+    <script>
+        new Valine({
+            el: '#vcomments',
+            appId: 'ot2L3hKJVxTAXnr1VQt7wm70-gzGzoHsz',
+            appKey: 'BjaYGo2m6zV3mCvxGLGsDP5V'
+        })
+    </script>
+
+
+
+  </body>
+
+</html>

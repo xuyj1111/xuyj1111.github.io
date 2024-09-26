@@ -1,0 +1,215 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>【Java】HttpMessageConverters 类 | 洗衣机的博客</title>
+<link rel="shortcut icon" href="https://xuyj1111.github.io/favicon.ico?v=1727363389169">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://xuyj1111.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="【Java】HttpMessageConverters 类 | 洗衣机的博客 - Atom Feed" href="https://xuyj1111.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+
+    <meta name="description" content="
+参考文章：HttpMessageConverter 消息转换器，by 小二上酒8
+My GitHub Demo ：CLICK HERE
+
+HttpMessageConverter下有多个HttpMessageConverter，HttpM..." />
+    <meta name="keywords" content="Java,原创" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
+ <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://xuyj1111.github.io">
+  <img class="avatar" src="https://xuyj1111.github.io/images/avatar.png?v=1727363389169" alt="">
+  </a>
+  <h1 class="site-title">
+    洗衣机的博客
+  </h1>
+  <p class="site-description">
+    【一名Java开发】slave👉https://www.cnblogs.com/xuyj1111/
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="https://xuyj1111.github.io" class="menu">
+          主页
+        </a>
+      
+    
+      
+        <a href="https://xuyj1111.github.io/archives" class="menu">
+          文章
+        </a>
+      
+    
+      
+        <a href="https://xuyj1111.github.io/tags" class="menu">
+          标签
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/xuyj1111" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+  <form id="gridea-search-form" action="https://xuyj1111.github.io/search/">
+    <input name="q" />
+  </form>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              【Java】HttpMessageConverters 类
+            </h2>
+            <div class="post-info">
+              <span>
+                2023-02-14
+              </span>
+              <span>
+                2 min read
+              </span>
+              
+                <a href="https://xuyj1111.github.io/SOje8Joqr/" class="post-tag">
+                  # Java
+                </a>
+              
+                <a href="https://xuyj1111.github.io/WSbjWpIkN/" class="post-tag">
+                  # 原创
+                </a>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content">
+                <blockquote>
+<p>参考文章：<a href="https://blog.csdn.net/Huangjiazhen711/article/details/128049682">HttpMessageConverter 消息转换器</a>，by 小二上酒8<br>
+My GitHub Demo ：<a href="https://github.com/xuyj1111/all/blob/master/src/main/java/xu/all/config/ObjectMapperConfig.java">CLICK HERE</a></p>
+</blockquote>
+<p><code>HttpMessageConverter</code>下有多个<code>HttpMessageConverter</code>，HttpMessageConverter 是 SpringMVC 中提供的一个策略接口，它是一个消息转换器类，Spring Mvc 中就是由 HttpMessageConverter 负责转换 HTTP 的请求和响应</p>
+<p>默认情况下，Spring Boot 会自动加载如下消息类型转换器👇<br>
+<img src="https://xuyj1111.github.io/post-images/1676356452174.png" alt="" loading="lazy"></p>
+<ul>
+<li><code>StringHttpMessageConverter</code>负责读取字符串格式的数据和写出二进制格式的数据(当返回值是或者接受值是 String 类型时，是由这个处理)</li>
+<li><code>MappingJacksonHttpMessageConverter</code>负责读取和写入 json 格式的数据；(当返回值是对象或者List，就由这个处理)</li>
+<li><code>ByteArrayHttpMessageConverter</code>负责读取二进制格式的数据和写出二进制格式的数据；</li>
+<li><code>FormHttpMessageConverter</code>负责读取 form 提交的数据（能读取的数据格式为 application/x-www-form-urlencoded，不能读取 multipart/form-data 格式数据）；负责写入 application/x-www-from-urlencoded 和 multipart/form-data 格式的数据；</li>
+<li><code>ResourceHttpMessageConverter</code>负责读取资源文件和写出资源文件数据；</li>
+<li><code>SourceHttpMessageConverter</code>负责读取和写入 xml 中 javax.xml.transform.Source 定义的数据；</li>
+<li><code>Jaxb2RootElementHttpMessageConverter</code>负责读取和写入 xml 标签格式的数据；</li>
+<li><code>AtomFeedHttpMessageConverter</code>负责读取和写入 Atom 格式的数据；</li>
+<li><code>RssChannelHttpMessageConverter</code>负责读取和写入 RSS 格式的数据；</li>
+</ul>
+<p>执行流程👇<br>
+<img src="https://xuyj1111.github.io/post-images/1676356798272.png" alt="" loading="lazy"></p>
+
+              </div>
+              <div class="toc-container">
+                
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://xuyj1111.github.io/bJ4DMMqiI/">
+              <h3 class="post-title">
+                【转载】Mysql的4种事务特性、4种隔离级别、7种传播行为
+              </h3>
+            </a>
+          </div>
+        
+
+        
+
+        <div class="site-footer">
+  
+  <a class="rss" href="https://xuyj1111.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+
+
+
+    <div id="vcomments"></div>
+    <script>
+        new Valine({
+            el: '#vcomments',
+            appId: 'ot2L3hKJVxTAXnr1VQt7wm70-gzGzoHsz',
+            appKey: 'BjaYGo2m6zV3mCvxGLGsDP5V'
+        })
+    </script>
+
+
+
+  </body>
+
+</html>

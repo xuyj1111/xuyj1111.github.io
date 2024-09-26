@@ -1,0 +1,273 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>log4j.properties的配置详情 | 洗衣机的博客</title>
+<link rel="shortcut icon" href="https://xuyj1111.github.io/favicon.ico?v=1727363389169">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://xuyj1111.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="log4j.properties的配置详情 | 洗衣机的博客 - Atom Feed" href="https://xuyj1111.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+
+    <meta name="description" content="
+log4j.properties 是 log4j 的配置文件
+在 SpringBoot 架构下，该配置文件路径默认在resources文件夹下
+
+示例
+#将等级为DEBUG的日志信息输出到console和file这两个目的地，consol..." />
+    <meta name="keywords" content="原创,杂记" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
+ <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://xuyj1111.github.io">
+  <img class="avatar" src="https://xuyj1111.github.io/images/avatar.png?v=1727363389169" alt="">
+  </a>
+  <h1 class="site-title">
+    洗衣机的博客
+  </h1>
+  <p class="site-description">
+    【一名Java开发】slave👉https://www.cnblogs.com/xuyj1111/
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="https://xuyj1111.github.io" class="menu">
+          主页
+        </a>
+      
+    
+      
+        <a href="https://xuyj1111.github.io/archives" class="menu">
+          文章
+        </a>
+      
+    
+      
+        <a href="https://xuyj1111.github.io/tags" class="menu">
+          标签
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/xuyj1111" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+  <form id="gridea-search-form" action="https://xuyj1111.github.io/search/">
+    <input name="q" />
+  </form>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              log4j.properties的配置详情
+            </h2>
+            <div class="post-info">
+              <span>
+                2022-08-04
+              </span>
+              <span>
+                4 min read
+              </span>
+              
+                <a href="https://xuyj1111.github.io/WSbjWpIkN/" class="post-tag">
+                  # 原创
+                </a>
+              
+                <a href="https://xuyj1111.github.io/CseDYEWrD/" class="post-tag">
+                  # 杂记
+                </a>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content">
+                <blockquote>
+<p>log4j.properties 是 log4j 的配置文件<br>
+在 SpringBoot 架构下，该配置文件路径默认在<code>resources</code>文件夹下</p>
+</blockquote>
+<h2 id="示例">示例</h2>
+<pre><code>#将等级为DEBUG的日志信息输出到console和file这两个目的地，console和file的定义在下面的代码
+log4j.rootLogger=DEBUG,console,file
+
+#控制台输出的相关设置
+log4j.appender.console = org.apache.log4j.ConsoleAppender
+log4j.appender.console.Target = System.out
+log4j.appender.console.Threshold=DEBUG
+log4j.appender.console.layout = org.apache.log4j.PatternLayout
+log4j.appender.console.layout.ConversionPattern=[%c]-%m%n
+
+#文件输出的相关设置
+log4j.appender.file = org.apache.log4j.RollingFileAppender
+log4j.appender.file.File=/Users/edy/logs/all.log
+log4j.appender.file.MaxFileSize=10mb
+log4j.appender.file.Threshold=DEBUG
+log4j.appender.file.layout=org.apache.log4j.PatternLayout
+log4j.appender.file.layout.ConversionPattern=[%p][%d{yy-MM-dd}][%c]%m%n
+
+#日志输出级别
+log4j.logger.org.mybatis=DEBUG
+log4j.logger.java.sql=DEBUG
+log4j.logger.java.sql.Statement=DEBUG
+log4j.logger.java.sql.ResultSet=DEBUG
+log4j.logger.java.sql.PreparedStatement=DEBUG
+</code></pre>
+<h2 id="详情">详情</h2>
+<p><code>log4j.rootLogger</code>：把指定级别以上的日志信息输出到指定的一个或者多个位置<br>
+语法：<code>log4j.rootLogger = [ level ] , appenderName, appenderName, …</code></p>
+<ul>
+<li>level：是日志优先级，为OFF、FATAL、ERROR、WARN、INFO、DEBUG、ALL或者您定义的级别【Log4j建议只使用四个级别，优先级从高到低分别是ERROR、WARN、INFO、DEBUG】</li>
+<li>appenderName：自定义位置别名</li>
+</ul>
+<p><code>log4j.appender.appenderName</code>：设置输出位置，appenderName为上方自定义的位置别名</p>
+<ul>
+<li>org.apache.log4j.ConsoleAppender（控制台）</li>
+<li>org.apache.log4j.FileAppender（文件）</li>
+<li>org.apache.log4j.DailyRollingFileAppender（每天产生一个日志文件）</li>
+<li>org.apache.log4j.RollingFileAppender（文件大小到达指定尺寸的时候产生一个新的文件）</li>
+<li>org.apache.log4j.WriterAppender（将日志信息以流格式发送到任意指定的地方）<br>
+其他配置对应不同“输出位置”，各自的配置</li>
+</ul>
+<h2 id="占位符">占位符</h2>
+<ul>
+<li>%m   输出代码中指定的日志信息</li>
+<li>%p    输出优先级，及 DEBUG、INFO 等</li>
+<li>%n    换行符（Windows平台的换行符为 &quot;\n&quot;，Unix 平台为 &quot;\n&quot;）</li>
+<li>%r     输出自应用启动到输出该 log 信息耗费的毫秒数</li>
+<li>%c    输出打印语句所属的类的全名</li>
+<li>%t     输出产生该日志的线程全名</li>
+<li>%d    输出服务器当前时间，默认格式为 ISO8601，也可以在后面指定格式。如：%d{yyyy年MM月dd日 HH:mm:ss}</li>
+<li>%l     输出日志时间发生的位置，包括类名、发生的线程，以及在代码中的行数，如：Test.main(Test.java:10)</li>
+<li>%F    输出日志消息产生时所在的文件名称</li>
+<li>%L    输出代码中的行号</li>
+<li>%x    输出和当前线程相关的 NDC（嵌套诊断环境）</li>
+<li>%%   输出一个 &quot;%&quot; 字符</li>
+</ul>
+<p>可以在 % 与字符之间加上修饰符来控制最小宽度、最大宽度和文本的对其方式。如：</p>
+<ul>
+<li>%5c    输出category名称，最小宽度是5，category&lt;5，默认的情况下右对齐</li>
+<li>%-5c   输出category名称，最小宽度是5，category&lt;5，&quot;-&quot;号指定左对齐,会有空格</li>
+<li>%.5c   输出category名称，最大宽度是5，category&gt;5，就会将左边多出的字符截掉，&lt;5不会有空格</li>
+<li>%20.30c   category名称&lt;20补空格，并且右对齐，&gt;30字符，就从左边交远销出的字符截掉</li>
+</ul>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E7%A4%BA%E4%BE%8B">示例</a></li>
+<li><a href="#%E8%AF%A6%E6%83%85">详情</a></li>
+<li><a href="#%E5%8D%A0%E4%BD%8D%E7%AC%A6">占位符</a></li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://xuyj1111.github.io/Gw0D8kOGj/">
+              <h3 class="post-title">
+                Bash和Zsh Shell命令行窗口
+              </h3>
+            </a>
+          </div>
+        
+
+        
+
+        <div class="site-footer">
+  
+  <a class="rss" href="https://xuyj1111.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+
+
+
+    <div id="vcomments"></div>
+    <script>
+        new Valine({
+            el: '#vcomments',
+            appId: 'ot2L3hKJVxTAXnr1VQt7wm70-gzGzoHsz',
+            appKey: 'BjaYGo2m6zV3mCvxGLGsDP5V'
+        })
+    </script>
+
+
+
+  </body>
+
+</html>

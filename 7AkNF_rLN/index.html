@@ -1,0 +1,354 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>类加载器 | 洗衣机的博客</title>
+<link rel="shortcut icon" href="https://xuyj1111.github.io/favicon.ico?v=1727363389169">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://xuyj1111.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="类加载器 | 洗衣机的博客 - Atom Feed" href="https://xuyj1111.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+
+    <meta name="description" content="
+所有的Class都是有ClassLoader进行加载的
+负责将Class信息的二进制数据流读入JVM内部，转换为对应的Class对象实例
+处于加载阶段，只能影响类的加载，是否可以运行，由Execution Engine决定
+
+ClassL..." />
+    <meta name="keywords" content="" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
+ <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://xuyj1111.github.io">
+  <img class="avatar" src="https://xuyj1111.github.io/images/avatar.png?v=1727363389169" alt="">
+  </a>
+  <h1 class="site-title">
+    洗衣机的博客
+  </h1>
+  <p class="site-description">
+    【一名Java开发】slave👉https://www.cnblogs.com/xuyj1111/
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="https://xuyj1111.github.io" class="menu">
+          主页
+        </a>
+      
+    
+      
+        <a href="https://xuyj1111.github.io/archives" class="menu">
+          文章
+        </a>
+      
+    
+      
+        <a href="https://xuyj1111.github.io/tags" class="menu">
+          标签
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/xuyj1111" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+  <form id="gridea-search-form" action="https://xuyj1111.github.io/search/">
+    <input name="q" />
+  </form>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              类加载器
+            </h2>
+            <div class="post-info">
+              <span>
+                2021-09-30
+              </span>
+              <span>
+                5 min read
+              </span>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content">
+                <ul>
+<li>所有的Class都是有ClassLoader进行加载的</li>
+<li>负责将Class信息的二进制数据流读入JVM内部，转换为对应的Class对象实例</li>
+<li>处于加载阶段，只能影响类的加载，是否可以运行，由Execution Engine决定</li>
+</ul>
+<h3 id="classloader">ClassLoader</h3>
+<p>ClassLoader类是一个抽象类，所有类加载器都要继承ClassLoader</p>
+<h4 id="常用方法">常用方法</h4>
+<table>
+<thead>
+<tr>
+<th>getParent()</th>
+<th>返回该类加载器的超类加载器</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>loadClass(String name)</td>
+<td>加载名称为name的类</td>
+</tr>
+<tr>
+<td>findClass(String name)</td>
+<td>查找名称为name的类</td>
+</tr>
+<tr>
+<td>findLoadedClass(String name)</td>
+<td>查找名称为name的已经被加载的类</td>
+</tr>
+<tr>
+<td>defineClass(String name, byte[] b, int off, int len)</td>
+<td>把字节数组b中的内容转换为一个Java类</td>
+</tr>
+<tr>
+<td>resolveClass(Class&lt;?&gt; c)</td>
+<td>连接指定一个Java类</td>
+</tr>
+</tbody>
+</table>
+<h3 id="获取classloader">获取ClassLoader</h3>
+<p>获取当前类的ClassLoader<br>
+<code>clazz.getClassLoader()</code><br>
+获取当前线程上下文的ClassLoader<br>
+<code>Thread.currentThread().getContextClassLoader()</code><br>
+获取系统的ClassLoader<br>
+<code>ClassLoader.getSystemClassLoader()</code><br>
+获取调用者的ClassLoader<br>
+<code>DriverManager.getCallerClassloader()</code></p>
+<h3 id="分类">分类</h3>
+<p>JVM支持两种类型的类加载器</p>
+<ul>
+<li>引导类加载器(Bootstrap ClassLoader)</li>
+<li>自定义类加载器(User-Defined ClassLoader)</li>
+</ul>
+<p><img src="https://xuyj1111.github.io/post-images/1632972772367.png" alt="" loading="lazy"><br>
+ps：父子类的关系类似树，内部属性指向实现<br>
+各个类加载器</p>
+<pre><code class="language-java">ClassLoader systemClassLoader = ClassLoader.getSystemClassLoader();
+System.out.println(systemClassLoader);//sun.misc.Launcher$AppClassLoader@18b4aac2
+
+ClassLoader extClassLoader = systemClassLoader.getParent();
+System.out.println(extClassLoader);//sun.misc.Launcher$ExtClassLoader@3ac42916
+
+ClassLoader bootstrapClassLoader = extClassLoader.getParent();
+System.out.println(bootstrapClassLoader);//null
+
+//对于用户自定义类，默认使用系统类加载器加载
+ClassLoader classLoader = TemporaryTest.class.getClassLoader();
+System.out.println(classLoader);//sun.misc.Launcher$AppClassLoader@18b4aac2
+//Java核心类库，使用引导类加载器加载
+ClassLoader classLoader1 = String.class.getClassLoader();
+System.out.println(classLoader1);//null
+</code></pre>
+<h4 id="引导类加载器">引导类加载器</h4>
+<ul>
+<li>加载Java核心类库</li>
+<li>并不继承自java.lang.ClassLoader，没有父加载器</li>
+</ul>
+<h4 id="扩展类加载器">扩展类加载器</h4>
+<ul>
+<li>由sum.music.Launcher$ExtClassLoader实现</li>
+<li>派生于ClassLoader类</li>
+<li><strong>从java.ext.dirs系统属性所指定的目录中加载类库,或从JDK的安装目录的jre/lib/ext子目录(扩展目录)下加载类库</strong></li>
+</ul>
+<h4 id="应用程序系统类加载器">应用程序(系统)类加载器</h4>
+<ul>
+<li>由sum.misc.Launcher$AppClassLoader实现</li>
+<li>派生于ClassLoader类</li>
+<li><strong>加载环境变量classpath或系统属性java.class.path指定路径下的类库</strong></li>
+<li>一般来说，Java应用的类都是由它来完成加载</li>
+</ul>
+<figure data-type="image" tabindex="1"><img src="https://xuyj1111.github.io/post-images/1632972780814.png" alt="" loading="lazy"></figure>
+<h4 id="用户自定义类加载器">用户自定义类加载器</h4>
+<p>故名思与，用户自定义类加载器</p>
+<h3 id="用户自定义类加载器的实现">用户自定义类加载器的实现</h3>
+<figure data-type="image" tabindex="2"><img src="https://xuyj1111.github.io/post-images/1632972786654.png" alt="" loading="lazy"></figure>
+<h3 id="class文件的加载方式">.class文件的加载方式</h3>
+<ol>
+<li>显示加载：指的是在代码中通过调用ClassLoader加载class对象,如直接使用Class.forName(name)或this.getClass().getClassLoader().loadClass()加载class对象</li>
+<li>隐式加载：不直接在代码中调用ClassLoader的方法加载class对象,而是通过虚拟机自动加载到内存中,如在加载某个类的class文件时,该类的class文件中引用了另外一个类的对象,此时额外引用的类将通过JVM自动加载到内存中。比如 new User()</li>
+</ol>
+<h3 id="双亲委派机制">双亲委派机制</h3>
+<p>如果一个类收到类加载请求，并不会自己先加载，会向上委托给父类，父类如果有父类继续向上委托，直到顶层的启动类</p>
+<h4 id="优点">优点</h4>
+<ul>
+<li>避免类的重复加载，确保一个类的全局唯一性</li>
+<li>保护程序安全，防止核心API被篡改</li>
+</ul>
+<h4 id="缺点">缺点</h4>
+<ul>
+<li>委托方向是单向的，即顶层启动类无法访问底层所加载的类</li>
+</ul>
+<h3 id="沙箱安全机制">沙箱安全机制</h3>
+<p>沙盒：是一个限制程序运行的环境，保证对代码的有效隔离，防止对本地系统造成破坏，主要限制系统资源访问</p>
+<h4 id="沙盒的组成">沙盒的组成</h4>
+<ol>
+<li>字节码校验器</li>
+<li>类装载器</li>
+</ol>
+<p><em>类装载器采用的机制是双亲委派模式</em></p>
+<ul>
+<li>从最内层JVM自带类加载器开始加载，外层恶意同名类得不到加载从而无法使用</li>
+<li>由于严格通过包来区分了访问域，外层恶意的类通过内置代码也无法获得权限访问到内层类，破坏代码就自然无法生效</li>
+<li>ps：自定义String类，加载时加载的是JDK自带的String，然后报错，杜绝了自定义String类的使用</li>
+</ul>
+<ol start="3">
+<li>存取控制器</li>
+<li>安全管理器</li>
+<li>安全软件包</li>
+</ol>
+<h4 id="安全模型">安全模型</h4>
+<p>JDK1.6时期,当前最新的安全机制实现,则引入了域(Domain)的概念<br>
+虚拟机会把所有代码加载到不同的系统域和应用域。系统域部分专门负责与关键资源进行交互,而各个应用域部分则通过系统域的部分代理来对各种需要的资源进行访问。虚拟机中不同的受保护域(Protected Domain),对应不一样的权限(Permission)。存在于不同域中的类文件就具有了当前域的全部权限,如下图所示,最新的安全模型(jdk1.6)<br>
+<img src="https://xuyj1111.github.io/post-images/1632972800448.png" alt="" loading="lazy"><br>
+​</p>
+<h3 id="参考来源">参考来源</h3>
+<p><a href="https://blog.csdn.net/TZ845195485/article/details/116502297">https://blog.csdn.net/TZ845195485/article/details/116502297</a></p>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#classloader">ClassLoader</a>
+<ul>
+<li><a href="#%E5%B8%B8%E7%94%A8%E6%96%B9%E6%B3%95">常用方法</a></li>
+</ul>
+</li>
+<li><a href="#%E8%8E%B7%E5%8F%96classloader">获取ClassLoader</a></li>
+<li><a href="#%E5%88%86%E7%B1%BB">分类</a>
+<ul>
+<li><a href="#%E5%BC%95%E5%AF%BC%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8">引导类加载器</a></li>
+<li><a href="#%E6%89%A9%E5%B1%95%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8">扩展类加载器</a></li>
+<li><a href="#%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F%E7%B3%BB%E7%BB%9F%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8">应用程序(系统)类加载器</a></li>
+<li><a href="#%E7%94%A8%E6%88%B7%E8%87%AA%E5%AE%9A%E4%B9%89%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8">用户自定义类加载器</a></li>
+</ul>
+</li>
+<li><a href="#%E7%94%A8%E6%88%B7%E8%87%AA%E5%AE%9A%E4%B9%89%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8%E7%9A%84%E5%AE%9E%E7%8E%B0">用户自定义类加载器的实现</a></li>
+<li><a href="#class%E6%96%87%E4%BB%B6%E7%9A%84%E5%8A%A0%E8%BD%BD%E6%96%B9%E5%BC%8F">.class文件的加载方式</a></li>
+<li><a href="#%E5%8F%8C%E4%BA%B2%E5%A7%94%E6%B4%BE%E6%9C%BA%E5%88%B6">双亲委派机制</a>
+<ul>
+<li><a href="#%E4%BC%98%E7%82%B9">优点</a></li>
+<li><a href="#%E7%BC%BA%E7%82%B9">缺点</a></li>
+</ul>
+</li>
+<li><a href="#%E6%B2%99%E7%AE%B1%E5%AE%89%E5%85%A8%E6%9C%BA%E5%88%B6">沙箱安全机制</a>
+<ul>
+<li><a href="#%E6%B2%99%E7%9B%92%E7%9A%84%E7%BB%84%E6%88%90">沙盒的组成</a></li>
+<li><a href="#%E5%AE%89%E5%85%A8%E6%A8%A1%E5%9E%8B">安全模型</a></li>
+</ul>
+</li>
+<li><a href="#%E5%8F%82%E8%80%83%E6%9D%A5%E6%BA%90">参考来源</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+
+        
+
+        <div class="site-footer">
+  
+  <a class="rss" href="https://xuyj1111.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+
+
+
+    <div id="vcomments"></div>
+    <script>
+        new Valine({
+            el: '#vcomments',
+            appId: 'ot2L3hKJVxTAXnr1VQt7wm70-gzGzoHsz',
+            appKey: 'BjaYGo2m6zV3mCvxGLGsDP5V'
+        })
+    </script>
+
+
+
+  </body>
+
+</html>

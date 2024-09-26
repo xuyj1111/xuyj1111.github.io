@@ -1,0 +1,348 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>【Java】Mockito的使用 | 洗衣机的博客</title>
+<link rel="shortcut icon" href="https://xuyj1111.github.io/favicon.ico?v=1727363389169">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://xuyj1111.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="【Java】Mockito的使用 | 洗衣机的博客 - Atom Feed" href="https://xuyj1111.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+
+    <meta name="description" content="
+在 IT 中使用，简单讲就是模拟对象使用
+
+引入依赖：
+implementation 'org.mockito:mockito-core:2.23.4'
+mock对象
+
+mock 对象不执行真实方法，返回值默认 null
+
+mock对象的..." />
+    <meta name="keywords" content="Java,原创,使用手册" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
+ <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://xuyj1111.github.io">
+  <img class="avatar" src="https://xuyj1111.github.io/images/avatar.png?v=1727363389169" alt="">
+  </a>
+  <h1 class="site-title">
+    洗衣机的博客
+  </h1>
+  <p class="site-description">
+    【一名Java开发】slave👉https://www.cnblogs.com/xuyj1111/
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="https://xuyj1111.github.io" class="menu">
+          主页
+        </a>
+      
+    
+      
+        <a href="https://xuyj1111.github.io/archives" class="menu">
+          文章
+        </a>
+      
+    
+      
+        <a href="https://xuyj1111.github.io/tags" class="menu">
+          标签
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/xuyj1111" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+  <form id="gridea-search-form" action="https://xuyj1111.github.io/search/">
+    <input name="q" />
+  </form>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              【Java】Mockito的使用
+            </h2>
+            <div class="post-info">
+              <span>
+                2022-04-27
+              </span>
+              <span>
+                4 min read
+              </span>
+              
+                <a href="https://xuyj1111.github.io/SOje8Joqr/" class="post-tag">
+                  # Java
+                </a>
+              
+                <a href="https://xuyj1111.github.io/WSbjWpIkN/" class="post-tag">
+                  # 原创
+                </a>
+              
+                <a href="https://xuyj1111.github.io/0shj16Tx0/" class="post-tag">
+                  # 使用手册
+                </a>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content">
+                <blockquote>
+<p>在 IT 中使用，简单讲就是模拟对象使用</p>
+</blockquote>
+<p>引入依赖：<br>
+<code>implementation 'org.mockito:mockito-core:2.23.4'</code></p>
+<h2 id="mock对象">mock对象</h2>
+<blockquote>
+<p>mock 对象不执行真实方法，返回值默认 null</p>
+</blockquote>
+<h3 id="mock对象的创建">mock对象的创建</h3>
+<ol>
+<li>使用 Mockito 类的静态方法创建<br>
+ex. <code>List mockObj = Mockito.mock(List.class);</code></li>
+<li>使用<code>@Mock</code>注解</li>
+<li>使用<code>@MockBean</code>注解</li>
+</ol>
+<h3 id="mock对象的配置">mock对象的配置</h3>
+<p>使用<code>when(​...).thenReturn(​...)</code>方法链定义一个行为</p>
+<pre><code>List mockObj = Mockito.mock(List.class);
+Mockito.when(mockObj.get(0)).thenReturn(&quot;hello world&quot;);
+System.out.println(mockObj.get(0));     //输出：hello world
+</code></pre>
+<p>可以指定多个返回值，多次调用后会依次返回这些值</p>
+<pre><code>Mockito.when(mockObj.get(0)).thenReturn(&quot;1&quot;).thenReturn(&quot;2&quot;).thenReturn(&quot;3&quot;);
+System.out.println(mockObj.get(0));     //输出：1
+System.out.println(mockObj.get(0));     //输出：2
+System.out.println(mockObj.get(0));     //输出：3
+</code></pre>
+<p>使用<code>when(​...).thenThrow(​...)</code>方法链定义抛出异常</p>
+<pre><code>Mockito.when(mockObj.get(1)).thenThrow(new Exception());
+System.out.println(mockObj.get(1));     //抛出异常
+</code></pre>
+<p>p.s. mock 对象也可使用<code>doReturn(...).when(...).methodCall</code>和<code>doThrow(...).when(...).methodCall</code>的写法，和上面没差</p>
+<h3 id="mock对象的校验">mock对象的校验</h3>
+<p>校验行为，使用<code>verify</code>方法</p>
+<pre><code>mockObj.add(&quot;one&quot;);
+//是否调用方法
+Mockito.verify(mockObj).add(&quot;one&quot;);
+//方法调用的次数
+Mockito.verify(mockObj, Mockito.times(1)).add(&quot;one&quot;);
+//是否从未调用方法
+Mockito.verify(mockObj, Mockito.never()).add(&quot;two&quot;);
+//最少调用 1 次
+Mockito.verify(mockObj, Mockito.atLeast(1)).add(&quot;one&quot;);
+//最少调用 1 次
+Mockito.verify(mockObj, Mockito.atLeastOnce()).add(&quot;one&quot;);
+//最多调用 5 次
+Mockito.verify(mockObj, Mockito.atMost(5)).add(&quot;one&quot;);
+</code></pre>
+<p>校验方法的执行顺序，使用<code>inOrder</code>方法创建 InOrder 对象</p>
+<pre><code>mockObj.add(&quot;two&quot;);
+InOrder inOrder = Mockito.inOrder(mockObj);
+//单个 mock 对象的执行顺序校验
+inOrder.verify(mockObj).add(&quot;one&quot;);
+inOrder.verify(mockObj).add(&quot;two&quot;);
+
+List mockObj2 = Mockito.mock(List.class);
+mockObj2.add(111);
+InOrder inOrder2 = Mockito.inOrder(mockObj, mockObj2);
+//多个 mock 对象的执行顺序校验
+inOrder2.verify(mockObj).add(&quot;two&quot;);
+inOrder2.verify(mockObj2).add(111);
+</code></pre>
+<p>验证单个或多个 mock 对象没有调用过方法，使用<code>verifyZeroInteractions</code>方法</p>
+<pre><code>List mockObj3 = Mockito.mock(List.class);
+List mockObj4 = Mockito.mock(List.class);
+Mockito.verifyZeroInteractions(mockObj3, mockObj4);
+</code></pre>
+<p>参数匹配器，使用<code>ArgumentMatchers</code>的静态方法</p>
+<ul>
+<li>any()</li>
+<li>anyXxx()</li>
+<li>eq(...)</li>
+<li>endsWith(String)</li>
+<li>startsWith(String)<br>
+......</li>
+</ul>
+<hr>
+<h2 id="spy对象">spy对象</h2>
+<blockquote>
+<p>spy 对象会执行真实方法，返回值为真实返回值<br>
+p.s. 前提是没有用 Mockito 类的方法代理</p>
+</blockquote>
+<h3 id="spy对象的创建">spy对象的创建</h3>
+<ol>
+<li>使用 Mockito 类的静态方法创建<br>
+ex. <code>List spyObj = Mockito.spy(List.class);</code></li>
+<li>使用<code>@Spy</code>注解</li>
+<li>使用<code>@SpyBean</code>注解</li>
+</ol>
+<h3 id="spy对象的配置">spy对象的配置</h3>
+<ul>
+<li><code>doReturn(...).when(...).methodCall</code>不会执行真实方法，同 mock 对象一致</li>
+<li><code>when(​...).thenReturn(​...)</code>会执行真实方法</li>
+</ul>
+<hr>
+<h2 id="spy-spybean-mock-mockbean区别">@Spy、@SpyBean、@Mock、@MockBean区别</h2>
+<ul>
+<li>spy 和 mock 生成的对象不受 spring 管理</li>
+<li>SpyBean 和 MockBean 生成的对象受 spring 管理，相当于自动替换对应类型 bean 的注入</li>
+</ul>
+<hr>
+<h2 id="参数捕获">参数捕获</h2>
+<blockquote>
+<p>Mockito 允准我们捕获一个 Mock 对象的方法调用所传递的参数<br>
+通过<code>argument.capture()</code>获取传参，然后使用<code>argument.getValue()</code>取出参数</p>
+</blockquote>
+<pre><code>List mock = mock(ArrayList.class);
+List&lt;Integer&gt; list = new ArrayList&lt;&gt;();
+list.add(111);
+list.add(222);
+
+mock.addAll(list);
+ArgumentCaptor&lt;ArrayList&gt; argument = ArgumentCaptor.forClass(ArrayList.class);
+verify(mock).addAll(argument.capture());
+
+Assert.assertEquals(2, argument.getValue().size());
+Assert.assertEquals(list, argument.getValue());
+</code></pre>
+<hr>
+<h2 id="延伸">延伸</h2>
+<p>可搭配使用<a href="https://github.com/awaitility/awaitility/wiki/Usage">Awaitility</a>——异步操作校验工具，适用于异步请求的IT。即等待异步请求中的某一条件达成，校验后续的代码</p>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#mock%E5%AF%B9%E8%B1%A1">mock对象</a>
+<ul>
+<li><a href="#mock%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%88%9B%E5%BB%BA">mock对象的创建</a></li>
+<li><a href="#mock%E5%AF%B9%E8%B1%A1%E7%9A%84%E9%85%8D%E7%BD%AE">mock对象的配置</a></li>
+<li><a href="#mock%E5%AF%B9%E8%B1%A1%E7%9A%84%E6%A0%A1%E9%AA%8C">mock对象的校验</a></li>
+</ul>
+</li>
+<li><a href="#spy%E5%AF%B9%E8%B1%A1">spy对象</a>
+<ul>
+<li><a href="#spy%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%88%9B%E5%BB%BA">spy对象的创建</a></li>
+<li><a href="#spy%E5%AF%B9%E8%B1%A1%E7%9A%84%E9%85%8D%E7%BD%AE">spy对象的配置</a></li>
+</ul>
+</li>
+<li><a href="#spy-spybean-mock-mockbean%E5%8C%BA%E5%88%AB">@Spy、@SpyBean、@Mock、@MockBean区别</a></li>
+<li><a href="#%E5%8F%82%E6%95%B0%E6%8D%95%E8%8E%B7">参数捕获</a></li>
+<li><a href="#%E5%BB%B6%E4%BC%B8">延伸</a></li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://xuyj1111.github.io/ueAZWvrkp/">
+              <h3 class="post-title">
+                写作规范
+              </h3>
+            </a>
+          </div>
+        
+
+        
+
+        <div class="site-footer">
+  
+  <a class="rss" href="https://xuyj1111.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+
+
+
+    <div id="vcomments"></div>
+    <script>
+        new Valine({
+            el: '#vcomments',
+            appId: 'ot2L3hKJVxTAXnr1VQt7wm70-gzGzoHsz',
+            appKey: 'BjaYGo2m6zV3mCvxGLGsDP5V'
+        })
+    </script>
+
+
+
+  </body>
+
+</html>

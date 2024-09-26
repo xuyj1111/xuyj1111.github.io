@@ -1,0 +1,255 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>【Mysql】一些命令 | 洗衣机的博客</title>
+<link rel="shortcut icon" href="https://xuyj1111.github.io/favicon.ico?v=1727363389169">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://xuyj1111.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="【Mysql】一些命令 | 洗衣机的博客 - Atom Feed" href="https://xuyj1111.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+
+    <meta name="description" content="
+show engines;显示系统所支持的引擎类型
+show variables like 'default_storage_engine%';查看系统的默认存储引擎
+set default_storage_engine = 存储引擎;设..." />
+    <meta name="keywords" content="原创,MySQL" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
+ <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://xuyj1111.github.io">
+  <img class="avatar" src="https://xuyj1111.github.io/images/avatar.png?v=1727363389169" alt="">
+  </a>
+  <h1 class="site-title">
+    洗衣机的博客
+  </h1>
+  <p class="site-description">
+    【一名Java开发】slave👉https://www.cnblogs.com/xuyj1111/
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="https://xuyj1111.github.io" class="menu">
+          主页
+        </a>
+      
+    
+      
+        <a href="https://xuyj1111.github.io/archives" class="menu">
+          文章
+        </a>
+      
+    
+      
+        <a href="https://xuyj1111.github.io/tags" class="menu">
+          标签
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/xuyj1111" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+  <form id="gridea-search-form" action="https://xuyj1111.github.io/search/">
+    <input name="q" />
+  </form>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              【Mysql】一些命令
+            </h2>
+            <div class="post-info">
+              <span>
+                2023-02-03
+              </span>
+              <span>
+                2 min read
+              </span>
+              
+                <a href="https://xuyj1111.github.io/WSbjWpIkN/" class="post-tag">
+                  # 原创
+                </a>
+              
+                <a href="https://xuyj1111.github.io/eng41sp6q/" class="post-tag">
+                  # MySQL
+                </a>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content">
+                <ul>
+<li><code>show engines;</code>显示系统所支持的引擎类型</li>
+<li><code>show variables like 'default_storage_engine%';</code>查看系统的默认存储引擎</li>
+<li><code>set default_storage_engine = 存储引擎;</code>设置默认存储引擎，但重启客户端后，仍为 InnoDB</li>
+<li><code>show variables like 'log_error';</code>查看运行错误日志的目录</li>
+<li><code>show variables like 'log_bin';</code>查看是否开启 binlog</li>
+<li><code>select @@tx_isolation;</code>查看当前会话隔离级别</li>
+<li><code>select @@global.tx_isolation;</code>查看系统隔离级别</li>
+<li><code>set session transaction isolation level 隔离级别;</code>设置当前会话隔离级别</li>
+<li><code>set global transaction isolation level 隔离级别;</code>设置当前会话隔离级别</li>
+</ul>
+<p>字符集👇</p>
+<pre><code>查看数据库编码
+SHOW CREATE DATABASE db_name;
+
+查看表编码
+SHOW CREATE TABLE tbl_name;
+
+查看字段编码
+SHOW FULL COLUMNS FROM tbl_name;
+
+修改数据库字符集
+ALTER DATABASE db_name DEFAULT CHARACTER SET character_name [COLLATE ...];
+
+把表默认的字符集和所有字符列（CHAR,VARCHAR,TEXT）改为新的字符集
+ALTER TABLE tbl_name CONVERT TO CHARACTER SET character_name [COLLATE ...]
+示例：ALTER TABLE logtest CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+只是修改表的默认字符集
+ALTER TABLE tbl_name DEFAULT CHARACTER SET character_name [COLLATE...];
+示例：ALTER TABLE logtest DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+修改字段的字符集
+ALTER TABLE tbl_name CHANGE c_name c_name CHARACTER SET character_name [COLLATE ...];
+示例：ALTER TABLE logtest CHANGE title title VARCHAR(100) CHARACTER SET utf8 COLLATE utf8_general_ci;
+</code></pre>
+<p>表👇</p>
+<pre><code>修改表名
+rename table old_table to new_table；
+
+插入另一个表数据
+insert into table02 select * from table01;
+
+复制表数据和表结构
+create table table02 select * from table01;
+
+只复制表结构
+create table table02 like table01;
+
+</code></pre>
+<p>修改密码👇</p>
+<ol>
+<li><code>  update mysql.user set authentication_string=password('123456') where user='root' and Host ='localhost';</code></li>
+<li><code>flush privileges;</code>刷新权限</li>
+</ol>
+<p>创建库👇</p>
+<pre><code>CREATE DATABASE [IF NOT EXISTS] &lt;数据库名&gt;
+[[DEFAULT] CHARACTER SET &lt;字符集名&gt;] 
+[[DEFAULT] COLLATE &lt;校对规则名&gt;];
+</code></pre>
+<p>示例：<code>CREATE DATABASE IF NOT EXISTS mygame CHARACTER SET utf8mb4 COLLATE utf8mb4_german2_ci;</code></p>
+
+              </div>
+              <div class="toc-container">
+                
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://xuyj1111.github.io/LmWWpUbJC/">
+              <h3 class="post-title">
+                docker 和 kubernetes 的使用
+              </h3>
+            </a>
+          </div>
+        
+
+        
+
+        <div class="site-footer">
+  
+  <a class="rss" href="https://xuyj1111.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+
+
+
+    <div id="vcomments"></div>
+    <script>
+        new Valine({
+            el: '#vcomments',
+            appId: 'ot2L3hKJVxTAXnr1VQt7wm70-gzGzoHsz',
+            appKey: 'BjaYGo2m6zV3mCvxGLGsDP5V'
+        })
+    </script>
+
+
+
+  </body>
+
+</html>

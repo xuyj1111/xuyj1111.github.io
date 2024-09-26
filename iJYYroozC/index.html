@@ -1,0 +1,390 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>【MySQL】表分区的使用 | 洗衣机的博客</title>
+<link rel="shortcut icon" href="https://xuyj1111.github.io/favicon.ico?v=1727363389169">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://xuyj1111.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="【MySQL】表分区的使用 | 洗衣机的博客 - Atom Feed" href="https://xuyj1111.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+
+    <meta name="description" content="使用命令show plugins;查看所有插件，确定开启表分区功能
+
+创建表分区
+ex.
+CREATE TABLE `test_partition` (
+	`id` bigint(20) NOT NULL AUTO_INCREMENT CO..." />
+    <meta name="keywords" content="原创,MySQL" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
+ <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://xuyj1111.github.io">
+  <img class="avatar" src="https://xuyj1111.github.io/images/avatar.png?v=1727363389169" alt="">
+  </a>
+  <h1 class="site-title">
+    洗衣机的博客
+  </h1>
+  <p class="site-description">
+    【一名Java开发】slave👉https://www.cnblogs.com/xuyj1111/
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="https://xuyj1111.github.io" class="menu">
+          主页
+        </a>
+      
+    
+      
+        <a href="https://xuyj1111.github.io/archives" class="menu">
+          文章
+        </a>
+      
+    
+      
+        <a href="https://xuyj1111.github.io/tags" class="menu">
+          标签
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/xuyj1111" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+  <form id="gridea-search-form" action="https://xuyj1111.github.io/search/">
+    <input name="q" />
+  </form>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              【MySQL】表分区的使用
+            </h2>
+            <div class="post-info">
+              <span>
+                2021-09-10
+              </span>
+              <span>
+                5 min read
+              </span>
+              
+                <a href="https://xuyj1111.github.io/WSbjWpIkN/" class="post-tag">
+                  # 原创
+                </a>
+              
+                <a href="https://xuyj1111.github.io/eng41sp6q/" class="post-tag">
+                  # MySQL
+                </a>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content">
+                <p>使用命令<code>show plugins;</code>查看所有插件，确定开启表分区功能<br>
+<img src="https://xuyj1111.github.io/post-images/1631253881755.png" alt="" loading="lazy"></p>
+<h2 id="创建表分区">创建表分区</h2>
+<p>ex.</p>
+<pre><code class="language-sql">CREATE TABLE `test_partition` (
+	`id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+	`no` varchar(50) NULL DEFAULT NULL,
+	PRIMARY KEY (`id`)
+)
+PARTITION BY RANGE(id)
+(
+	PARTITION p0 VALUES LESS THAN(10),
+	PARTITION p1 VALUES LESS THAN(20),
+	PARTITION p2 VALUES LESS THAN maxvalue
+);
+</code></pre>
+<figure data-type="image" tabindex="1"><img src="https://xuyj1111.github.io/post-images/1631253908738.png" alt="" loading="lazy"></figure>
+<center>数据表的数据被拆分成几个 ibd 文件，frm 文件是表格式文件</center>
+<p>导入数据<code>INSERT INTO test_partition SELECT id,no FROM test WHERE id &lt;= 100;</code><br>
+检索数据<code>SELECT * FROM test_partition partition(p0);</code></p>
+<h3 id="range表分区">RANGE表分区</h3>
+<p>范围表分区，按一定的范围划分</p>
+<ul>
+<li>分区字段必须是<strong>整数类型</strong>（bit, int ,tinyint,bigint等）</li>
+<li>分区的定义范围必须是<strong>连续</strong>的，且<strong>不能重叠</strong></li>
+<li>给分区字段赋值时，分区字段的值大小不能超过分区的取值范围</li>
+<li>非整数类型字段，可在RANGE()中使用函数进行转换</li>
+</ul>
+<pre><code class="language-sql">CREATE TABLE `test_partition` (
+	`id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+	`no` varchar(50) NULL DEFAULT NULL,
+	PRIMARY KEY (`id`)
+)
+PARTITION BY RANGE(id)
+(
+	PARTITION p0 VALUES LESS THAN(10),
+	PARTITION p1 VALUES LESS THAN(20),
+	PARTITION p2 VALUES LESS THAN maxvalue
+);
+</code></pre>
+<p>语法：</p>
+<pre><code class="language-sql">PARTITION BY RANGE(xxx)
+VALUES LESS THAN(...)
+VALUES LESS THAN maxvalue
+</code></pre>
+<h3 id="list表分区">LIST表分区</h3>
+<p>列表表分区，指定一个个确定的值</p>
+<ul>
+<li>分区字段必须整数类型，或者函数返回的整数</li>
+<li>insert插入数据时，数据的分组字段在分区范围内，否则报错：Table has no partition for XXX</li>
+</ul>
+<pre><code class="language-sql">CREATE TABLE `test_partition` (
+	`id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+	`no` varchar(50) NULL DEFAULT NULL,
+	PRIMARY KEY (`id`)
+)
+PARTITION BY LIST(id)
+(
+	PARTITION p0 VALUES IN(1,2,3,4,5),
+	PARTITION p1 VALUES IN(6,7,8,9,10)
+);
+</code></pre>
+<p>语法：</p>
+<pre><code class="language-sql">PARTITION BY LIST(xxx)
+VALUES IN(...,...,...,)
+</code></pre>
+<h3 id="hash表分区">HASH表分区</h3>
+<p>哈希表分区，根据自定义的数据取余计算，放入对应分区</p>
+<pre><code class="language-sql">CREATE TABLE `test_partition` (
+	`id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+	`no` varchar(50) NULL DEFAULT NULL,
+	PRIMARY KEY (`id`)
+)
+PARTITION BY HASH(id) PARTITIONS 4;
+</code></pre>
+<p>语法：<br>
+<code>PARTITION BY HASH(xxx) PARTITIONS num</code></p>
+<h3 id="key表分区">KEY表分区</h3>
+<p>KEY表分区，与哈希表分区类似，但是用MySQL自己的HASH函数计算</p>
+<ul>
+<li>不写分组字段，默认主键；没有主键则唯一键，唯一键必须<strong>not null</strong></li>
+<li>分组字段<strong>不必是整数类型</strong></li>
+<li>分组字段遵循约束条件</li>
+</ul>
+<pre><code class="language-sql">CREATE TABLE `test_partition` (
+	`id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+	`no` varchar(50) NOT NULL,
+	PRIMARY KEY (`id`, `no`)
+)
+PARTITION BY KEY(`id`, `no`) PARTITIONS 4;
+</code></pre>
+<p>语法：</p>
+<pre><code class="language-sql">PRIMARY KEY () PARTITIONS num
+PRIMARY KEY (xxx) PARTITIONS num
+PRIMARY KEY (xxx, xxx, ...) PARTITIONS num
+</code></pre>
+<h3 id="多字段分区rangelist">多字段分区（range，list）</h3>
+<p>可以指定多个字段作为分区字段</p>
+<ul>
+<li>多分组字段可以使用非整数类型，因此可以创建非整数类型的单分组字段；</li>
+<li>对比方向从左往右</li>
+</ul>
+<pre><code class="language-sql">CREATE TABLE `test_partition` (
+	`id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+	`no` varchar(50) NOT NULL,
+	PRIMARY KEY (`id`, `no`)
+)
+PARTITION BY RANGE COLUMNS(`id`, `no`)
+(
+	PARTITION P0 VALUES LESS THAN(10, 'd'),
+	PARTITION P1 VALUES LESS THAN(20, 'g')
+);
+-----------------------------------------------------------
+CREATE TABLE `test_partition` (
+	`id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+	`no` varchar(50) NOT NULL,
+	PRIMARY KEY (`id`, `no`)
+)
+PARTITION BY LIST COLUMNS(`id`, `no`)
+(
+	PARTITION P0 VALUES IN ((1, 'a'), (1, 'b')),
+	PARTITION P1 VALUES IN ((2, 'c'), (2, 'd'))
+);
+</code></pre>
+<p>range 语法：</p>
+<pre><code class="language-sql语法：">PARTITION BY RANGE COLUMNS(xxx)
+PARTITION BY RANGE COLUMNS(xxx, xxx)
+</code></pre>
+<p>list 语法：</p>
+<pre><code class="language-sql">PARTITION BY LIST COLUMNS(xxx)
+PARTITION BY LIST COLUMNS(xxx, xxx)
+VALUES IN (..., ...)
+VALUES IN ((..., ...), (..., ...))
+</code></pre>
+<h2 id="创建表分区的约束条件">创建表分区的约束条件</h2>
+<p>如果表有主键（primary key）或者唯一键（unique key），分区字段必须被包含在主键和唯一键字段的交集部分</p>
+<table>
+<thead>
+<tr>
+<th>是否有主键（primary key）</th>
+<th>是否有唯一键（unique key）</th>
+<th>分区字段</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>√</td>
+<td>×</td>
+<td>在主键字段内</td>
+</tr>
+<tr>
+<td>×</td>
+<td>√</td>
+<td>没有可分区的字段</td>
+</tr>
+<tr>
+<td>√</td>
+<td>√</td>
+<td>主键和唯一键的交集字段</td>
+</tr>
+</tbody>
+</table>
+<h2 id="表分区的使用">表分区的使用</h2>
+<p>使用分区字段做查询时，只查所在分区，否则查询所有分区<br>
+<img src="https://xuyj1111.github.io/post-images/1631253961165.png" alt="" loading="lazy"></p>
+<center>分区字段查询</center>
+<figure data-type="image" tabindex="2"><img src="https://xuyj1111.github.io/post-images/1631253969078.png" alt="" loading="lazy"></figure>
+<center>普通字段查询</center>
+<h2 id="表分区的优点">表分区的优点</h2>
+<ol>
+<li>提高表存储的数据量（多个文件）</li>
+<li>提高查询或修改语句的执行速度（可定位到一个分区或多个分区）</li>
+</ol>
+<h2 id="参考链接">参考链接</h2>
+<p><a href="https://blog.csdn.net/qq_26900081/article/details/103159660">MySql表分区的创建与使用</a>，by Bear Coding</p>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E5%88%9B%E5%BB%BA%E8%A1%A8%E5%88%86%E5%8C%BA">创建表分区</a>
+<ul>
+<li><a href="#range%E8%A1%A8%E5%88%86%E5%8C%BA">RANGE表分区</a></li>
+<li><a href="#list%E8%A1%A8%E5%88%86%E5%8C%BA">LIST表分区</a></li>
+<li><a href="#hash%E8%A1%A8%E5%88%86%E5%8C%BA">HASH表分区</a></li>
+<li><a href="#key%E8%A1%A8%E5%88%86%E5%8C%BA">KEY表分区</a></li>
+<li><a href="#%E5%A4%9A%E5%AD%97%E6%AE%B5%E5%88%86%E5%8C%BArangelist">多字段分区（range，list）</a></li>
+</ul>
+</li>
+<li><a href="#%E5%88%9B%E5%BB%BA%E8%A1%A8%E5%88%86%E5%8C%BA%E7%9A%84%E7%BA%A6%E6%9D%9F%E6%9D%A1%E4%BB%B6">创建表分区的约束条件</a></li>
+<li><a href="#%E8%A1%A8%E5%88%86%E5%8C%BA%E7%9A%84%E4%BD%BF%E7%94%A8">表分区的使用</a></li>
+<li><a href="#%E8%A1%A8%E5%88%86%E5%8C%BA%E7%9A%84%E4%BC%98%E7%82%B9">表分区的优点</a></li>
+<li><a href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5">参考链接</a></li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://xuyj1111.github.io/5u99Umvhx/">
+              <h3 class="post-title">
+                Markdown示例
+              </h3>
+            </a>
+          </div>
+        
+
+        
+
+        <div class="site-footer">
+  
+  <a class="rss" href="https://xuyj1111.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+
+
+
+    <div id="vcomments"></div>
+    <script>
+        new Valine({
+            el: '#vcomments',
+            appId: 'ot2L3hKJVxTAXnr1VQt7wm70-gzGzoHsz',
+            appKey: 'BjaYGo2m6zV3mCvxGLGsDP5V'
+        })
+    </script>
+
+
+
+  </body>
+
+</html>

@@ -1,0 +1,471 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>docker 和 kubernetes 的使用 | 洗衣机的博客</title>
+<link rel="shortcut icon" href="https://xuyj1111.github.io/favicon.ico?v=1727363389169">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://xuyj1111.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="docker 和 kubernetes 的使用 | 洗衣机的博客 - Atom Feed" href="https://xuyj1111.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+
+    <meta name="description" content="docker
+简单介绍
+docker 是一个应用容器引擎，重要概念有以下几点：
+
+镜像
+容器
+数据卷
+
+镜像和容器的关系，与面向对象中的类和实例一样，镜像是静态的定义，容器是镜像运行的实体。容器可以被创建、启动、停止、删除、暂停等，容器本质..." />
+    <meta name="keywords" content="原创,使用手册" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
+ <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://xuyj1111.github.io">
+  <img class="avatar" src="https://xuyj1111.github.io/images/avatar.png?v=1727363389169" alt="">
+  </a>
+  <h1 class="site-title">
+    洗衣机的博客
+  </h1>
+  <p class="site-description">
+    【一名Java开发】slave👉https://www.cnblogs.com/xuyj1111/
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="https://xuyj1111.github.io" class="menu">
+          主页
+        </a>
+      
+    
+      
+        <a href="https://xuyj1111.github.io/archives" class="menu">
+          文章
+        </a>
+      
+    
+      
+        <a href="https://xuyj1111.github.io/tags" class="menu">
+          标签
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/xuyj1111" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+  <form id="gridea-search-form" action="https://xuyj1111.github.io/search/">
+    <input name="q" />
+  </form>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              docker 和 kubernetes 的使用
+            </h2>
+            <div class="post-info">
+              <span>
+                2023-02-01
+              </span>
+              <span>
+                9 min read
+              </span>
+              
+                <a href="https://xuyj1111.github.io/WSbjWpIkN/" class="post-tag">
+                  # 原创
+                </a>
+              
+                <a href="https://xuyj1111.github.io/0shj16Tx0/" class="post-tag">
+                  # 使用手册
+                </a>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content">
+                <h2 id="docker">docker</h2>
+<h3 id="简单介绍">简单介绍</h3>
+<p>docker 是一个应用容器引擎，重要概念有以下几点：</p>
+<ol>
+<li>镜像</li>
+<li>容器</li>
+<li>数据卷</li>
+</ol>
+<p>镜像和容器的关系，与面向对象中的类和实例一样，镜像是静态的定义，容器是镜像运行的实体。容器可以被创建、启动、停止、删除、暂停等，容器本质上是进程。</p>
+<p>首先需要有以下几个概念：</p>
+<ul>
+<li>docker 在 Windows 和 Mac 上都有桌面端了，此时的 Windows/Mac 则被称为“宿主机”</li>
+<li>容器存储层的生命周期和容器一样，容器停止，则存储层丢失</li>
+<li>容器之间是相互独立的，不能直接访问</li>
+</ul>
+<p>数据卷的作用则是用来<code>将容器数据持久化</code>，和<code>使容器之间、容器和宿主机之间数据传输</code></p>
+<h3 id="安装">安装</h3>
+<ol>
+<li>Docker Desktop 傻瓜安装</li>
+<li>配置镜像加速器网址，使用阿里镜像，需要登录自己账号<br>
+<img src="https://xuyj1111.github.io/post-images/1675233768552.png" alt="" loading="lazy"></li>
+</ol>
+<h3 id="命令">命令</h3>
+<ul>
+<li><code>docker [command] --help</code>帮助命令</li>
+</ul>
+<p>镜像命令👇</p>
+<ul>
+<li><code>docker images</code>列出所有镜像</li>
+<li><code>docker inspect 镜像名</code>查看镜像的详细信息</li>
+<li><code>docker search 镜像名 或者 仓库名称/镜像名</code>查询镜像【默认官方仓库名为 library】</li>
+<li><code>docker pull 镜像名 或者 仓库名称/镜像名</code>下载镜像</li>
+<li><code>docker rmi [可选参数] 镜像名 [镜像名...]</code>
+<ul>
+<li>-f：强制删除</li>
+</ul>
+</li>
+</ul>
+<p>容器命令👇</p>
+<ul>
+<li><code>docker ps</code>列出所有正在运行的容器</li>
+<li><code>docker inspect 容器id 或 容器名</code>查看容器的详细信息</li>
+<li><code>docker run [可选参数] 镜像名 [向启动容器中传入的命令]</code>
+<ul>
+<li>-i：打开标容器的标准输入接口，通常-id或-it使用</li>
+<li>-d：后台运行</li>
+<li>-t：容器启动后进入命令行</li>
+<li>--name：为创建的容器命名，默认随机，不支持中文字符</li>
+<li>-v：目录映射，宿主机目录:容器目录，在宿主机上修改会同步到容器上【持久化】
+<ul>
+<li>一个容器可以映射多个目录</li>
+<li>两个容器映射同一个目录，实现两个容器的数据交换</li>
+</ul>
+</li>
+<li>-p：端口映射，宿主机端口:容器端口</li>
+</ul>
+</li>
+<li><code>docker exec [可选参数] 容器名 /bin/bash</code>
+<ul>
+<li>-i：打开标容器的标准输入接口，通常-id或-it使用</li>
+<li>-d：后台运行</li>
+<li>-t：容器启动后进入命令行</li>
+</ul>
+</li>
+<li><code>docker start 容器id 或 容器名</code>启动容器</li>
+<li><code>docker stop 容器id 或 容器名</code>停止容器</li>
+<li><code>docker rm [可选参数] 容器id 或 容器名 [IMAGE...]</code>删除容器【运行状态删除失败，停止状态才可删除】
+<ul>
+<li>-f：强制删除</li>
+<li>-l：移除容器间的网络连接，并非容器本身</li>
+<li>-v：删除与容器关联的卷</li>
+</ul>
+</li>
+</ul>
+<p>在 centos 容器中执行<code>hostnamectl set-hostname 名字</code>命令，想要修改主机名，出现报错，然后以特权模式再生成容器解决<code>docker run -itd --name master01 --privileged 容器名 /usr/sbin/init</code>，参考文档<a href="https://blog.csdn.net/Dontla/article/details/125329548?utm_medium=distribute.pc_relevant.none-task-blog-2~default~baidujs_baidulandingword~default-1-125329548-blog-105614643.pc_relevant_3mothn_strategy_recovery&amp;spm=1001.2101.3001.4242.2&amp;utm_relevant_index=4">docker run --privileged参数</a></p>
+<p>数据卷容器👇<br>
+可以使用<code>docker run</code>命令的<code>-v</code>参数启动数据卷容器，实现容器和宿主机的数据共享</p>
+<ul>
+<li><code>docker run -itd --name=c3 -v /volume centos /bin/bash</code>
+<ul>
+<li>按照格式，应该是“宿主机目录:容器目录”，此处写法省略<code>/volume</code>，即<code>/volume:/volume</code></li>
+</ul>
+</li>
+</ul>
+<p>还可以使用<code>--volumes-from</code>参数指定父容器</p>
+<ul>
+<li><code>docker run -itd --name=c1 --volumes-from c3 centos /bin/bash</code><br>
+再启动 c2 <code>docker run -itd --name=c2 --volumes-from c3 centos /bin/bash</code>，实现下图结构：c1 和 c2 实际上都关联到宿主机，即使 c3 挂了，c1、c2、宿主机之间还是能数据共享<br>
+<img src="https://xuyj1111.github.io/post-images/1675241214556.png" alt="" loading="lazy"></li>
+</ul>
+<p>镜像制作👇<br>
+如果在容器中运行修改了若干文件，并产生了数据，想要传输给别人使用，就需要将<strong>容器转换为镜像</strong>，但镜像不能直接传输，还需要再将<strong>镜像转为压缩文件</strong>，接收方收到压缩文件后，还需要<strong>解压文件成镜像</strong>，才可使用<br>
+<code>docker commit 容器id 镜像名称:版本号</code>容器转换为镜像<br>
+<code>docker save -o 压缩文件名称 镜像名称:版本号</code>镜像转换为压缩文件<br>
+<code>docker load -i 压缩文件名称</code>解压文件成镜像</p>
+<h3 id="dockerfile-文件">Dockerfile 文件</h3>
+<p>需要放在容器的第一层目录，且不能后缀名。Dockerfile 有一套语法，此处不做笔记<br>
+<img src="https://xuyj1111.github.io/post-images/1675241930173.png" alt="" loading="lazy"></p>
+<hr>
+<h2 id="kubernetes">kubernetes</h2>
+<blockquote>
+<p>作为后端仅了解大概，没有对其深入学习</p>
+</blockquote>
+<h3 id="前情提要">前情提要</h3>
+<p>在 docker 容器化技术的发展后，开发过程中对容器的数量逐步增加，进而产生了管理容器的需求。docker 有三剑客：</p>
+<ol>
+<li>Docker Machine：管理单台或多台主机本身</li>
+<li>Docker Compose：管理单主机容器</li>
+<li>Docker Swarm：管理多主机容器</li>
+</ol>
+<p>其中的 Docker Swarm 和 Kubernetes 角色定位相同，但目前流行使用 Kubernetes。</p>
+<h3 id="介绍">介绍</h3>
+<blockquote>
+<p>详细学习参考<a href="https://juejin.cn/post/6952331691524358174#heading-0">https://juejin.cn/post/6952331691524358174#heading-0</a></p>
+</blockquote>
+<p><strong>安装：</strong> 在 Docker Destop 中启动即可<br>
+<img src="https://xuyj1111.github.io/post-images/1675244010614.png" alt="" loading="lazy"></p>
+<p><strong>功能：</strong></p>
+<ul>
+<li>自动装箱：自动部署容器</li>
+<li>自动修复：会重启容器，会重新部署，会重新调度，容器正常才对外提供服务</li>
+<li>水平扩展：对容器规模扩大或裁剪</li>
+<li>服务发现、负载均衡</li>
+<li>滚动更新：一次性或批量式更新</li>
+<li>版本回退</li>
+<li>热部署</li>
+<li>自动存储数据，可以存储在本地、云端等</li>
+<li>......</li>
+</ul>
+<p><strong>资源对象：</strong></p>
+<ol>
+<li>pod：k8s 管理调度最小的单位。1 个 pod 中可以包含 1 个或多个容器</li>
+<li>namespace：集群内部的逻辑分割。pod 在 ns 内</li>
+<li>node：k8s 集群中的节点</li>
+</ol>
+<p>还有很多资源对象，目前没有对其学习</p>
+<h3 id="命令-2">命令</h3>
+<blockquote>
+<p><a href="https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands">官方命令文档</a></p>
+</blockquote>
+<ul>
+<li><code>kubectl [command] --help</code>帮助命令</li>
+<li><code>kubectl apply -f</code>文件执行文件</li>
+<li><code>kubectl cluster-info dump</code>查看集群信息</li>
+<li><code>kubectl get nodes</code>查看集群节点</li>
+</ul>
+<p>config👇</p>
+<blockquote>
+<p>kubectl 默认会从 ~/.kube 目录下查找文件名为 config 的文件，也能通过设置环境变 KUBECONFIG 或者通过设置去指定其它 kubeconfig 文件。kubeconfig就是为访问集群所作的配置，参考文章<a href="https://blog.csdn.net/w2009211777/article/details/123798721">https://blog.csdn.net/w2009211777/article/details/123798721</a></p>
+</blockquote>
+<p>增加新集群的配置示例：</p>
+<pre><code>kubectl config set-cluster jdcloud --server=https://xxx.xxx.xxx.xxx:xxxx --insecure-skip-tls-verify
+kubectl config set-credentials jdcloud --token=xxxxxx
+kubectl config set-context devtest --cluster=jdcloud --namespace=devtest --user=jdcloud
+</code></pre>
+<ul>
+<li><code>kubectl config get-contexts</code>查看环境</li>
+<li><code>kubectl config use-context docker-desktop</code>切换环境</li>
+</ul>
+<p>pod👇</p>
+<ul>
+<li><code>kubectl describe pod pod名</code>查看pod配置信息</li>
+<li><code>kubectl get pod</code>
+<ul>
+<li>-o wide：查看更多信息，例如node</li>
+<li>-n namespace名：查看某 ns 下的 pod</li>
+</ul>
+</li>
+<li><code>kubectl delete pod pod名</code>
+<ul>
+<li>-n namespace名</li>
+</ul>
+</li>
+<li><code>kubectl logs pod名</code>查看pod日志
+<ul>
+<li>-n namespace名</li>
+<li>-c 容器名：若有多个容器则指定，pod内单个容器可省略</li>
+<li>-f：持续看日志</li>
+<li>--tail=10：获取最近十条日志</li>
+</ul>
+</li>
+<li><code>kubectl exec -it pod名 -- /bin/bash</code>进入pod容器（exit退出）
+<ul>
+<li>-c 容器名：若有多个容器则指定，pod内单个容器可省略</li>
+</ul>
+</li>
+<li><code>kubectl get pod pod名 -o jsonpath=&quot;{.spec['containers','initContainers'][*].name}&quot; -n namespace名</code>查看pod下所有容器</li>
+<li><code>kubectl get pod,svc</code>查看pod及其ip和端口</li>
+</ul>
+<p>namespace👇</p>
+<ul>
+<li><code>kubectl get ns</code>查询所有 namespace</li>
+<li><code>kubectl get ns namespace名</code>查询某个 namespace</li>
+<li><code>kubectl describe ns namespace名</code>查询某个 namespace 详情</li>
+<li><code>kubectl create ns namespace名</code>创建 namespace</li>
+<li><code>kubectl delete ns namespace名</code>删除 namespace</li>
+</ul>
+<h3 id="安装-kubernetes-dashboard">安装 Kubernetes Dashboard</h3>
+<p>首先需要打开 Docker Desktop，启动 k8s</p>
+<ol>
+<li>执行命令，下载 Kubernetes Dashboard <code>kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/master/aio/deploy/recommended.yaml</code></li>
+<li>新建用户
+<ol>
+<li>新建文件“admin-user.yaml”</li>
+<li>文件内容如下，再执行命令<code>kubectl create -f admin-user.yaml</code></li>
+</ol>
+</li>
+</ol>
+<pre><code>apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: admin-user
+  namespace: kubernetes-dashboard
+</code></pre>
+<ol start="3">
+<li>绑定用户关系
+<ol>
+<li>新建文件“admin-user-role-binding.yaml”</li>
+<li>文件内容如下，再执行命令<code>kubectl create -f admin-user-role-binding.yaml</code></li>
+</ol>
+</li>
+</ol>
+<pre><code>apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: admin-user
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+- kind: ServiceAccount
+  name: admin-user
+  namespace: kubernetes-dashboard
+</code></pre>
+<p>【若撤销，执行<code>kubectl delete -f 相应的yaml文件</code>】<br>
+4. 获取token<code>kubectl -n kubernetes-dashboard describe secret $(kubectl -n kubernetes-dashboard get secret | grep admin-user | awk '{print $1}')</code><br>
+5. 启动服务<code>kubectl proxy</code><br>
+6. 访问 <a href="http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/">http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/</a><br>
+7. 选择“Token”，输入上面返回的 token，即可登陆<br>
+<img src="https://xuyj1111.github.io/post-images/1675329742585.png" alt="" loading="lazy"><br>
+<img src="https://xuyj1111.github.io/post-images/1675329907302.png" alt="" loading="lazy"></p>
+<p>p.s.<br>
+获取 token 的第二个方式：</p>
+<ul>
+<li><code>kubectl get secret -n kubernetes-dashboard</code><br>
+<img src="https://xuyj1111.github.io/post-images/1675330335470.png" alt="" loading="lazy"></li>
+<li>使用上图的“admin-user-token-f674x”，拼接命令<code>kubectl describe secret admin-user-token-f674x -n kubernetes-dashboard</code><br>
+<img src="https://xuyj1111.github.io/post-images/1675330502829.png" alt="" loading="lazy"></li>
+</ul>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#docker">docker</a>
+<ul>
+<li><a href="#%E7%AE%80%E5%8D%95%E4%BB%8B%E7%BB%8D">简单介绍</a></li>
+<li><a href="#%E5%AE%89%E8%A3%85">安装</a></li>
+<li><a href="#%E5%91%BD%E4%BB%A4">命令</a></li>
+<li><a href="#dockerfile-%E6%96%87%E4%BB%B6">Dockerfile 文件</a></li>
+</ul>
+</li>
+<li><a href="#kubernetes">kubernetes</a>
+<ul>
+<li><a href="#%E5%89%8D%E6%83%85%E6%8F%90%E8%A6%81">前情提要</a></li>
+<li><a href="#%E4%BB%8B%E7%BB%8D">介绍</a></li>
+<li><a href="#%E5%91%BD%E4%BB%A4-2">命令</a></li>
+<li><a href="#%E5%AE%89%E8%A3%85-kubernetes-dashboard">安装 Kubernetes Dashboard</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://xuyj1111.github.io/VTHVX8QhD/">
+              <h3 class="post-title">
+                【TOP】小本本的一些介绍
+              </h3>
+            </a>
+          </div>
+        
+
+        
+
+        <div class="site-footer">
+  
+  <a class="rss" href="https://xuyj1111.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+
+
+
+    <div id="vcomments"></div>
+    <script>
+        new Valine({
+            el: '#vcomments',
+            appId: 'ot2L3hKJVxTAXnr1VQt7wm70-gzGzoHsz',
+            appKey: 'BjaYGo2m6zV3mCvxGLGsDP5V'
+        })
+    </script>
+
+
+
+  </body>
+
+</html>

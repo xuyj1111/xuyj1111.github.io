@@ -1,0 +1,296 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>【Redis】使用Lua脚本 | 洗衣机的博客</title>
+<link rel="shortcut icon" href="https://xuyj1111.github.io/favicon.ico?v=1727363389169">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://xuyj1111.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="【Redis】使用Lua脚本 | 洗衣机的博客 - Atom Feed" href="https://xuyj1111.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+
+    <meta name="description" content="
+redis 中运行 lua 脚本是原子性的
+
+redis命令执行
+
+此方式需要将 lua 脚本作为字符串传参使用，适合 lua 脚本较短的情况
+从 Redis 2.6.0 版本开始，通过内置的 Lua 解释器，可以使用 EVAL 命令对 ..." />
+    <meta name="keywords" content="原创,Redis" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
+ <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://xuyj1111.github.io">
+  <img class="avatar" src="https://xuyj1111.github.io/images/avatar.png?v=1727363389169" alt="">
+  </a>
+  <h1 class="site-title">
+    洗衣机的博客
+  </h1>
+  <p class="site-description">
+    【一名Java开发】slave👉https://www.cnblogs.com/xuyj1111/
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="https://xuyj1111.github.io" class="menu">
+          主页
+        </a>
+      
+    
+      
+        <a href="https://xuyj1111.github.io/archives" class="menu">
+          文章
+        </a>
+      
+    
+      
+        <a href="https://xuyj1111.github.io/tags" class="menu">
+          标签
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/xuyj1111" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+  <form id="gridea-search-form" action="https://xuyj1111.github.io/search/">
+    <input name="q" />
+  </form>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              【Redis】使用Lua脚本
+            </h2>
+            <div class="post-info">
+              <span>
+                2022-07-12
+              </span>
+              <span>
+                3 min read
+              </span>
+              
+                <a href="https://xuyj1111.github.io/WSbjWpIkN/" class="post-tag">
+                  # 原创
+                </a>
+              
+                <a href="https://xuyj1111.github.io/FktD58SLR/" class="post-tag">
+                  # Redis
+                </a>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content">
+                <blockquote>
+<p>redis 中运行 lua 脚本是原子性的</p>
+</blockquote>
+<h2 id="redis命令执行">redis命令执行</h2>
+<blockquote>
+<p>此方式需要将 lua 脚本作为字符串传参使用，适合 lua 脚本较短的情况<br>
+从 Redis 2.6.0 版本开始，通过内置的 Lua 解释器，可以使用 EVAL 命令对 Lua 脚本进行求值</p>
+</blockquote>
+<h3 id="eval命令">EVAL命令</h3>
+<p>语法：<code>EVAL script numkeys key [key ...] arg [arg ...]</code><br>
+EVAL：固定<br>
+script：一段 Lua 程序，字符串<br>
+numkeys：指定键名参数的个数<br>
+key[key ...]：键名参数，在 LUA 中使用全局变量 KEYS 数组访问，以 1 为基址开始<br>
+arg[arg...]：附加参数，在 LUA 中使用全局变量 ARGV 数组访问，以 1 为基址开始<br>
+<img src="https://xuyj1111.github.io/post-images/1657595478524.png" alt="" loading="lazy"></p>
+<h3 id="script-load命令">SCRIPT LOAD命令</h3>
+<blockquote>
+<p>将脚本添加到 redis 服务器的缓存中，并不立即执行，返回 SHA1。通过 <code>EVALSHA</code>命令使用 SHA1执行<br>
+<code>SCRIPT FLUSH</code>命令清除缓存</p>
+</blockquote>
+<p>语法：<code>SCRIPT LOAD script</code><br>
+SCRIPT LOAD：固定<br>
+script：一段 Lua 程序，字符串<br>
+<img src="https://xuyj1111.github.io/post-images/1657595485935.png" alt="" loading="lazy"></p>
+<h3 id="evalsha命令">EVALSHA命令</h3>
+<blockquote>
+<p>执行 redis 服务器中的缓存脚本，使用其 SHA1 作为传参</p>
+</blockquote>
+<p>语法：<code>EVALSHA sha1 numkeys key [key ...] arg [arg ...]</code><br>
+EVALSHA：固定<br>
+sha1：<code>SCRIPT LOAD</code>命令的执行结果<br>
+numkeys：指定键名参数的个数<br>
+key[key ...]：键名参数，在 LUA 中使用全局变量 KEYS 数组访问，以 1 为基址开始<br>
+arg[arg...]：附加参数，在 LUA 中使用全局变量 ARGV 数组访问，以 1 为基址开始<br>
+<img src="https://xuyj1111.github.io/post-images/1657595493791.png" alt="" loading="lazy"></p>
+<h3 id="script-exists命令">SCRIPT EXISTS命令</h3>
+<blockquote>
+<p>传入一个或多个 SHA1，判断指定脚本是否在缓存中，1表示存在，0表示不存在</p>
+</blockquote>
+<p>语法：<code>SCRIPT EXISTS sha1 [sha1 …]</code><br>
+SCRIPT EXISTS：固定<br>
+sha1[sha1...]：一个或多个脚本的 SHA1 校验和<br>
+<img src="https://xuyj1111.github.io/post-images/1657595501181.png" alt="" loading="lazy"></p>
+<h3 id="script-flush-命令">SCRIPT FLUSH 命令</h3>
+<blockquote>
+<p>清除Redis服务端所有 Lua 脚本缓存</p>
+</blockquote>
+<p>语法：<code>SCRIPT FLUSH</code></p>
+<h3 id="script-kill命令">SCRIPT KILL命令</h3>
+<blockquote>
+<p>杀死正在运行的 lua 脚本，此脚本当前没有执行任何写操作时，才会生效</p>
+</blockquote>
+<p>语法：<code>SCRIPT KILL</code><br>
+<img src="https://xuyj1111.github.io/post-images/1657595509318.png" alt="" loading="lazy"></p>
+<h3 id="shutdown-nosave命令">SHUTDOWN NOSAVE命令</h3>
+<blockquote>
+<p>若 lua 脚本正在写操作，<code>SCRIPT KILL</code>命令无法关闭，则使用该命令关闭 redis 服务器，防止写入<br>
+语法：<code>SHUTDOWN NOSAVE</code></p>
+</blockquote>
+<h2 id="redis-cli客户端执行">redis-cli客户端执行</h2>
+<blockquote>
+<p>此方式可以选择 lua 文件执行</p>
+</blockquote>
+<p>语法：<code>redis-cli --eval file key [key...] , arg [arg...]</code><br>
+file：指定 lua 文件【注意路径】<br>
+key[key ...]：键名参数，在 LUA 中使用全局变量 KEYS 数组访问，以 1 为基址开始<br>
+arg[arg...]：附加参数，在 LUA 中使用全局变量 ARGV 数组访问，以 1 为基址开始<br>
+p.s. 不需要指定 key 的数量，key 和 arg 之间使用逗号分隔，<em>逗号两边都需要空格</em><br>
+<img src="https://xuyj1111.github.io/post-images/1657595515866.png" alt="" loading="lazy"></p>
+<h2 id="lua-中使用-redis-命令">lua 中使用 redis 命令</h2>
+<ul>
+<li><code>redis.call(method, param [param...])</code></li>
+<li><code>redis.pcall(method, param [param...])</code></li>
+</ul>
+<p>method：redis 方法名【字符串】<br>
+param：对应 redis 方法所需的参数<br>
+区别：错误处理不同，call 遇到错误停止并抛出；pcall 遇到错误继续运行，最后返回一个带 err 域的 lua 表（table类型）<br>
+<img src="https://xuyj1111.github.io/post-images/1657595523350.png" alt="" loading="lazy"><br>
+<img src="https://xuyj1111.github.io/post-images/1657595529800.png" alt="" loading="lazy"></p>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#redis%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C">redis命令执行</a>
+<ul>
+<li><a href="#eval%E5%91%BD%E4%BB%A4">EVAL命令</a></li>
+<li><a href="#script-load%E5%91%BD%E4%BB%A4">SCRIPT LOAD命令</a></li>
+<li><a href="#evalsha%E5%91%BD%E4%BB%A4">EVALSHA命令</a></li>
+<li><a href="#script-exists%E5%91%BD%E4%BB%A4">SCRIPT EXISTS命令</a></li>
+<li><a href="#script-flush-%E5%91%BD%E4%BB%A4">SCRIPT FLUSH 命令</a></li>
+<li><a href="#script-kill%E5%91%BD%E4%BB%A4">SCRIPT KILL命令</a></li>
+<li><a href="#shutdown-nosave%E5%91%BD%E4%BB%A4">SHUTDOWN NOSAVE命令</a></li>
+</ul>
+</li>
+<li><a href="#redis-cli%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%89%A7%E8%A1%8C">redis-cli客户端执行</a></li>
+<li><a href="#lua-%E4%B8%AD%E4%BD%BF%E7%94%A8-redis-%E5%91%BD%E4%BB%A4">lua 中使用 redis 命令</a></li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://xuyj1111.github.io/FOFqe4ayF/">
+              <h3 class="post-title">
+                【Java】使用@Valid或@Validated参数校验
+              </h3>
+            </a>
+          </div>
+        
+
+        
+
+        <div class="site-footer">
+  
+  <a class="rss" href="https://xuyj1111.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+
+
+
+    <div id="vcomments"></div>
+    <script>
+        new Valine({
+            el: '#vcomments',
+            appId: 'ot2L3hKJVxTAXnr1VQt7wm70-gzGzoHsz',
+            appKey: 'BjaYGo2m6zV3mCvxGLGsDP5V'
+        })
+    </script>
+
+
+
+  </body>
+
+</html>

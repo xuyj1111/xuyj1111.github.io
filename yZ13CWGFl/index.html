@@ -1,0 +1,317 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>【转载】MySQL预处理 | 洗衣机的博客</title>
+<link rel="shortcut icon" href="https://xuyj1111.github.io/favicon.ico?v=1727363389169">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://xuyj1111.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="【转载】MySQL预处理 | 洗衣机的博客 - Atom Feed" href="https://xuyj1111.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+
+    <meta name="description" content="
+MySQL PREPARE预处理，by Kevin崔
+
+MySQL PREPARE 预处理技术意义在于，是为了减轻服务器压力的一种技术。
+就是说绝大多数情况下，某需求某一条 SQL 语句可能会被反复调用执行，或者每次执行的时候只有个别的值..." />
+    <meta name="keywords" content="转载,MySQL" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
+ <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://xuyj1111.github.io">
+  <img class="avatar" src="https://xuyj1111.github.io/images/avatar.png?v=1727363389169" alt="">
+  </a>
+  <h1 class="site-title">
+    洗衣机的博客
+  </h1>
+  <p class="site-description">
+    【一名Java开发】slave👉https://www.cnblogs.com/xuyj1111/
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="https://xuyj1111.github.io" class="menu">
+          主页
+        </a>
+      
+    
+      
+        <a href="https://xuyj1111.github.io/archives" class="menu">
+          文章
+        </a>
+      
+    
+      
+        <a href="https://xuyj1111.github.io/tags" class="menu">
+          标签
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/xuyj1111" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+  <form id="gridea-search-form" action="https://xuyj1111.github.io/search/">
+    <input name="q" />
+  </form>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              【转载】MySQL预处理
+            </h2>
+            <div class="post-info">
+              <span>
+                2023-02-05
+              </span>
+              <span>
+                5 min read
+              </span>
+              
+                <a href="https://xuyj1111.github.io/JDrWa3FBq/" class="post-tag">
+                  # 转载
+                </a>
+              
+                <a href="https://xuyj1111.github.io/eng41sp6q/" class="post-tag">
+                  # MySQL
+                </a>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content">
+                <blockquote>
+<p><a href="https://blog.csdn.net/dreamyuzhou/article/details/120050346">MySQL PREPARE预处理</a>，by Kevin崔</p>
+</blockquote>
+<p>MySQL PREPARE 预处理技术意义在于，是为了减轻服务器压力的一种技术。</p>
+<p>就是说绝大多数情况下，某需求某一条 SQL 语句可能会被反复调用执行，或者每次执行的时候只有个别的值不同。<br>
+比如：</p>
+<ul>
+<li>SELECT 的 WHERE 子句值不同；</li>
+<li>UPDATE 的 SET 子句值不同；</li>
+<li>INSERT 的 VALUES 值不同；<br>
+如果每次都需要经过上面的词法语义解析、语句优化、制定执行计划等，则效率就明显下降。</li>
+</ul>
+<h3 id="1-预处理">1. 预处理</h3>
+<p>MySQL 提供了对服务器端准备语句的支持，就叫预处理。</p>
+<p>这种支持利用了高效的客户机 / 服务器二进制协议，使用带有参数值占位符的预编译语句有以下好处:</p>
+<ul>
+<li>减少每次执行语句时解析语句的开销。通常，数据库应用程序处理大量几乎相同的语句，只对子句中的字面值或变量值进行更改，例如用于查询和删除的 WHERE、用于更新的 SET 和用于插入的 values。</li>
+<li>防止 SQL 注入攻击。参数值可以包含未转义的 SQL 引号和分隔符。</li>
+</ul>
+<p>预处理接口</p>
+<ol>
+<li>应用程序中的预处理语句<br>
+可以通过客户端编程接口使用服务器端准备好的语句，包括用于 C 程序的 MySQL C API 客户端库，用于 Java 程序的 MySQL Connector/J，以及用于使用。NET 技术的程序的 MySQL Connector/NET。例如，C API 提供了一组函数调用，这些函数调用构成了它的预编译语句 API</li>
+</ol>
+<p>2.SQL 脚本中的准备语句<br>
+还有一个用于预处理语句的替代 SQL 接口。但不需要编程，在 SQL 级别直接可用，可以在任何可以将 SQL 语句发送到要执行的服务器的程序中使用它，例如 mysql 客户端程序。</p>
+<h3 id="2-预处理应用方式">2. 预处理应用方式</h3>
+<p>预处理语句的 SQL 语法基于三个 SQL 语句:</p>
+<ul>
+<li>PREPARE 语句准备执行。</li>
+<li>EXECUTE 执行一条预处理语句。</li>
+<li>DEALLOCATE PREPARE 释放一个预处理语句。</li>
+</ul>
+<p>A. 例子：</p>
+<p>预处理语句无法跨 SESSION 操作：</p>
+<pre><code>mysql&gt;CREATE TABLE `t1` (
+  `id` int NOT NULL,
+   NAME varchar(20),
+KEY `idx_id` (`id`)
+) ENGINE=InnoDB ;
+ 
+mysql&gt;INSERT INTO t1(id,name) values(1,'A'),(2,'B'),(3,'C'),(4,'D'),(5,'E'),(6,'F');
+ 
+#设定预处理语句
+mysql&gt;PREPARE stmt1 FROM  'SELECT * FROM t1 WHERE a=? ';
+ 
+#设置传递变量
+mysql&gt;SET @a = 8;
+ 
+#执行语句
+mysql&gt;EXECUTE stmt1 USING @a;
+ 
+#释放预处理语句
+mysql&gt;DEALLOCATE PREPAR stmt1;
+</code></pre>
+<h3 id="b-预处理对执行计划变化跟踪">B. 预处理对执行计划变化跟踪</h3>
+<p>通过观察 status 指标 Select_scan（执行全表搜索查询的数量）变化判断是否会受到数据量变更的影响。</p>
+<figure data-type="image" tabindex="1"><img src="https://img-blog.csdnimg.cn/img_convert/8f545b223ea5cea86fd6bfa21122cb61.png" alt="" loading="lazy"></figure>
+<p>预处理 sql 语句随着数据量的变化执行计划也在变更。</p>
+<h3 id="c-存储过程包含预处理">C. 存储过程包含预处理</h3>
+<p>预处理语句在存储的例程中创建预处理语句，则在存储的例程结束时不会释放该语句。</p>
+<pre><code>DELIMITER //
+ 
+DROP PROCEDURE IF EXISTS proc_prepared;
+CREATE PROCEDURE proc_prepared()
+BEGIN
+DECLARE a INT;
+DECLARE i INT;
+PREPARE stmt1 FROM  'SELECT * FROM t1 WHERE id&gt;? ';
+SET @a = 5;
+EXECUTE stmt1 USING @a;
+END //
+ 
+DELIMITER ;
+ 
+call proc_prepared();
+存储过程之后单独调用预处理语句，返回结果集：说明预处理没有销毁
+ 
+SET @a = 5;
+EXECUTE stmt1 USING @a;
++----+------+
+| id | NAME |
++----+------+
+|  6 | F    |
+。。。
+</code></pre>
+<p>存储过程之后单独调用预处理语句，返回结果集：说明预处理没有销毁</p>
+<p><code>SET @a = 5; EXECUTE stmt1 USING @a; +----+------+ | id | NAME | +----+------+ | 6 | F | 。。。</code></p>
+<h3 id="d-通过-profile-查看解析语句的开销">D. 通过 profile 查看解析语句的开销</h3>
+<p>通过 profile 各种语句执行时间，解析语句花费的时间都在 0.01 秒以内。可以忽略不计。<br>
+所以目前在预处理方面上没有发现明显的优势。</p>
+<figure data-type="image" tabindex="2"><img src="https://img-blog.csdnimg.cn/img_convert/ace30bc0d658c75a2db218afa1b06d33.png" alt="" loading="lazy"></figure>
+<h3 id="3-总结">3. 总结</h3>
+<p>预编译初始的作用：</p>
+<ul>
+<li>提高效率：事先解析、检查、编译等工作。</li>
+<li>提高安全性：预防 SQL 注入</li>
+</ul>
+<p>局限性和实际效果：</p>
+<ul>
+<li>预处理因为局限在 session 级别，现在无法体现真正的价值。因为 mysql GA 版本没有线程池概念，每个链接就是每个 session</li>
+<li>解析编译语句的开销 基本对于 mysql 环境来说忽略不计</li>
+<li>执行计划也是随着数据量而变化的。</li>
+</ul>
+<p>从局限性和实际效果来看，目前没有发挥应有的功能。不适合声场环境中使用。</p>
+<figure data-type="image" tabindex="3"><img src="https://img-blog.csdnimg.cn/img_convert/912edc5a1cc81970d9e85440ff620a46.png" alt="" loading="lazy"></figure>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#1-%E9%A2%84%E5%A4%84%E7%90%86">1. 预处理</a></li>
+<li><a href="#2-%E9%A2%84%E5%A4%84%E7%90%86%E5%BA%94%E7%94%A8%E6%96%B9%E5%BC%8F">2. 预处理应用方式</a></li>
+<li><a href="#b-%E9%A2%84%E5%A4%84%E7%90%86%E5%AF%B9%E6%89%A7%E8%A1%8C%E8%AE%A1%E5%88%92%E5%8F%98%E5%8C%96%E8%B7%9F%E8%B8%AA">B. 预处理对执行计划变化跟踪</a></li>
+<li><a href="#c-%E5%AD%98%E5%82%A8%E8%BF%87%E7%A8%8B%E5%8C%85%E5%90%AB%E9%A2%84%E5%A4%84%E7%90%86">C. 存储过程包含预处理</a></li>
+<li><a href="#d-%E9%80%9A%E8%BF%87-profile-%E6%9F%A5%E7%9C%8B%E8%A7%A3%E6%9E%90%E8%AF%AD%E5%8F%A5%E7%9A%84%E5%BC%80%E9%94%80">D. 通过 profile 查看解析语句的开销</a></li>
+<li><a href="#3-%E6%80%BB%E7%BB%93">3. 总结</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://xuyj1111.github.io/oGPyoz9xf/">
+              <h3 class="post-title">
+                【MySQL】表的各种连接
+              </h3>
+            </a>
+          </div>
+        
+
+        
+
+        <div class="site-footer">
+  
+  <a class="rss" href="https://xuyj1111.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+
+
+
+    <div id="vcomments"></div>
+    <script>
+        new Valine({
+            el: '#vcomments',
+            appId: 'ot2L3hKJVxTAXnr1VQt7wm70-gzGzoHsz',
+            appKey: 'BjaYGo2m6zV3mCvxGLGsDP5V'
+        })
+    </script>
+
+
+
+  </body>
+
+</html>

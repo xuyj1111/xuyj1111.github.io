@@ -1,0 +1,276 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>【Java】elastic-job的使用 | 洗衣机的博客</title>
+<link rel="shortcut icon" href="https://xuyj1111.github.io/favicon.ico?v=1727363389169">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://xuyj1111.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="【Java】elastic-job的使用 | 洗衣机的博客 - Atom Feed" href="https://xuyj1111.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+
+    <meta name="description" content="介绍
+elastic-job 是基于 Zookeeper、Quartz 开发的分布式定时任务，解决了 Quartz 不支持分布式的问题，使用 Zookeeper 实现分布式。
+分布式（集群）的好处是：
+
+分布性：每个服务都可以单独部署，服务..." />
+    <meta name="keywords" content="Java,原创,使用手册" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
+ <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://xuyj1111.github.io">
+  <img class="avatar" src="https://xuyj1111.github.io/images/avatar.png?v=1727363389169" alt="">
+  </a>
+  <h1 class="site-title">
+    洗衣机的博客
+  </h1>
+  <p class="site-description">
+    【一名Java开发】slave👉https://www.cnblogs.com/xuyj1111/
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="https://xuyj1111.github.io" class="menu">
+          主页
+        </a>
+      
+    
+      
+        <a href="https://xuyj1111.github.io/archives" class="menu">
+          文章
+        </a>
+      
+    
+      
+        <a href="https://xuyj1111.github.io/tags" class="menu">
+          标签
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/xuyj1111" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+  <form id="gridea-search-form" action="https://xuyj1111.github.io/search/">
+    <input name="q" />
+  </form>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              【Java】elastic-job的使用
+            </h2>
+            <div class="post-info">
+              <span>
+                2023-01-30
+              </span>
+              <span>
+                3 min read
+              </span>
+              
+                <a href="https://xuyj1111.github.io/SOje8Joqr/" class="post-tag">
+                  # Java
+                </a>
+              
+                <a href="https://xuyj1111.github.io/WSbjWpIkN/" class="post-tag">
+                  # 原创
+                </a>
+              
+                <a href="https://xuyj1111.github.io/0shj16Tx0/" class="post-tag">
+                  # 使用手册
+                </a>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content">
+                <h2 id="介绍">介绍</h2>
+<p>elastic-job 是基于 Zookeeper、Quartz 开发的分布式定时任务，解决了 Quartz 不支持分布式的问题，使用 Zookeeper 实现分布式。</p>
+<p>分布式（集群）的好处是：</p>
+<ol>
+<li>分布性：每个服务都可以单独部署，服务之间通过网络通信</li>
+<li>伸缩性：可对接点进行软硬件扩容，有一定伸缩性</li>
+<li>高可用：集群具有高可用<br>
+<img src="https://xuyj1111.github.io/post-images/1675059052417.png" alt="" loading="lazy"></li>
+</ol>
+<h3 id="使用-zookeeper-的体现">使用 Zookeeper 的体现</h3>
+<ol>
+<li>任务的信息存储在 Zookeeper 的节点上</li>
+<li>实现选举机制：在多个实例中选择 1 个执行 job<br>
+<img src="https://xuyj1111.github.io/post-images/1675066997715.png" alt="" loading="lazy"></li>
+</ol>
+<h3 id="主要的配置信息">主要的配置信息</h3>
+<ol>
+<li>namespace：命名空间，用于服务配置。对应 Zk 的首层节点名，上图中的<code>mine_job</code></li>
+<li>jobName：job名。对应 Zk 的第二层节点名，上图中的<code>MySimpleJob</code>、<code>MyDataflowJob</code></li>
+<li>cron表达式：配置定时</li>
+<li>分片数</li>
+<li>分片参数：格式<code>分片序列号=参数值</code>，多个用逗号分隔【分片序列号最小0，最大分片数-1】</li>
+</ol>
+<blockquote>
+<p>分片：将 job 分片化，可达到任务并行处理的效果，最大限度提高执行任务的吞吐量。</p>
+<ul>
+<li>例如有 2 个实例，分片数 4，则每个实例都获得执行 2 片；</li>
+<li>分片参数是用来区分每个分片的作用，例如<code>0=text,1=image,2=radio,3=video</code>，分片0执行时，会把“text”值传入，因此可以在代码里根据参数值的不同做不同的处理</li>
+</ul>
+</blockquote>
+<h3 id="事件追踪功能">事件追踪功能</h3>
+<p>监控 job，需要下载<code>elastic-job-lite-console</code></p>
+<ol>
+<li>代码中配置数据源，运行成功会自动生成两张表<code>JOB_EXECUTION_LOG</code>、<code>JOB_STATUS_TRACE_LOG</code></li>
+<li>下载解压<code>elastic-job-lite-console</code></li>
+<li>在下图中的目录下，有两个 start 文件，windows 启动 bat，Linux 启动 sh<br>
+<img src="https://xuyj1111.github.io/post-images/1675068504707.png" alt="" loading="lazy"></li>
+<li><code>localhost:8899</code>打开，密码在 conf/auth.properties 文件中，默认 root/root</li>
+<li>在“注册中心配置”添加，连接后即可监控 job<br>
+<img src="https://xuyj1111.github.io/post-images/1675068745538.png" alt="" loading="lazy"></li>
+</ol>
+<hr>
+<h2 id="代码引入使用">代码引入使用</h2>
+<blockquote>
+<p>使用<a href="https://github.com/yinjihuan/elastic-job-spring-boot-starter">yinjihuan的elastic-job</a>，具体介绍见此链接</p>
+</blockquote>
+<ol>
+<li>添加<code>https://jitpack.io</code> maven仓库</li>
+<li>引入依赖<code>implementation 'com.github.yinjihuan:elastic-job-spring-boot-starter:1.0.5'</code></li>
+<li>application启动类上添加注解<code>@EnableElasticJob</code></li>
+<li>application.yml 添加配置</li>
+<li>实现<code>SimpleJob</code>或<code>DataflowJob&lt;&gt;</code></li>
+</ol>
+<h3 id="simplejob-和-dataflowjob">SimpleJob 和 DataflowJob</h3>
+<ul>
+<li>实现 SimpleJob 的任务，只需要在<code>execute</code>方法中写逻辑，且根据 cron 表达式执行；</li>
+<li>而 DataflowJob，需要在<code>fetchData</code>方法中读取数据，在<code>processData</code>方法中接收数据并处理。若读取数据为 null，则 job 会停止<br>
+<img src="https://xuyj1111.github.io/post-images/1675070326843.png" alt="" loading="lazy"></li>
+</ul>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E4%BB%8B%E7%BB%8D">介绍</a>
+<ul>
+<li><a href="#%E4%BD%BF%E7%94%A8-zookeeper-%E7%9A%84%E4%BD%93%E7%8E%B0">使用 Zookeeper 的体现</a></li>
+<li><a href="#%E4%B8%BB%E8%A6%81%E7%9A%84%E9%85%8D%E7%BD%AE%E4%BF%A1%E6%81%AF">主要的配置信息</a></li>
+<li><a href="#%E4%BA%8B%E4%BB%B6%E8%BF%BD%E8%B8%AA%E5%8A%9F%E8%83%BD">事件追踪功能</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BB%A3%E7%A0%81%E5%BC%95%E5%85%A5%E4%BD%BF%E7%94%A8">代码引入使用</a>
+<ul>
+<li><a href="#simplejob-%E5%92%8C-dataflowjob">SimpleJob 和 DataflowJob</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://xuyj1111.github.io/ZvPCt8HVu/">
+              <h3 class="post-title">
+                【转载】虚数的意义
+              </h3>
+            </a>
+          </div>
+        
+
+        
+
+        <div class="site-footer">
+  
+  <a class="rss" href="https://xuyj1111.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+
+
+
+    <div id="vcomments"></div>
+    <script>
+        new Valine({
+            el: '#vcomments',
+            appId: 'ot2L3hKJVxTAXnr1VQt7wm70-gzGzoHsz',
+            appKey: 'BjaYGo2m6zV3mCvxGLGsDP5V'
+        })
+    </script>
+
+
+
+  </body>
+
+</html>

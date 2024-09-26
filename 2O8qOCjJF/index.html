@@ -1,0 +1,239 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ID生成服务总结 | 洗衣机的博客</title>
+<link rel="shortcut icon" href="https://xuyj1111.github.io/favicon.ico?v=1727363389169">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://xuyj1111.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="ID生成服务总结 | 洗衣机的博客 - Atom Feed" href="https://xuyj1111.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+
+    <meta name="description" content="
+用于在集群高并发系统下生成分布式全局唯一的id
+
+id 的要求
+
+全局唯一
+递增
+高可用：考虑宕机等不可避免因素
+低延迟：获取 id 的速度要快
+高QPS：能扛住瞬间的高并发
+
+方案及优缺点
+
+已有产品：Twitter 的 snowfla..." />
+    <meta name="keywords" content="" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
+ <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://xuyj1111.github.io">
+  <img class="avatar" src="https://xuyj1111.github.io/images/avatar.png?v=1727363389169" alt="">
+  </a>
+  <h1 class="site-title">
+    洗衣机的博客
+  </h1>
+  <p class="site-description">
+    【一名Java开发】slave👉https://www.cnblogs.com/xuyj1111/
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="https://xuyj1111.github.io" class="menu">
+          主页
+        </a>
+      
+    
+      
+        <a href="https://xuyj1111.github.io/archives" class="menu">
+          文章
+        </a>
+      
+    
+      
+        <a href="https://xuyj1111.github.io/tags" class="menu">
+          标签
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/xuyj1111" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+  <form id="gridea-search-form" action="https://xuyj1111.github.io/search/">
+    <input name="q" />
+  </form>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              ID生成服务总结
+            </h2>
+            <div class="post-info">
+              <span>
+                2022-05-09
+              </span>
+              <span>
+                1 min read
+              </span>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content">
+                <blockquote>
+<p>用于在集群高并发系统下生成分布式全局唯一的id</p>
+</blockquote>
+<h2 id="id-的要求">id 的要求</h2>
+<ul>
+<li>全局唯一</li>
+<li>递增</li>
+<li>高可用：考虑宕机等不可避免因素</li>
+<li>低延迟：获取 id 的速度要快</li>
+<li>高QPS：能扛住瞬间的高并发</li>
+</ul>
+<h2 id="方案及优缺点">方案及优缺点</h2>
+<blockquote>
+<p>已有产品：Twitter 的 snowflake 算法（雪花算法）、百度 UidGenerator 算法、美团 Leaf 算法</p>
+</blockquote>
+<ul>
+<li>
+<p>关系型数据库自增（不考虑）</p>
+</li>
+<li>
+<p>关系型数据库号段<br>
+优：实现成本低，满足大部分要求<br>
+缺：机器宕机会丢失号段</p>
+</li>
+<li>
+<p>redis 自增<br>
+优：满足大部分要求<br>
+缺：考虑可用性需要 redis 集群，成本过高</p>
+</li>
+<li>
+<p>UUID<br>
+优：性能高（jdk 本地生成，无需网络消耗）<br>
+缺：无序，不满足递增的要求</p>
+</li>
+<li>
+<p>雪花算法概念<br>
+优：满足大部分要求<br>
+缺：依赖机器时钟，时间回拨会id重复；在分布式环境中，多个机器的时钟不可能完全同步，会出现不递增的情况</p>
+</li>
+</ul>
+<h2 id="我的-id-生成项目">我的 id 生成项目</h2>
+<p><a href="https://github.com/xuyj1111/projects/tree/master/mysql-id">基于 MySQL 号段机制的 ID 生成服务</a><br>
+<a href="https://github.com/xuyj1111/projects/tree/master/snowflake-id">基于雪花算法的 id 生成服务</a></p>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#id-%E7%9A%84%E8%A6%81%E6%B1%82">id 的要求</a></li>
+<li><a href="#%E6%96%B9%E6%A1%88%E5%8F%8A%E4%BC%98%E7%BC%BA%E7%82%B9">方案及优缺点</a></li>
+<li><a href="#%E6%88%91%E7%9A%84-id-%E7%94%9F%E6%88%90%E9%A1%B9%E7%9B%AE">我的 id 生成项目</a></li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+
+        
+
+        <div class="site-footer">
+  
+  <a class="rss" href="https://xuyj1111.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+
+
+
+    <div id="vcomments"></div>
+    <script>
+        new Valine({
+            el: '#vcomments',
+            appId: 'ot2L3hKJVxTAXnr1VQt7wm70-gzGzoHsz',
+            appKey: 'BjaYGo2m6zV3mCvxGLGsDP5V'
+        })
+    </script>
+
+
+
+  </body>
+
+</html>
